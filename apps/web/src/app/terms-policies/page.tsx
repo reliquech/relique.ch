@@ -1,11 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { motion, useScroll, useSpring } from 'framer-motion';
-import { policySections, tableOfContents } from '@/data/terms-policies.data';
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { motion, useScroll, useSpring } from "framer-motion";
+import { policySections, tableOfContents } from "@/data/terms-policies.data";
 
 export default function TermsAndPoliciesPage() {
-  const [activeSection, setActiveSection] = useState('introduction');
+  const searchParams = useSearchParams();
+  const [activeSection, setActiveSection] = useState("introduction");
+  const isPreview = searchParams.get("preview") === "1";
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -53,10 +56,12 @@ export default function TermsAndPoliciesPage() {
 
   return (
     <div className="py-24 bg-bgDark min-h-screen">
-      <motion.div 
-        className="fixed top-20 left-0 right-0 h-1 bg-primaryBlue origin-left z-40"
-        style={{ scaleX }}
-      />
+      {!isPreview && (
+        <motion.div
+          className="fixed left-0 right-0 h-1 bg-primaryBlue origin-left z-40"
+          style={{ top: "var(--header-height, 5rem)", scaleX }}
+        />
+      )}
       
       <div className="container mx-auto px-6 max-w-5xl">
         <motion.div 

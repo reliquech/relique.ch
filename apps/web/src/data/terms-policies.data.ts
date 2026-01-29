@@ -19,12 +19,12 @@ export const policySections: PolicySection[] = [
     content: [
       {
         type: 'paragraph',
-        text: 'These Terms and Conditions ("Terms") govern the use of the Relique.co platform ("Platform") for (i) the consignment, listing, and sale of memorabilia and collectibles, and (ii) the provision of authentication and verification services. By submitting items for consignment, requesting authentication services, or engaging in transactions through the Platform, you acknowledge that you have read, understood, and agreed to be bound by these Terms.',
+        text: 'These Terms and Conditions ("Terms") govern the use of the Relique.ch platform ("Platform") for (i) the consignment, listing, and sale of memorabilia and collectibles, and (ii) the provision of authentication and verification services. By submitting items for consignment, requesting authentication services, or engaging in transactions through the Platform, you acknowledge that you have read, understood, and agreed to be bound by these Terms.',
       },
       {
         type: 'notice',
         label: 'Notice of Facilitation',
-        text: 'Relique.co operates strictly as a facilitation and service platform. At no time does Relique.co purchase, own, or take title to any consigned items or authenticated goods.',
+        text: 'Relique.ch operates strictly as a facilitation and service platform. At no time does Relique.ch purchase, own, or take title to any consigned items or authenticated goods.',
       },
     ],
   },
@@ -37,7 +37,7 @@ export const policySections: PolicySection[] = [
         items: [
           {
             subtitle: '2.1 Facilitation Role:',
-            description: 'Relique.co operates solely as a facilitation service. We do not act as a buyer, seller, broker, or owner of any items listed or authenticated on the Platform.',
+            description: 'Relique.ch operates solely as a facilitation service. We do not act as a buyer, seller, broker, or owner of any items listed or authenticated on the Platform.',
           },
           {
             subtitle: '2.2 Listing and Visibility:',
@@ -45,7 +45,7 @@ export const policySections: PolicySection[] = [
           },
           {
             subtitle: '2.3 No Ownership or Guarantee:',
-            description: 'Relique.co does not guarantee valuation, marketability, condition, authenticity, or quality of any item. Sellers remain solely responsible for the accuracy, condition, legality, and representations of their consigned items.',
+            description: 'Relique.ch does not guarantee valuation, marketability, condition, authenticity, or quality of any item. Sellers remain solely responsible for the accuracy, condition, legality, and representations of their consigned items.',
           },
         ],
       },
@@ -64,7 +64,7 @@ export const policySections: PolicySection[] = [
           },
           {
             subtitle: '3.2 Right of Refusal:',
-            description: 'Submission of an item does not guarantee acceptance, listing, or sale. Relique.co reserves the right, at its sole discretion, to decline, suspend, or remove any item from consignment.',
+            description: 'Submission of an item does not guarantee acceptance, listing, or sale. Relique.ch reserves the right, at its sole discretion, to decline, suspend, or remove any item from consignment.',
           },
           {
             subtitle: '3.3 Seller Obligations:',
@@ -91,7 +91,11 @@ export const policySections: PolicySection[] = [
           },
           {
             subtitle: '4.3 Scope Limitation:',
-            description: 'Relique.co does not authenticate historical events, provenance narratives, or ownership claims beyond the scope of the submitted materials.',
+            description: 'Relique.ch does not authenticate historical events, provenance narratives, or ownership claims beyond the scope of the submitted materials.',
+          },
+          {
+            subtitle: '4.4 Use of Results:',
+            description: 'Authentication results are intended for informational purposes only. Buyers and sellers acknowledge that such results should not be the sole basis for financial, investment, or legal decisions.',
           },
         ],
       },
@@ -105,12 +109,16 @@ export const policySections: PolicySection[] = [
         type: 'subsection',
         items: [
           {
-            subtitle: '5.1 Presentation:',
-            description: 'Relique.co facilitates the presentation of items and enables prospective buyers to view listings and submit inquiries.',
+            subtitle: '5.1 Presentation and Inquiry:',
+            description: 'Relique.ch facilitates the presentation of items and enables prospective buyers to view listings and submit inquiries.',
           },
           {
             subtitle: '5.2 Logistics Coordination:',
-            description: 'Relique.co may coordinate logistics on behalf of the seller, including shipment arrangements and export processing where applicable.',
+            description: 'Relique.ch may coordinate logistics on behalf of the seller, including shipment arrangements and export processing where applicable.',
+          },
+          {
+            subtitle: '5.3 Compliance Responsibility:',
+            description: 'While guidance on packaging, shipping, customs, and duties may be provided, sellers remain solely responsible for compliance with all applicable local and international laws and regulations.',
           },
         ],
       },
@@ -129,7 +137,7 @@ export const policySections: PolicySection[] = [
           },
           {
             subtitle: '6.2 Seller Payments:',
-            description: 'Proceeds from sales will be remitted to sellers after completion of the transaction, less applicable fees, commissions, and agreed charges.',
+            description: 'Proceeds from sales will be remitted to sellers after completion of the transaction, less applicable fees, commissions, taxes, and agreed charges.',
           },
         ],
       },
@@ -137,7 +145,7 @@ export const policySections: PolicySection[] = [
   },
   {
     id: 'no-returns',
-    title: '7. No Returns, No Warranty',
+    title: '7. No Returns, No Warranty (Consigned Items)',
     content: [
       {
         type: 'subsection',
@@ -148,7 +156,7 @@ export const policySections: PolicySection[] = [
           },
           {
             subtitle: '7.2 No Warranty:',
-            description: 'Relique.co provides no warranty, express or implied, regarding the condition, authenticity, or fitness of consigned items.',
+            description: 'Relique.ch provides no warranty, express or implied, regarding the condition, authenticity, or fitness of consigned items.',
           },
         ],
       },
@@ -163,15 +171,19 @@ export const policySections: PolicySection[] = [
         items: [
           {
             subtitle: '8.1 Transit and Handling:',
-            description: 'Relique.co is not responsible for loss, damage, theft, or delays occurring during shipping or transit.',
+            description: 'Relique.ch is not responsible for loss, damage, theft, or delays occurring during shipping or transit.',
           },
           {
             subtitle: '8.2 Buyer-Seller Disputes:',
-            description: 'Relique.co is not liable for disputes between buyers and sellers, including claims of misrepresentation or non-payment.',
+            description: 'Relique.ch is not liable for disputes between buyers and sellers, including claims of misrepresentation, non-payment, or dissatisfaction.',
           },
           {
-            subtitle: '8.3 Authentication Liability:',
-            description: 'Relique.co shall not be liable for any reliance placed on authentication results, including financial loss or resale disputes.',
+            subtitle: '8.3 No Sales Guarantee:',
+            description: 'The Platform does not guarantee any sale, sale price, or minimum valuation.',
+          },
+          {
+            subtitle: '8.4 Authentication Liability:',
+            description: 'Relique.ch shall not be liable for any reliance placed on authentication results, including financial loss, resale disputes, or third-party claims.',
           },
         ],
       },
@@ -182,8 +194,17 @@ export const policySections: PolicySection[] = [
     title: '9. Export and Legal Compliance',
     content: [
       {
-        type: 'paragraph',
-        text: 'Sellers are responsible for ensuring compliance with all export, import, and trade regulations. While guidance may be provided, financial responsibility for duties remains with the seller.',
+        type: 'subsection',
+        items: [
+          {
+            subtitle: '9.1 Seller Responsibility:',
+            description: 'Sellers are responsible for ensuring compliance with all export, import, and trade regulations.',
+          },
+          {
+            subtitle: '9.2 Duties and Taxes:',
+            description: 'Where export duties, taxes, or customs fees apply, Relique.ch may assist with processing; however, financial responsibility remains with the seller unless otherwise agreed.',
+          },
+        ],
       },
     ],
   },
@@ -192,8 +213,17 @@ export const policySections: PolicySection[] = [
     title: '10. Termination and Withdrawal',
     content: [
       {
-        type: 'paragraph',
-        text: 'Sellers may withdraw items prior to sale, subject to incurred fees. Relique.co reserves the right to remove listings or terminate services if these Terms are breached.',
+        type: 'subsection',
+        items: [
+          {
+            subtitle: '10.1 Seller Withdrawal:',
+            description: 'Sellers may withdraw items prior to sale, subject to any incurred fees, pending obligations, or logistical arrangements.',
+          },
+          {
+            subtitle: '10.2 Platform Termination:',
+            description: 'Relique.ch reserves the right to remove listings, suspend services, or terminate relationships if these Terms are breached or items are deemed unsuitable.',
+          },
+        ],
       },
     ],
   },
@@ -206,11 +236,11 @@ export const policySections: PolicySection[] = [
         items: [
           {
             subtitle: '11.1 Governing Law:',
-            description: 'These Terms are governed by the laws of Vietnam / United States [Jurisdiction].',
+            description: 'These Terms are governed by the laws of [Insert Jurisdiction].',
           },
           {
             subtitle: '11.2 Dispute Resolution:',
-            description: 'Disputes shall first be addressed through good-faith mediation. If unresolved, disputes shall be submitted to the competent courts of the aforementioned jurisdictions.',
+            description: 'Disputes shall first be addressed through good-faith mediation. If unresolved, disputes shall be submitted to the competent courts of [Insert Jurisdiction].',
           },
         ],
       },
@@ -225,7 +255,7 @@ export const policySections: PolicySection[] = [
         items: [
           {
             subtitle: '12.1 Amendments:',
-            description: 'Relique.co reserves the right to modify these Terms at any time.',
+            description: 'Relique.ch reserves the right to modify these Terms at any time. Updated versions will be posted on the Platform.',
           },
           {
             subtitle: '12.2 Acceptance:',
@@ -233,7 +263,7 @@ export const policySections: PolicySection[] = [
           },
           {
             subtitle: '12.3 Severability:',
-            description: 'If any provision is held unenforceable, the remaining provisions remain in full force.',
+            description: 'If any provision is held unenforceable, the remaining provisions shall remain in full force and effect.',
           },
         ],
       },

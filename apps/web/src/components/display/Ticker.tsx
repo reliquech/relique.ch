@@ -39,7 +39,7 @@ export function Ticker({
                   alt={item.name}
                   width={120}
                   height={60}
-                  className="object-contain opacity-60 grayscale"
+                  className="object-contain opacity-60"
                 />
               ) : (
                 <span className="text-muted-foreground text-sm">{item.name}</span>
@@ -81,7 +81,7 @@ export function Ticker({
                   alt={item.name}
                   width={120}
                   height={60}
-                  className="object-contain opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all"
+                  className="object-contain opacity-60 hover:opacity-100 transition-all"
                 />
               ) : (
                 <span className="text-muted-foreground text-sm whitespace-nowrap">

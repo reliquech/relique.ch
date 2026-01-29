@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { consignService } from "@/lib/services/consignService";
 import { toast } from "sonner";
+import { TermsPreviewLink } from "@/components/shared/TermsPreviewLink";
 import { FileUploadArea } from "./FileUploadArea";
 
 /**
@@ -20,6 +21,7 @@ export function AuthenticateForm() {
     year: "",
     category: "",
     estimatedValue: "",
+    additionalDetails: "",
   });
   const [termsAccepted, setTermsAccepted] = useState(false);
 
@@ -38,6 +40,7 @@ export function AuthenticateForm() {
         itemDescription: formData.itemName,
         category: formData.category || undefined,
         estimatedValue: formData.estimatedValue ? parseFloat(formData.estimatedValue) : undefined,
+        background: formData.additionalDetails || undefined,
       });
 
       await consignService.submitMock(String(draft.timestamp));
@@ -119,7 +122,21 @@ export function AuthenticateForm() {
       {/* Section 3: File Upload */}
       <FileUploadArea />
 
-      {/* Section 4: Terms & Submit */}
+      {/* Section 4: Additional details */}
+      <div className="space-y-6">
+        <h3 className="text-xl font-semibold border-l-4 border-primaryBlue pl-4">
+          4. Additional Details
+        </h3>
+        <textarea
+          placeholder="Anything else you'd like to share (optional)"
+          value={formData.additionalDetails}
+          onChange={(e) => setFormData({ ...formData, additionalDetails: e.target.value })}
+          rows={4}
+          className="w-full bg-bgDark border border-white/10 p-4 text-sm focus:border-highlightIce outline-none text-white placeholder:text-textSec resize-y min-h-[120px]"
+        />
+      </div>
+
+      {/* Section 5: Terms & Submit */}
       <div className="pt-6 flex flex-col gap-6">
         <label className="flex items-center gap-3 cursor-pointer group">
           <input
@@ -129,7 +146,9 @@ export function AuthenticateForm() {
             className="w-5 h-5 accent-primaryBlue"
           />
           <span className="text-[10px] font-bold uppercase text-textSec group-hover:text-white transition-colors">
-            I accept the Relique Terms of Service and Authentication Protocol.
+            I accept the Relique{" "}
+            <TermsPreviewLink />
+            {" "}and Authentication Protocol.
           </span>
         </label>
         <button

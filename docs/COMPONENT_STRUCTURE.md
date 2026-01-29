@@ -129,9 +129,8 @@ const x = useMotionValue(0); // Performance optimization
 
 **Styling Patterns:**
 ```tsx
-// Grayscale hover effect
-className="grayscale group-hover:grayscale-0 group-hover:scale-110 
-  transition-all duration-1000"
+// Image hover scale
+className="transition-all duration-1000 group-hover:scale-110"
 
 // Backdrop blur badge
 className="backdrop-blur-md bg-green-400/10 text-green-400"

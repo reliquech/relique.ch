@@ -5,6 +5,7 @@ import { MarketplaceSection } from "./components/MarketplaceSection";
 import { DualBlocks } from "./components/DualBlocks";
 import { TheWaySection } from "./components/TheWaySection";
 import { TestimonialsSection } from "./components/TestimonialsSection";
+import { PartnerCarousel } from "./components/PartnerCarousel";
 import { StrategicPartnerSection } from "./components/StrategicPartnerSection";
 import { TeamSection } from "./components/TeamSection";
 import { PressCoverageSection } from "./components/PressCoverageSection";
@@ -28,6 +29,7 @@ export default function HomePage() {
       <MarketplaceSection />
       <DualBlocks />
       <TheWaySection />
+      <PartnerCarousel />
       <StrategicPartnerSection />
       <TeamSection />
       <PressCoverageSection items={PRESS_ARTICLES} />

@@ -454,7 +454,7 @@ const item = {
   whileHover={{ y: -12, scale: 1.02 }}
   className="group"
 >
-  <img className="grayscale group-hover:grayscale-0 transition-all duration-1000" />
+  <img className="transition-all duration-1000" />
 </motion.div>
 ```
 
@@ -515,8 +515,6 @@ viewport={{ once: true, margin: "-50px" }}
 #### A. Marketplace Card
 
 **Đặc điểm:**
-- Grayscale image mặc định
-- Màu đầy đủ on hover
 - Status badge với backdrop-blur
 - Gradient overlay để text readable
 - Border `border-white/10`
@@ -527,10 +525,10 @@ viewport={{ once: true, margin: "-50px" }}
   className="bg-cardDark border border-borderDark/60 group"
 >
   <div className="relative h-[580px] overflow-hidden">
-    {/* Image with grayscale effect */}
+    {/* Image */}
     <Image
       src={image}
-      className="grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000"
+      className="group-hover:scale-110 transition-all duration-1000"
     />
     
     {/* Gradient overlay */}
@@ -735,15 +733,13 @@ function getStatusBadge(status: string) {
   alt={item.name}
   width={800}
   height={800}
-  className="w-full h-full object-cover grayscale transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-110"
+  className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110"
   loading="lazy"
   draggable={false}
 />
 ```
 
 **Key patterns:**
-- `grayscale` by default
-- `group-hover:grayscale-0` để reveal màu
 - `group-hover:scale-110` để zoom in on hover
 - `transition-all duration-1000` cho smooth transition
 - `loading="lazy"` cho performance
@@ -924,7 +920,7 @@ export function MarketplaceCard({ title, image, status, category }: CardProps) {
           alt={title}
           width={800}
           height={800}
-          className="w-full h-full object-cover grayscale transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-110"
+          className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110"
         />
         
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-bgDark/90" />

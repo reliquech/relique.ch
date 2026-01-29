@@ -71,8 +71,8 @@ export function PressArticleCard({
                   alt={title}
                   fill
                   className={cn(
-                    "object-cover grayscale transition-all duration-1000",
-                    "group-hover:grayscale-0 group-hover:scale-110"
+                    "object-cover transition-all duration-1000",
+                    "group-hover:scale-110"
                   )}
                   sizes="(max-width: 768px) 100vw, 50vw"
                   draggable={true}
@@ -99,7 +99,7 @@ export function PressArticleCard({
                         src={logoSrc}
                         alt={`${publisher} logo`}
                         fill
-                        className={cn("object-contain grayscale transition-all duration-700", "group-hover:grayscale-0")}
+                        className={cn("object-contain transition-all duration-700")}
                         sizes="24px"
                         draggable={false}
                       />

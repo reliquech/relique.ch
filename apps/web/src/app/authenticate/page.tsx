@@ -24,7 +24,7 @@ export default function AuthenticatePage() {
             Service Portal
           </span>
           <h1 className="text-4xl font-semibold tracking-tight mb-8">
-            Submit Item for <span className="text-highlightIce">Authentication</span>
+            Get your items <span className="text-highlightIce">Authenticated </span> by filling this form out.
           </h1>
           <p className="text-textSec text-lg mb-12">
             Submit your items to our expert panel for rigorous forensic analysis and digital twin certification.

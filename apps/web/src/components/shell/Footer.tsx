@@ -43,7 +43,7 @@ export function Footer() {
               </Link>
             </div>
             <p className="text-textSec max-w-sm mb-6 sm:mb-8 md:mb-10 text-sm sm:text-base md:text-lg leading-relaxed font-medium">
-              Establishing the forensic gold standard for sports memorabilia through AI-driven authentication and digital trust.
+              Relics you can rely on.
             </p>
             <div className="flex gap-3 sm:gap-4">
               {["Twitter", "Instagram", "LinkedIn"].map((s) => (

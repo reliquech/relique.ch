@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Work_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -118,7 +119,9 @@ export default function RootLayout({
       <body className={`${workSans.variable} ${zapfRenaissance.variable} font-work-sans antialiased`}>
         <CompareProvider>
           <div className="flex min-h-screen flex-col">
-            <Header />
+            <Suspense fallback={null}>
+              <Header />
+            </Suspense>
             <main className="flex-1">{children}</main>
             <Footer />
           </div>
