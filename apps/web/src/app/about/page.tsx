@@ -129,9 +129,6 @@ export default function AboutPage() {
               id="ai-powered"
               className="bg-cardDark p-12 border-2 border-primaryBlue relative overflow-hidden group"
             >
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <span className="text-8xl font-bold">AI</span>
-              </div>
               <h3 className="text-3xl font-semibold text-highlightIce mb-8 relative z-10">
                 Artificial Intelligence - A Natural Extension, Not a Pivot
               </h3>

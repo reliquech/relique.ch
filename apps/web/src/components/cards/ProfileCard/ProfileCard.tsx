@@ -14,9 +14,8 @@ import { ProfileDrawer } from "./ProfileDrawer";
 export function ProfileCard({ member, className }: ProfileCardProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // Fallbacks cho missing data
-  const displayTagline = member.tagline || member.description[0];
-  const displayWatermark = member.watermark || "R";
+  const displayTagline = member.tagline ?? "";
+  const displayWatermark = member.watermark ?? "R";
 
   const handleKeyDown = (e: React.KeyboardEvent, action: () => void) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -70,10 +69,11 @@ export function ProfileCard({ member, className }: ProfileCardProps) {
             )}
           </div>
 
-          {/* Description - clean, no clamp */}
-          <p className="text-textSec text-sm sm:text-base leading-relaxed mb-4">
-            {displayTagline}
-          </p>
+          {displayTagline && (
+            <p className="text-textSec text-sm sm:text-base leading-relaxed mb-4">
+              {displayTagline}
+            </p>
+          )}
 
           {/* Expertise Chips */}
           {false && member.expertiseChips && (member.expertiseChips?.length ?? 0) > 0 && (

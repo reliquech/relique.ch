@@ -19,25 +19,24 @@ const sectionVariants = {
     transition: {
       delay: i * 0.15,
       duration: 0.4,
-      ease: [0.16, 1, 0.3, 1] as const
-    }
-  })
+      ease: [0.16, 1, 0.3, 1] as const,
+    },
+  }),
 };
 
 /**
  * ProfileDrawer - Full bio drawer with 2-column layout
- * Left: Overview content | Right: Credentials
+ * Left: Overview + Technical Stack | Right: Credentials
  */
 export function ProfileDrawer({ member, open, onOpenChange }: ProfileDrawerProps) {
   const { fullBio } = member;
-  
-  // Nếu không có fullBio, fallback về description
-  const shouldUseFallback = !fullBio;
+  const hasContent = fullBio?.overview || (member.credentials?.length ?? 0) > 0 || (member.technicalStack?.length ?? 0) > 0;
+  const displayEmail = member.sub || fullBio?.links?.email;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent 
-        side="right" 
+      <SheetContent
+        side="right"
         className={cn(
           "w-full sm:max-w-[75%]",
           "bg-cardDark border-l border-white/10",
@@ -46,133 +45,123 @@ export function ProfileDrawer({ member, open, onOpenChange }: ProfileDrawerProps
           "[&>button]:fixed [&>button]:top-[5.5rem] sm:[&>button]:top-[6rem] [&>button]:right-[2rem]"
         )}
       >
-        {/* Header */}
         <SheetHeader className="space-y-4 pb-6 border-b border-white/10">
-          <motion.div
-            custom={0}
-            initial="hidden"
-            animate="visible"
-            variants={sectionVariants}
-          >
+          <motion.div custom={0} initial="hidden" animate="visible" variants={sectionVariants}>
             <SheetTitle className="text-3xl font-bold tracking-tight text-white">
               {member.name}
             </SheetTitle>
             <p className="text-primaryBlue font-black text-[10px] uppercase mt-2">
               {member.role}
             </p>
-            {member.tagline && (
-              <p className="text-white font-semibold text-base mt-3 leading-relaxed">
-                {member.tagline}
+            {displayEmail && (
+              <p className="font-medium text-sm text-white/60 leading-relaxed">
+                {displayEmail}
               </p>
             )}
           </motion.div>
         </SheetHeader>
 
-        {/* Content - 2 Column Layout */}
         <div className="mt-6">
-          {shouldUseFallback ? (
-            <FallbackContent member={member} />
-          ) : (
+          {hasContent ? (
             <TwoColumnContent member={member} />
+          ) : (
+            <NoContentFallback />
           )}
         </div>
-
-        {/* Footer CTAs */}
-        {false && fullBio?.links && (
-          <motion.div
-            custom={5}
-            initial="hidden"
-            animate="visible"
-            variants={sectionVariants}
-            className="mt-8 pt-6 border-t border-white/10 flex flex-wrap gap-4"
-          >
-            {fullBio?.links?.linkedin && (
-              <a
-                href={fullBio?.links?.linkedin ?? '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(
-                  "px-6 py-3",
-                  "bg-primaryBlue hover:bg-accentBlue",
-                  "text-white text-sm font-medium",
-                  "transition-colors duration-300",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primaryBlue"
-                )}
-              >
-                Connect on LinkedIn
-              </a>
-            )}
-          </motion.div>
-        )}
       </SheetContent>
     </Sheet>
   );
 }
 
-// Two Column Layout Content
 function TwoColumnContent({ member }: { member: ExtendedTeamMember }) {
-  const { fullBio, expanded } = member;
-  const experience = expanded?.experienceSnapshot;
+  const { fullBio, credentials, technicalStack } = member;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      {/* Left Column - Overview */}
       <div className="space-y-6">
         {fullBio?.overview && (
           <motion.div custom={2} initial="hidden" animate="visible" variants={sectionVariants}>
-            <h4 className="text-white font-bold text-sm uppercase tracking-wide mb-4">Overview</h4>
-            <p className="text-textSec text-base leading-7">{fullBio.overview}</p>
+            <h4 className="text-white font-bold text-sm uppercase tracking-wide mb-4">
+              Overview
+            </h4>
+            <div className="space-y-4">
+              {fullBio.overview.split(/\n\n+/).map((p, i) => (
+                <p key={i} className="text-textSec text-sm leading-6 pl-4">
+                  {p}
+                </p>
+              ))}
+            </div>
           </motion.div>
+        )}
+        {technicalStack && technicalStack.length > 0 && (
+          <TechnicalStackSection stack={technicalStack} />
         )}
       </div>
 
-      {/* Right Column - Experience Timeline */}
-      {experience && experience.length > 0 && (
-        <motion.div custom={4} initial="hidden" animate="visible" variants={sectionVariants}>
-          <div className="space-y-6">
-            <h4 className="text-white font-bold text-sm uppercase tracking-wide">Credential</h4>
-            
-            <div className="space-y-0">
-              {experience.map((item, index) => (
-                <div key={index} className="flex gap-4 relative">
-                  {/* Timeline line */}
-                  {index < experience.length - 1 && (
-                    <div className="absolute left-[11px] top-8 bottom-0 w-[2px] bg-primaryBlue/30" />
-                  )}
-                  
-                  {/* Timeline dot */}
-                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primaryBlue border-4 border-cardDark relative z-10" />
-                  
-                  {/* Content */}
-                  <div className="flex-1 pb-6">
-                    <p className="text-primaryBlue text-xs font-bold uppercase tracking-wide mb-1">
-                      {item.period}
-                    </p>
-                    <p className="text-white font-semibold text-base mb-1">{item.title}</p>
-                    <p className="text-white/60 text-sm">{item.org}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+      {credentials && credentials.length > 0 && (
+        <CredentialsSection credentials={credentials} />
       )}
     </div>
   );
 }
 
-// Fallback content for members without enriched data
-function FallbackContent({ member }: { member: ExtendedTeamMember }) {
+function CredentialsSection({ credentials }: { credentials: string[] }) {
   return (
-    <motion.div custom={2} initial="hidden" animate="visible" variants={sectionVariants}>
+    <motion.div custom={4} initial="hidden" animate="visible" variants={sectionVariants}>
+      <div className="space-y-6">
+        <h4 className="text-white font-bold text-sm uppercase tracking-wide">
+          Credentials
+        </h4>
+        <div className="space-y-0">
+          {credentials.map((line, index) => (
+            <div key={index} className="flex gap-4 relative">
+              {index < credentials.length - 1 && (
+                <div className="absolute left-[11px] top-1 bottom-0 w-[2px] bg-primaryBlue/30" />
+              )}
+              <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primaryBlue border-4 border-cardDark relative z-10" />
+              <div className="flex-1 pb-6">
+                <p className="text-white font-semibold text-base leading-relaxed">
+                  {line}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function TechnicalStackSection({
+  stack,
+}: {
+  stack: { heading: string; items: string[] }[];
+}) {
+  return (
+    <motion.div custom={3} initial="hidden" animate="visible" variants={sectionVariants}>
+      <h4 className="text-white font-bold text-sm uppercase tracking-wide mb-4">
+        Technical Stack
+      </h4>
       <div className="space-y-4">
-        <h4 className="text-white font-bold text-lg">About</h4>
-        {member.description.map((paragraph, index) => (
-          <p key={index} className="text-textSec text-base leading-7">
-            {paragraph}
-          </p>
+        {stack.map(({ heading, items }, i) => (
+          <div key={i}>
+            <p className="text-primaryBlue text-xs font-bold uppercase tracking-wide mb-2">
+              {heading}
+            </p>
+            <p className="text-textSec text-sm leading-6">
+              {items.join(" · ")}
+            </p>
+          </div>
         ))}
       </div>
+    </motion.div>
+  );
+}
+
+function NoContentFallback() {
+  return (
+    <motion.div custom={2} initial="hidden" animate="visible" variants={sectionVariants}>
+      <p className="text-textSec text-sm">No profile details available.</p>
     </motion.div>
   );
 }
