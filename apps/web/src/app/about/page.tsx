@@ -132,31 +132,57 @@ export default function AboutPage() {
               <h3 className="text-3xl font-semibold text-highlightIce mb-8 relative z-10">
                 Artificial Intelligence - A Natural Extension, Not a Pivot
               </h3>
-              <p className="mb-8">
-                As the saying goes, modern problems require modern solutions. In this day and age, conventional
-                certification methods have unfortunately become extremely vulnerable to forgery and digital manipulation.
-                Expert opinions, while respected, are subjective and hard to scale efficiently.
-              </p>
-              <div className="grid md:grid-cols-2 gap-12 mb-8">
-                <div>
-                  <h4 className="font-black text-primaryBlue text-xs tracking-widest uppercase mb-4">The Tech Analysis</h4>
+              <div className="space-y-6 text-textSec text-base leading-relaxed">
+                <p>
+                  In this day and age, conventional certification methods have unfortunately become extremely
+                  vulnerable to forgery and digital manipulation. Expert opinions, while respected, are subjective and
+                  hard to scale efficiently.
+                </p>
+                <p>
+                  Relique believes that a rigorous AI-powered authentication technology is the answer we&apos;re looking
+                  for, providing a reliable, scalable, and objective measure of authenticity.
+                </p>
+                <p>
+                  For match-worn or used items, our AI virtually &quot;replays&quot; the event, analyzing every minute
+                  detail from all footage available, including proprietary recordings and exclusive sources accessible
+                  only to Relique. It will then be able to spot:
+                </p>
+                <ul className="list-disc pl-6 space-y-2">
+                  <li>
+                    Fabric patterns and material stains to subtle environmental markers—at a level of attention and
+                    consistency that no human could achieve.
+                  </li>
+                  <li>Variations, abrasions, and usage signatures across the entire object</li>
+                </ul>
+                <p>
+                  Unlike humans, who are constrained by fatigue, limited focus, and the unavoidable subjectivity of
+                  perception, the AI maintains relentless precision, capturing and comparing data points across
+                  thousands of reference visual datasets to produce a complete and objective profile.
+                </p>
+                <p>
+                  Whereas when it comes to autographs, our Artificial Intelligence model has access to an extensive
+                  database of verified signature exemplars across the years and performs a multi-layered comparison. For
+                  autographs, this encompasses a thorough assessment of subtle variances in patterns, pressure dynamics,
+                  and signature morphology. It then further evaluates:
+                </p>
+                <div className="grid md:grid-cols-2 gap-8">
                   <ul className="space-y-2 text-sm font-bold uppercase tracking-tight">
                     <li>• Sequencing</li>
-                    <li>• Stroke Order</li>
-                    <li>• Velocity Fluctuations</li>
-                    <li>• Micro-tremor Signatures</li>
+                    <li>• Stroke order</li>
+                    <li>• Velocity fluctuations</li>
+                    <li>• Micro-tremor signatures</li>
                   </ul>
+                  <p className="text-sm">
+                    on a level of precision that far exceeds the standard naked-eye capability.
+                  </p>
                 </div>
-                <p className="text-sm">
-                  Developed and tailored by the team of expert engineers at St.B AI, our model performs a multi-layered
-                  comparison, assessing subtle variances in patterns, pressure dynamics, and morphology on a level of
-                  precision that far exceeds standard naked-eye capability.
+                <p>
+                  The result is a high-confidence, data-driven and probabilistic assessment, each linked to a unique
+                  product code and QR identifier to ensure traceability and integrity. The integration of Artificial
+                  Intelligence is not a pivot, but rather a natural extension, aimed to elevate Memorabilias into a new
+                  class of assets.
                 </p>
               </div>
-              <p className="text-white/40 text-sm italic">
-                The result is a high-confidence, data-driven and probabilistic assessment, each linked to a unique
-                product code and QR identifier to ensure traceability and integrity.
-              </p>
             </div>
           </div>
         </motion.section>

@@ -1,26 +1,28 @@
 /**
  * Partners Data
- * Institutional network / ecosystem backbone showcase.
+ * Hai nhóm: Who We Work With (carousel) và Our Trusted Suppliers (grid).
+ * Chỉnh logoBg, logoZoom, overflow (carousel) tại đây.
  */
 
 export interface Partner {
   id: string;
   name: string;
   logo: string;
-  type: string;
-  /** CSS color for circle background; match logo background to avoid visible square in circle. */
-  logoBg: string;
-  /** Zoom level for logo inside circle (default 1). e.g. 0.8 smaller, 1.2 larger. */
+  type?: string;
+  /** Màu nền hình tròn (CSS). Dùng khi logo transparent, vd: "#1a1a1a", "#fff". */
+  logoBg?: string;
+  /** Zoom logo trong tròn (1 = 100%). Chỉnh nếu logo bị cận/ nhỏ quá. */
   logoZoom?: number;
-  /** Circle overflow: visible allows zoomed logo to extend beyond circle. */
+  /** Carousel: overflow của ô tròn (visible cho logo vượt viền). */
   overflow?: "visible" | "hidden";
 }
 
-export const PARTNERS: Partner[] = [
+/** Who We Work With – dùng trong PartnerCarousel (marquee). */
+export const WHO_WE_WORK_WITH_PARTNERS: Partner[] = [
   {
     id: "x-memorabilia",
     name: "X-Memorabilia",
-    logo: "/partner/x-memorabilia-logo.png",
+    logo: "/partner/xmemorial.jpg",
     type: "Strategic Partner & Distributor",
     logoBg: "#0a0a0a",
     logoZoom: 1.1,
@@ -31,44 +33,89 @@ export const PARTNERS: Partner[] = [
     name: "Real Madrid Fanclub Vietnam",
     logo: "/partner/realmadrid-fanclubinvietnam.jpg",
     type: "Partner",
-    logoZoom: 1.7,
-    overflow: "hidden",
     logoBg: "#1a1a1a",
+    logoZoom: 1.6,
+    overflow: "hidden",
   },
   {
     id: "thechampsoriginals",
     name: "The Champs Originals",
     logo: "/partner/thechampsoriginals.jpg",
     type: "Memorabilia Partner",
+    logoBg: "#1a1a1a",
     logoZoom: 1.7,
     overflow: "hidden",
-    logoBg: "#1a1a1a",
   },
   {
     id: "stb",
     name: "St.B",
     logo: "/partner/stb-logo.svg",
     type: "Strategic Partner",
-    logoZoom: 1.5,
-    overflow: "hidden",
     logoBg: "#0a0a0a",
+    logoZoom: 1.3,
+    overflow: "hidden",
   },
   {
     id: "heroboxing",
     name: "Hero Boxing",
     logo: "/partner/heroboxing.jpg",
     type: "Partner",
+    logoBg: "#1a1a1a",
     logoZoom: 1.7,
     overflow: "hidden",
-    logoBg: "#1a1a1a",
   },
   {
     id: "trung-tam-day-boxing-ha-noi",
     name: "Trung Tâm Dạy Boxing Hà Nội",
     logo: "/partner/trung tâm dạy boxing hà nội.jpg",
     type: "Partner",
+    logoBg: "#1a1a1a",
     logoZoom: 1.7,
     overflow: "hidden",
+  },
+];
+
+/** Our Trusted Suppliers – dùng trong PartnerGridSection (grid). */
+export const TRUSTED_SUPPLIERS_PARTNERS: Partner[] = [
+  {
+    id: "beckett",
+    name: "Beckett",
+    logo: "/partner/beckett-authetication-logo.png",
+    type: "Partner",
+    logoBg: "#fff",
+    logoZoom: 1.1,
+  },
+  {
+    id: "jsa",
+    name: "JSA",
+    logo: "/partner/JSA_logo.png",
+    type: "Partner",
+    logoBg: "#fff",
+    logoZoom: 1,
+  },
+  {
+    id: "psa",
+    name: "PSA",
+    logo: "/partner/psa card logo.jpg",
+    type: "Partner",
     logoBg: "#1a1a1a",
+    logoZoom: 1.4,
+  },
+  {
+    id: "upper-deck",
+    name: "Upper Deck",
+    logo: "/partner/Upper_Deck_Logo.png",
+    type: "Partner",
+    logoBg: "#1a1a1a",
+    logoZoom: 1.1,
+  },
+  {
+    id: "X Memorabilia",
+    name: "X Memorabilia",
+    logo: "/partner/xmemorial.jpg",
+    type: "Partner",
+    logoBg: "#0a0a0a",
+    logoZoom: 1.6,
+    overflow: "hidden",
   },
 ];

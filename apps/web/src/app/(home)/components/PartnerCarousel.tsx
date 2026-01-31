@@ -3,18 +3,22 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { PARTNERS, type Partner } from "@/data/partners.data";
+import { WHO_WE_WORK_WITH_PARTNERS, type Partner } from "@/data/partners.data";
 
 const MIN_W_PX = 160;
 const GAP_PX = 48;
-const MARQUEE_LOOP_PX = PARTNERS.length * (MIN_W_PX + GAP_PX) - GAP_PX;
+const MARQUEE_LOOP_PX =
+  WHO_WE_WORK_WITH_PARTNERS.length * (MIN_W_PX + GAP_PX) - GAP_PX;
 
 export function PartnerCarousel() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const displayPartners = [...PARTNERS, ...PARTNERS];
+  const displayPartners = [
+    ...WHO_WE_WORK_WITH_PARTNERS,
+    ...WHO_WE_WORK_WITH_PARTNERS,
+  ];
 
   return (
-    <section className="py-24 bg-bgDark border-y border-white/5 relative overflow-hidden select-none">
+    <div className="py-24 relative overflow-hidden select-none">
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primaryBlue to-transparent" />
         <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primaryBlue to-transparent" />
@@ -30,7 +34,7 @@ export function PartnerCarousel() {
             Institutional Network
           </span>
           <h2 className="text-4xl md:text-5xl font-black uppercase italic tracking-tighter">
-            Ecosystem <span className="text-primaryBlue">Backbone</span>
+            Who We <span className="text-primaryBlue">Work With</span>
           </h2>
         </motion.div>
       </div>
@@ -61,13 +65,7 @@ export function PartnerCarousel() {
           ))}
         </motion.div>
       </div>
-
-      <div className="mt-12 text-center">
-        <p className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20">
-          Forensic Node Verification: Active // Secured via St.B Protocol
-        </p>
-      </div>
-    </section>
+    </div>
   );
 }
 
@@ -100,23 +98,25 @@ function PartnerNode({
     >
       <div className="relative group/circle">
         <div
-          className={`w-24 h-24 lg:w-32 lg:h-32 rounded-full border-2 border-white/5 flex items-center justify-center p-6 transition-all duration-500 group-hover/circle:border-primaryBlue/50 shadow-[0_0_0_rgba(28,77,141,0)] group-hover/circle:shadow-[0_0_30px_rgba(28,77,141,0.2)] ${partner.overflow === "visible" ? "overflow-visible" : "overflow-hidden"}`}
+          className={`relative w-24 h-24 lg:w-32 lg:h-32 rounded-full border-2 border-white/5 p-6 transition-all duration-500 group-hover/circle:border-primaryBlue/50 shadow-[0_0_0_rgba(28,77,141,0)] group-hover/circle:shadow-[0_0_30px_rgba(28,77,141,0.2)] ${partner.overflow === "visible" ? "overflow-visible" : "overflow-hidden"}`}
           style={{ backgroundColor: partner.logoBg }}
         >
-          <div
-            className="relative w-full h-full min-w-0"
-            style={{
-              transform: `scale(${partner.logoZoom ?? 1})`,
-              transformOrigin: "center",
-            }}
-          >
-            <Image
-              src={partner.logo}
-              alt={partner.name}
-              fill
-              className="object-contain brightness-125 transition-all duration-700"
-              sizes="(max-width: 1024px) 96px, 128px"
-            />
+          <div className="absolute inset-0 p-6">
+            <div
+              className="relative w-full h-full"
+              style={{
+                transform: `scale(${partner.logoZoom ?? 1})`,
+                transformOrigin: "center",
+              }}
+            >
+              <Image
+                src={partner.logo}
+                alt={partner.name}
+                fill
+                className="object-contain brightness-125 transition-all duration-700"
+                sizes="(max-width: 1024px) 96px, 128px"
+              />
+            </div>
           </div>
         </div>
         <AnimatePresence>
