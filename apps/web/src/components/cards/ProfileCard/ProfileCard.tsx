@@ -45,12 +45,6 @@ export function ProfileCard({ member, className }: ProfileCardProps) {
           className
         )}
       >
-        {/* Watermark */}
-        <div className="absolute top-0 right-0 p-3 sm:p-4 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
-          <span className="text-4xl sm:text-5xl md:text-6xl font-black italic">
-            {displayWatermark}
-          </span>
-        </div>
 
         {/* Content */}
         <div className="relative z-10">

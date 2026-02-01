@@ -15,11 +15,11 @@ export function PartnersSection() {
   return (
     <section className="py-16 sm:py-20 md:py-24 bg-bgDark border-y border-white/5">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="mb-10 sm:mb-12">
+        <div className="mb-10 sm:mb-12 text-right">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white uppercase mb-3">
             Who We Work With
           </h2>
-          <div className="h-[2px] w-12 sm:w-16 bg-primaryBlue" aria-hidden />
+          <div className="h-[2px] w-12 sm:w-16 bg-primaryBlue ml-auto" aria-hidden />
         </div>
         <div className="mb-12 sm:mb-14">
           <div className={GRID_CLASS}>

@@ -165,17 +165,12 @@ export default function AboutPage() {
                   autographs, this encompasses a thorough assessment of subtle variances in patterns, pressure dynamics,
                   and signature morphology. It then further evaluates:
                 </p>
-                <div className="grid md:grid-cols-2 gap-8">
-                  <ul className="space-y-2 text-sm font-bold uppercase tracking-tight">
-                    <li>• Sequencing</li>
-                    <li>• Stroke order</li>
-                    <li>• Velocity fluctuations</li>
-                    <li>• Micro-tremor signatures</li>
-                  </ul>
-                  <p className="text-sm">
-                    on a level of precision that far exceeds the standard naked-eye capability.
-                  </p>
-                </div>
+                <ul className="list-disc pl-6 space-y-2">
+                  <li>Sequencing</li>
+                  <li>Stroke order</li>
+                  <li>Velocity fluctuations</li>
+                  <li>Micro-tremor signatures on a level of precision that far exceeds the standard naked-eye capability.</li>
+                </ul>
                 <p>
                   The result is a high-confidence, data-driven and probabilistic assessment, each linked to a unique
                   product code and QR identifier to ensure traceability and integrity. The integration of Artificial

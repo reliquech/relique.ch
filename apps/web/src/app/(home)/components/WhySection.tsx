@@ -48,10 +48,10 @@ export function WhySection() {
           >
             <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md aspect-square bg-cardDark border border-white/10 p-8 sm:p-10 md:p-12 flex items-center justify-center group">
               <div className="absolute inset-0 bg-primaryBlue/5 group-hover:bg-primaryBlue/10 transition-all" />
-              <ReliqueMark 
-                size={300}
-                animated
-                className="w-3/4 h-3/4"
+              <img 
+                src="/mock-images/thewhyimage.png"
+                alt="Lý do chọn Relique"
+                className="object-cover w-full h-full absolute inset-0 z-10 transition-all"
               />
               <div className="absolute -bottom-4 -right-4 sm:-bottom-6 sm:-right-6 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 border-b-2 border-r-2 border-highlightIce pointer-events-none" />
             </div>

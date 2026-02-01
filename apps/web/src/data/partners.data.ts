@@ -25,7 +25,7 @@ export const WHO_WE_WORK_WITH_PARTNERS: Partner[] = [
     logo: "/partner/xmemorial.jpg",
     type: "Strategic Partner & Distributor",
     logoBg: "#0a0a0a",
-    logoZoom: 1.1,
+    logoZoom: 1.3,
     overflow: "visible",
   },
   {
@@ -43,7 +43,7 @@ export const WHO_WE_WORK_WITH_PARTNERS: Partner[] = [
     logo: "/partner/thechampsoriginals.jpg",
     type: "Memorabilia Partner",
     logoBg: "#1a1a1a",
-    logoZoom: 1.7,
+    logoZoom: 1.4,
     overflow: "hidden",
   },
   {
@@ -61,7 +61,7 @@ export const WHO_WE_WORK_WITH_PARTNERS: Partner[] = [
     logo: "/partner/heroboxing.jpg",
     type: "Partner",
     logoBg: "#1a1a1a",
-    logoZoom: 1.7,
+    logoZoom: 1.4,
     overflow: "hidden",
   },
   {
@@ -71,6 +71,15 @@ export const WHO_WE_WORK_WITH_PARTNERS: Partner[] = [
     type: "Partner",
     logoBg: "#1a1a1a",
     logoZoom: 1.7,
+    overflow: "hidden",
+  },
+  {
+    id: "qpstudio",
+    name: "QPSTUDIO",
+    logo: "/partner/qpstudio.png",
+    type: "Partner",
+    logoBg: "#0a0a0a",
+    logoZoom: 1.2,
     overflow: "hidden",
   },
 ];
