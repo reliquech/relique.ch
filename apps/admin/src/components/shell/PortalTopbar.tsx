@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -13,10 +13,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { storage } from "@/lib/storage";
-import type { MockSession } from "@/lib/storage";
 import { User, Settings, Search } from "lucide-react";
-import { NotificationCenter } from "@/components/notifications/NotificationCenter";
+import { NotificationCenter } from "@/features/notifications/components/NotificationCenter";
+import { useProfile } from "@/features/users/hooks/useProfile";
 
 function getInitials(name: string): string {
   return name
@@ -36,26 +35,16 @@ const pageTitles: Record<string, { title: string; subtitle?: string }> = {
 
 export function PortalTopbar() {
   const pathname = usePathname();
-  const [session, setSession] = useState<MockSession | null>(null);
-  const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-
-  useEffect(() => {
-    setMounted(true);
-    setSession(storage.sessionMock.get());
-    
-    // Listen for storage changes (multi-tab sync)
-    const handleStorageChange = () => {
-      setSession(storage.sessionMock.get());
-    };
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
+  const { profile, userEmail, loading } = useProfile();
 
   const pageInfo = pageTitles[pathname] || { title: "Admin", subtitle: "" };
-  const displayName = session?.displayName || "Collector";
+  const displayName =
+    profile?.display_name ||
+    (userEmail ? userEmail.split("@")[0] : null) ||
+    "Collector";
 
-  if (!mounted) {
+  if (loading) {
     return (
       <div className="border-b bg-background p-4">
         <div className="flex items-center justify-between">
@@ -123,4 +112,3 @@ export function PortalTopbar() {
     </div>
   );
 }
-

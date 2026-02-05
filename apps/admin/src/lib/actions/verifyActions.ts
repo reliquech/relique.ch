@@ -1,6 +1,6 @@
 import type { Action } from "./types";
 import { Search, CheckCircle2 } from "lucide-react";
-import { verifyService } from "@/lib/services/verifyService";
+import { verifyService } from "@/lib/legacy/verifyService";
 import { createDeepLink } from "@relique/shared";
 
 export async function verifyActions(): Promise<Action[]> {

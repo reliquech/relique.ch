@@ -8,6 +8,42 @@ import { Status } from "@/data/marketplace.data";
 import { formatPrice, getStatusLabel } from "@/lib/utils/marketplace";
 import type { CardItemData } from "@/lib/utils/marketplace";
 
+/** Ảnh từ URL (Supabase): dùng <img> để tránh Next/Image chặn domain, luôn hiển thị được */
+function CardImage({
+  src,
+  alt,
+  fill,
+  className,
+}: {
+  src: string;
+  alt: string;
+  fill?: boolean;
+  className?: string;
+}) {
+  const isRemote = src.startsWith("http");
+  if (isRemote) {
+    return (
+      <img
+        src={src}
+        alt={alt}
+        className={fill ? "absolute inset-0 w-full h-full object-cover" : className ?? "w-full h-full object-cover"}
+        draggable={false}
+      />
+    );
+  }
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      width={fill ? undefined : 800}
+      height={fill ? undefined : 800}
+      fill={fill}
+      className={className}
+      draggable={false}
+    />
+  );
+}
+
 interface MarketplaceCardProps {
   item: CardItemData;
   index: number;
@@ -66,15 +102,18 @@ export function MarketplaceCard({
     >
       {/* Image Container */}
       <div className={imageContainerClasses}>
-        <Image
-          src={item.image}
-          alt={item.name || item.title || "Item"}
-          width={isCarousel ? 800 : undefined}
-          height={isCarousel ? 800 : undefined}
-          fill={isGrid}
-          className={imageClasses}
-          draggable={false}
-        />
+        {item.image ? (
+          <CardImage
+            src={item.image}
+            alt={item.name || item.title || "Item"}
+            fill={isGrid}
+            className={imageClasses}
+          />
+        ) : (
+          <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground text-sm">
+            No image
+          </div>
+        )}
 
         {/* Carousel-specific gradient overlay */}
         {isCarousel && (

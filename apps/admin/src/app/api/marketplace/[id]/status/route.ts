@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/supabase/requireUser";
 import { z } from "zod";
 
 const StatusUpdateSchema = z.object({
@@ -12,6 +13,8 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { user, response } = await requireUser();
+    if (!user) return response;
     const { id } = await params;
     const supabase = createServiceRoleClient();
     const body = await request.json();
@@ -61,4 +64,3 @@ export async function PATCH(
     );
   }
 }
-

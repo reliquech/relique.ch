@@ -43,7 +43,7 @@ pnpm dev:admin
 
 ### Environment Variables
 
-Tạo file `.env.local` trong thư mục `apps/admin/` với các biến sau:
+Copy từ `.env.example` trong thư mục `apps/admin/` sang `.env.local`, rồi điền giá trị. Các biến bắt buộc:
 
 ```env
 # Supabase Configuration
@@ -52,11 +52,59 @@ Tạo file `.env.local` trong thư mục `apps/admin/` với các biến sau:
 NEXT_PUBLIC_SUPABASE_URL=your-project-url-here
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
+
+# Email (Resend)
+RESEND_API_KEY=your-resend-api-key
+RESEND_FROM_EMAIL=support@relique.co
 ```
 
 **Lưu ý quan trọng:**
 - `NEXT_PUBLIC_SUPABASE_URL` và `NEXT_PUBLIC_SUPABASE_ANON_KEY` là public và có thể expose trong client-side code
 - `SUPABASE_SERVICE_ROLE_KEY` là secret key - **KHÔNG BAO GIỜ** expose trong client-side code, chỉ dùng trong API routes và server actions
+
+### Deploy Checklist (Production)
+
+1. **Environment**
+   - Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+   - Set `RESEND_API_KEY`, `RESEND_FROM_EMAIL`
+2. **Migrations**
+   - Run all SQL migrations in `apps/admin/supabase/migrations/`
+3. **Storage Buckets**
+   - Ensure buckets exist:
+     - `marketplace-images`
+     - `crm-attachments`
+   - Apply storage policies from migrations
+4. **Health Check**
+   - Call `GET /api/health` and expect `{ ok: true, db: "ok" }`
+5. **Build & Start**
+   - `pnpm build`
+   - `pnpm start` (port 3600)
+
+### QA Checklist (Manual)
+
+- Login/logout flow
+- API auth guard returns 401 when not logged in
+- Dashboard loads CRM summary + chart (range 7/30/90)
+- Dashboard shows funnel + lead source + deal aging
+- Export CSV report from dashboard
+- Notifications list loads + mark read/mark all read
+- Notification preferences toggle (in-app/email + types)
+- Alert rules runner creates notifications/tasks from CRM data
+- Tasks list loads + mark done + create (admin/editor)
+- Automations list loads + toggle/CRUD (admin/editor)
+- Profile updates display name + phone via Supabase
+- Users management (invite + update role)
+- RBAC: Viewer read-only, Editor CRUD, Admin pipeline + users
+- Email send from Customer/Lead + email log created
+- Customers CRUD + attachments
+- Custom fields CRUD + show in CRM forms
+- Leads CRUD + convert dialog
+- Deals CRUD + kanban + detail + attachments
+- Pipeline stages CRUD + reorder
+- Messages list + view + status update + attachments
+- Submissions load
+- Logs load
+- `GET /api/health` returns `{ ok: true, db: "ok" }`
 
 ### Access
 
@@ -90,13 +138,15 @@ OTP: 123456
 ### 2. Dashboard Overview
 
 **Platform Metrics:**
-- Statistics grid với key metrics (Authenticates, Consigns, Messages, Items)
-- Platform activity chart (Area chart với recharts)
+- CRM statistics grid (Leads, Customers, Messages, Deals)
+- Activity chart theo thời gian (range 7/30/90)
+- Export CSV report
 - Recent audit logs sidebar
 
 **Components:**
 - `src/components/dashboard/StatsGrid.tsx` - Statistics cards
 - `src/app/admin/page.tsx` - Main dashboard với charts
+ - `src/lib/services/api/dashboardService.ts` - Dashboard API client
 
 ### 3. Marketplace Management
 
@@ -398,6 +448,125 @@ interface AuditLog {
 
 ---
 
+## CRM API Endpoints
+
+Tất cả CRM API dùng JSON, base URL là `/api` (relative to app origin). Mỗi thao tác create/update/delete ghi vào `public.audit_logs`.
+
+### Base paths
+
+| Resource | Base path |
+|----------|-----------|
+| Customers | `/api/customers` |
+| Leads | `/api/leads` |
+| Deals | `/api/deals` |
+| Pipeline stages | `/api/pipeline-stages` |
+| Messages | `/api/messages` |
+| Attachments | `/api/attachments` |
+| Dashboard | `/api/dashboard` |
+| Notifications | `/api/notifications` |
+| Alert rules | `/api/alert-rules` |
+| Tasks | `/api/tasks` |
+| Users | `/api/users` |
+| CRM Views | `/api/crm-views` |
+| CRM Filters | `/api/crm-filters` |
+| CRM Searches | `/api/crm-searches` |
+| Email send | `/api/email/send` |
+| Custom fields | `/api/custom-fields` |
+| Custom field values | `/api/custom-field-values` |
+| Notification preferences | `/api/notification-preferences` |
+| Activity (timeline) | `/api/activity` |
+| Activity note | `/api/activity/note` |
+| Error log (observability) | `/api/error-log` |
+
+### List (GET)
+
+- **Customers**: `?page=1&pageSize=50&status=active|inactive&owner_id=uuid&q=search`
+- **Leads**: `?page=1&pageSize=50&status=new|contacted|qualified|unqualified&owner_id=uuid&q=search`
+- **Deals**: `?page=1&pageSize=50&status=open|won|lost&pipeline_stage_id=uuid&customer_id=uuid&lead_id=uuid&owner_id=uuid&q=search`
+- **Pipeline stages**: `?sort=position|name` — trả `{ items: [...] }` (không phân trang)
+- **Messages**: `?page=1&pageSize=50&status=new|open|pending|closed&q=search`
+- **Attachments**: `?entity_type=...&entity_id=...` — trả `{ items: [...] }`
+- **Notifications**: `?page=1&pageSize=50&unread=true|false`
+- **Tasks**: `?page=1&pageSize=50&status=open|done&due=overdue|today|upcoming`
+
+### Reporting & Alerts
+
+- **Dashboard**: `GET /api/dashboard?range=7|30|90` hoặc `?from=YYYY-MM-DD&to=YYYY-MM-DD`
+  - Response: `{ summary, series, funnel, lead_sources, deal_aging, range }`
+- **Alert rules**:
+  - `GET /api/alert-rules`
+  - `POST /api/alert-rules`
+  - `PATCH /api/alert-rules/{id}`
+  - `DELETE /api/alert-rules/{id}`
+  - `POST /api/alert-rules/run` body `{ dry_run?: boolean }` (run CRM rules; dry_run = preview only)
+  - `GET /api/alert-rules/preview?rule_id=...&entities=1` (match count or entity ids)
+- **Dashboard**: `?compare=previous` returns previous-period deltas; saved reports: `GET/POST /api/dashboard/reports`, `GET/PATCH/DELETE /api/dashboard/reports/{id}`
+- **Activity**: `GET /api/activity?entity_type=lead|deal|customer|message&entity_id=uuid` — unified timeline (audit, tasks, attachments, messages). `POST /api/activity/note` body `{ entity_type, entity_id, body }` (admin/editor).
+- **Bulk update**: `POST /api/leads/bulk-update`, `POST /api/deals/bulk-update`, `POST /api/customers/bulk-update` body `{ ids: uuid[], patch: { ... } }`.
+- **Attachments**: `POST /api/attachments/upload-url` body `{ entity_type, entity_id, file_name, content_type }` → `{ upload_url, attachment_id }`; `PATCH /api/attachments/{id}` body `{ title?, note? }`.
+- **Custom fields**: `GET /api/custom-fields/export?entity=...&format=json|csv`, `POST /api/custom-fields/import` body `{ merge|overwrite, ... }`.
+- **CRM Views**: PATCH supports `is_default`, `shared`. GET returns own views + shared views from others.
+- **Observability**: `POST /api/error-log` body `{ source: "client", path?, method?, status_code?, message?, details? }`. Server 5xx can be logged to `error_logs` table.
+
+**Response (paginated)**: `{ items: T[], total: number, page: number, pageSize: number, totalPages: number }`
+
+### Single (GET /:id)
+
+- `GET /api/{resource}/{id}` — trả một bản ghi hoặc 404.
+
+### Create (POST)
+
+- `POST /api/{resource}` — body JSON (fields theo từng entity). Trả **201** và object vừa tạo.
+
+**Ví dụ POST customer**: `{ "full_name": "John", "email": "john@example.com", "status": "active" }`
+
+### Update (PATCH /:id)
+
+- `PATCH /api/{resource}/{id}` — body JSON partial. Trả object đã cập nhật.
+
+### Delete (DELETE /:id)
+
+- `DELETE /api/{resource}/{id}` — không body. Trả `{ success: true }`.
+
+### Ví dụ request/response
+
+```http
+GET /api/customers?page=1&pageSize=10
+```
+
+```json
+{
+  "items": [{ "id": "...", "full_name": "Jane", "email": "jane@example.com", "status": "active", "created_at": "...", "updated_at": "..." }],
+  "total": 1,
+  "page": 1,
+  "pageSize": 10,
+  "totalPages": 1
+}
+```
+
+```http
+POST /api/customers
+Content-Type: application/json
+{ "full_name": "Jane Doe", "email": "jane@example.com" }
+```
+
+```json
+201
+{ "id": "uuid", "full_name": "Jane Doe", "email": "jane@example.com", "status": "active", "created_at": "...", "updated_at": "..." }
+```
+
+### Migrations (CRM backlog)
+
+- **023**: `attachments` — add `title`, `note`.
+- **024**: `crm_custom_fields` — add `group`, `visibility_rules`.
+- **025**: `dashboard_reports` table; RPCs `crm_stage_velocity`, `crm_funnel_by_source`.
+- **026**: `alert_rules` — add `priority`, `active_hours`, `actions`.
+- **027**: `deals`, `customers` — add `owner_id` (references profiles).
+- **028**: `crm_saved_views` — add `is_default`, `shared`.
+- **029**: `error_logs` — table for client/server error logging.
+
+---
+
 ## 🚧 Future Enhancements
 
 ### Planned Features
@@ -405,7 +574,6 @@ interface AuditLog {
 - [ ] API integration thay vì mock data
 - [ ] Real-time updates với WebSocket
 - [ ] Advanced filtering và sorting
-- [ ] Export functionality (CSV, Excel)
 - [ ] Bulk operations
 - [ ] User management
 - [ ] Permission system

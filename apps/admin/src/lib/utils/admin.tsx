@@ -71,6 +71,16 @@ export const routeToTabMap: Record<string, string> = {
   '/admin/logs': 'logs',
   '/admin/settings': 'settings',
   '/admin/profile': 'settings',
+  '/admin/customers': 'customers',
+  '/admin/leads': 'leads',
+  '/admin/deals': 'deals',
+  '/admin/messages': 'messages',
+  '/admin/tasks': 'tasks',
+  '/admin/automations': 'automations',
+  '/admin/pipeline-stages': 'pipeline-stages',
+  '/admin/custom-fields': 'custom-fields',
+  '/admin/users': 'users',
+  '/admin/submissions': 'subs-auth',
 };
 
 /**
@@ -83,6 +93,17 @@ export const tabToRouteMap: Record<string, string> = {
   'verify': '/admin/verify',
   'logs': '/admin/logs',
   'settings': '/admin/settings',
+  'customers': '/admin/customers',
+  'leads': '/admin/leads',
+  'deals': '/admin/deals',
+  'messages': '/admin/messages',
+  'tasks': '/admin/tasks',
+  'automations': '/admin/automations',
+  'pipeline-stages': '/admin/pipeline-stages',
+  'custom-fields': '/admin/custom-fields',
+  'users': '/admin/users',
+  'subs-auth': '/admin/submissions?tab=verifications',
+  'subs-consign': '/admin/submissions?tab=consignments',
 };
 
 /**
@@ -96,7 +117,14 @@ export const tabNames: Record<string, string> = {
   'subs-auth': 'Authenticate Submissions',
   'subs-consign': 'Consign Submissions',
   'messages': 'Contact Inquiries',
+  'customers': 'Customers',
+  'leads': 'Leads',
+  'deals': 'Deals',
+  'tasks': 'Tasks',
+  'automations': 'Automations',
+  'pipeline-stages': 'Pipeline Stages',
+  'custom-fields': 'Custom Fields',
+  'users': 'User Management',
   'logs': 'Security Audit Trail',
   'settings': 'System Configurations'
 };
-

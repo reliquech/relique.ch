@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { MarketplaceForm } from "@/components/marketplace/MarketplaceForm";
+import { MarketplaceForm } from "@/features/marketplace/components/MarketplaceForm";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { MarketplaceFormData } from "@/components/marketplace/MarketplaceForm";
+import type { MarketplaceFormData } from "@/features/marketplace/components/MarketplaceForm";
 
 export default function NewMarketplacePage() {
   const router = useRouter();
@@ -17,13 +17,19 @@ export default function NewMarketplacePage() {
     setMounted(true);
   }, []);
 
+  const goToItems = () => router.push("/admin/items");
+
   const handleSubmit = async (data: MarketplaceFormData) => {
     setIsSubmitting(true);
     try {
       // Prepare data for API - matching the API route schema
       // Convert undefined to null for optional fields
       const apiData = {
-        slug: data.title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, ""),
+        slug: data.title
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/g, ""),
         title: data.title,
         description: data.description,
         full_description: data.full_description ?? null,
@@ -61,7 +67,7 @@ export default function NewMarketplacePage() {
       }
 
       toast.success("Marketplace item created successfully!");
-      router.push("/admin/items");
+      goToItems();
     } catch (error) {
       console.error("Failed to create marketplace item:", error);
       toast.error(
@@ -77,9 +83,9 @@ export default function NewMarketplacePage() {
 
   if (!mounted) {
     return (
-      <div className="flex items-center justify-center py-20 text-gray-400">
+      <div className="flex items-center justify-center py-20 text-[color:var(--relique-text-secondary)]">
         <div className="text-center">
-          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-8 h-8 border-4 border-[color:var(--relique-primary-blue)] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p>Loading...</p>
         </div>
       </div>
@@ -87,22 +93,55 @@ export default function NewMarketplacePage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => router.push("/admin/items")}
-          className="text-gray-400 hover:text-white"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white">Create New Marketplace Item</h1>
-          <p className="text-gray-400 mt-1">Fill in the details below to add a new item to the marketplace.</p>
+    <div className="max-w-6xl mx-auto space-y-8">
+      <section className="relative diagonal-bg clip-path-slant-lg border border-border bg-surface/40 backdrop-blur-md p-8 overflow-hidden">
+        <div className="relative z-10 flex items-start justify-between gap-8">
+          <div className="flex items-start gap-5">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={goToItems}
+              aria-label="Back to items"
+              className="clip-path-slant border-border/70 bg-bg-0/40 text-white hover:bg-[color:var(--relique-highlight-ice)] hover:text-[color:var(--relique-navy)] transition-base"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+
+            <div className="min-w-0">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex gap-1">
+                  <span className="w-1 h-4 bg-[color:var(--relique-primary-blue)]" />
+                  <span className="w-1 h-4 bg-[color:var(--relique-accent-blue)]" />
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[color:var(--relique-primary-blue)]">
+                  Marketplace
+                </span>
+              </div>
+
+              <h1 className="text-h1 text-white">
+                Create <span className="text-[color:var(--relique-primary-blue)]">New</span> Item
+              </h1>
+              <p className="mt-2 text-body max-w-2xl text-[color:var(--relique-text-secondary)]">
+                Fill in the listing details, upload images, and set the publishing status. Required fields are
+                marked with an asterisk.
+              </p>
+            </div>
+          </div>
+
+          <div className="hidden lg:flex items-center gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={goToItems}
+              className="clip-path-slant border-border/70 bg-bg-0/30 text-xs font-black uppercase tracking-[0.2em] text-white hover:bg-[color:var(--relique-highlight-ice)] hover:text-[color:var(--relique-navy)] transition-base"
+            >
+              View Items
+            </Button>
+          </div>
         </div>
-      </div>
-      <MarketplaceForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
+      </section>
+
+      <MarketplaceForm onSubmit={handleSubmit} onCancel={goToItems} isSubmitting={isSubmitting} />
     </div>
   );
 }

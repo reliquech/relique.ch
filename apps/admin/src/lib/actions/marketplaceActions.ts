@@ -1,6 +1,6 @@
 import type { Action } from "./types";
 import { Heart, ShoppingBag } from "lucide-react";
-import { marketplaceService } from "@/lib/services/marketplaceService";
+import { marketplaceService } from "@/lib/legacy/marketplaceService";
 import { createDeepLink } from "@relique/shared";
 
 export async function marketplaceActions(): Promise<Action[]> {

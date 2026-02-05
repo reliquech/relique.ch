@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/supabase/requireUser";
 import type { Database } from "@/lib/supabase/types";
 
 type ConsignedItem = Database["public"]["Tables"]["consigned_items"]["Row"];
@@ -11,6 +12,8 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { user, response } = await requireUser();
+    if (!user) return response;
     const { id } = await params;
     const supabase = createServiceRoleClient();
 
@@ -103,4 +106,3 @@ export async function POST(
     );
   }
 }
-

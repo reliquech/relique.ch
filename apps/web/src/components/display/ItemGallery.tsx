@@ -13,6 +13,37 @@ interface ItemGalleryProps {
   className?: string;
 }
 
+/** Ảnh từ URL (Supabase): dùng <img> để luôn hiển thị, tránh Next/Image chặn domain */
+function GalleryImage({
+  src,
+  alt,
+  fillClassName,
+}: {
+  src: string;
+  alt: string;
+  fillClassName: string;
+}) {
+  if (src.startsWith("http")) {
+    return (
+      <img
+        src={src}
+        alt={alt}
+        className={fillClassName}
+        draggable={false}
+      />
+    );
+  }
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      className={fillClassName}
+      draggable={false}
+    />
+  );
+}
+
 export function ItemGallery({ images, alt, className }: ItemGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -27,6 +58,8 @@ export function ItemGallery({ images, alt, className }: ItemGalleryProps) {
 
   if (images.length === 0) return null;
 
+  const currentSrc = images[selectedIndex];
+
   return (
     <>
       <div className={cn("space-y-4", className)}>
@@ -34,12 +67,11 @@ export function ItemGallery({ images, alt, className }: ItemGalleryProps) {
           className="relative w-full h-96 border bg-muted cursor-zoom-in group"
           onClick={() => setLightboxOpen(true)}
         >
-          {images[selectedIndex] && (
-            <Image
-              src={images[selectedIndex]}
+          {currentSrc && (
+            <GalleryImage
+              src={currentSrc}
               alt={`${alt} - Image ${selectedIndex + 1}`}
-              fill
-              className="object-cover"
+              fillClassName="absolute inset-0 w-full h-full object-cover"
             />
           )}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
@@ -59,11 +91,10 @@ export function ItemGallery({ images, alt, className }: ItemGalleryProps) {
                     : "opacity-60 hover:opacity-80"
                 )}
               >
-                <Image
+                <GalleryImage
                   src={image}
                   alt={`${alt} thumbnail ${index + 1}`}
-                  fill
-                  className="object-cover"
+                  fillClassName="absolute inset-0 w-full h-full object-cover"
                 />
               </button>
             ))}
@@ -112,12 +143,11 @@ export function ItemGallery({ images, alt, className }: ItemGalleryProps) {
             )}
 
             <div className="relative w-full h-full">
-              {images[selectedIndex] && (
-                <Image
-                  src={images[selectedIndex]}
+              {currentSrc && (
+                <GalleryImage
+                  src={currentSrc}
                   alt={`${alt} - Image ${selectedIndex + 1}`}
-                  fill
-                  className="object-contain"
+                  fillClassName="absolute inset-0 w-full h-full object-contain"
                 />
               )}
             </div>
@@ -136,11 +166,10 @@ export function ItemGallery({ images, alt, className }: ItemGalleryProps) {
                         : "border-transparent opacity-60 hover:opacity-80"
                     )}
                   >
-                    <Image
+                    <GalleryImage
                       src={image}
                       alt={`${alt} thumbnail ${index + 1}`}
-                      fill
-                      className="object-cover"
+                      fillClassName="absolute inset-0 w-full h-full object-cover"
                     />
                   </button>
                 ))}

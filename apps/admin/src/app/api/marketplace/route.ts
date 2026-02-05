@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/supabase/requireUser";
 import { z } from "zod";
 
 const MarketplaceItemSchema = z.object({
@@ -32,6 +33,8 @@ const MarketplaceItemSchema = z.object({
 // GET /api/marketplace - List items
 export async function GET(request: NextRequest) {
   try {
+    const { user, response } = await requireUser();
+    if (!user) return response;
     const supabase = createServiceRoleClient();
     const searchParams = request.nextUrl.searchParams;
     
@@ -104,6 +107,8 @@ export async function GET(request: NextRequest) {
 // POST /api/marketplace - Create item
 export async function POST(request: NextRequest) {
   try {
+    const { user, response } = await requireUser();
+    if (!user) return response;
     const supabase = createServiceRoleClient();
     const body = await request.json();
 
@@ -151,4 +156,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

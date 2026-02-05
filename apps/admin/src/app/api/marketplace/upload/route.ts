@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+import { requireUser } from "@/lib/supabase/requireUser";
 
 const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
 export async function POST(request: NextRequest) {
   try {
+    const { user, response } = await requireUser();
+    if (!user) return response;
     const supabase = createServiceRoleClient();
     const formData = await request.formData();
     const file = formData.get("file") as File;
@@ -40,9 +43,12 @@ export async function POST(request: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
+    // Bucket phải trùng với migration 008_storage_marketplace.sql (marketplace-images)
+    const BUCKET = "marketplace-images";
+
     // Upload to Supabase Storage
     const { data, error } = await supabase.storage
-      .from("marketplace")
+      .from(BUCKET)
       .upload(fileName, buffer, {
         contentType: file.type,
         upsert: false,
@@ -59,7 +65,7 @@ export async function POST(request: NextRequest) {
     // Get public URL
     const {
       data: { publicUrl },
-    } = supabase.storage.from("marketplace").getPublicUrl(fileName);
+    } = supabase.storage.from(BUCKET).getPublicUrl(data.path);
 
     return NextResponse.json({ url: publicUrl, path: data.path }, { status: 200 });
   } catch (error) {
@@ -73,4 +79,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

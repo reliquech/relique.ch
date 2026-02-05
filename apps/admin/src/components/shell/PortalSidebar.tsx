@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { 
   LayoutDashboard, 
   ShoppingBag, 
@@ -11,10 +11,16 @@ import {
   Image as ImageIcon, 
   History, 
   Settings, 
+  Users,
+  UserRoundSearch,
+  HandCoins,
+  GitBranch,
+  SlidersHorizontal,
   LogOut,
   ChevronRight
 } from 'lucide-react';
 import { routeToTabMap, tabToRouteMap } from '@/lib/utils/admin';
+import { useProfile } from "@/features/users/hooks/useProfile";
 
 interface SidebarProps {
   onLogout?: () => void;
@@ -22,10 +28,17 @@ interface SidebarProps {
 
 export function PortalSidebar({ onLogout }: SidebarProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
+  const { role } = useProfile();
+  const isAdmin = role === "admin";
   
   // Get active tab from pathname
-  const activeTab = routeToTabMap[pathname] || 'dashboard';
+  let activeTab = routeToTabMap[pathname] || 'dashboard';
+  if (pathname === '/admin/submissions') {
+    const tab = searchParams.get('tab');
+    activeTab = tab === 'consignments' ? 'subs-consign' : 'subs-auth';
+  }
   const menuGroups = [
     {
       title: 'Overview',
@@ -47,6 +60,18 @@ export function PortalSidebar({ onLogout }: SidebarProps) {
       ]
     },
     {
+      title: 'CRM',
+      items: [
+        { id: 'customers', label: 'Customers', icon: Users },
+        { id: 'leads', label: 'Leads', icon: UserRoundSearch },
+        { id: 'deals', label: 'Deals', icon: HandCoins },
+        { id: 'tasks', label: 'Tasks', icon: FileText },
+        { id: 'automations', label: 'Automations', icon: Settings },
+        { id: 'pipeline-stages', label: 'Pipeline Stages', icon: GitBranch },
+        ...(isAdmin ? [{ id: 'custom-fields', label: 'Custom Fields', icon: SlidersHorizontal }] : []),
+      ]
+    },
+    {
       title: 'Submissions',
       items: [
         { id: 'subs-auth', label: 'Authenticate', icon: Inbox },
@@ -57,6 +82,7 @@ export function PortalSidebar({ onLogout }: SidebarProps) {
     {
       title: 'System',
       items: [
+        ...(isAdmin ? [{ id: 'users', label: 'Users', icon: Users }] : []),
         { id: 'logs', label: 'Audit Logs', icon: History },
         { id: 'settings', label: 'Settings', icon: Settings },
       ]

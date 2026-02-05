@@ -3,8 +3,10 @@
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { PortalSidebar } from "@/components/shell/PortalSidebar";
-import { Bell, User } from "lucide-react";
-import { tabNames } from "@/lib/utils/admin";
+import { routeToTabMap, tabNames } from "@/lib/utils/admin";
+import { NotificationCenter } from "@/features/notifications/components/NotificationCenter";
+import { AlertScheduler } from "@/features/automations/components/AlertScheduler";
+import { useProfile } from "@/features/users/hooks/useProfile";
 
 export default function AdminLayout({
   children,
@@ -13,11 +15,27 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { profile, userEmail } = useProfile();
 
-  // Get display name from pathname
+  const displayName =
+    profile?.display_name ||
+    (userEmail ? userEmail.split("@")[0] : null) ||
+    "Admin";
+
+  const initials = displayName
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  // Get display name from pathname (prefer routeToTabMap for nested routes)
   const getDisplayName = () => {
-    const tabId = pathname === "/admin" ? "dashboard" : pathname.replace("/admin/", "");
-    return tabNames[tabId] || "Admin";
+    const tabId =
+      routeToTabMap[pathname] ??
+      (pathname === "/admin" ? "dashboard" : pathname.replace("/admin/", "").split("/")[0]) ??
+      "dashboard";
+    return (tabId && tabNames[tabId]) || "Admin";
   };
 
   const handleLogout = async () => {
@@ -35,6 +53,7 @@ export default function AdminLayout({
 
   return (
     <div className="flex h-screen bg-bg-0 text-white overflow-hidden selection:bg-primary/30">
+      <AlertScheduler />
       <PortalSidebar onLogout={handleLogout} />
       <main className="flex-1 flex flex-col min-w-0">
         <header className="h-16 border-b border-border bg-surface/50 backdrop-blur-md flex items-center justify-between px-8 sticky top-0 z-10">
@@ -45,14 +64,11 @@ export default function AdminLayout({
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <button className="p-2 text-gray-400 hover:text-white transition-colors relative">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full border-2 border-surface animate-pulse"></span>
-            </button>
+            <NotificationCenter />
             <div className="h-8 w-[1px] bg-border mx-2"></div>
             <div className="flex items-center gap-3 pl-2 group">
               <div className="text-right hidden sm:block">
-                <p className="text-xs font-bold text-white">Relique Admin</p>
+                <p className="text-xs font-bold text-white">{displayName}</p>
                 <button
                   onClick={handleLogout}
                   className="text-[10px] text-gray-500 hover:text-destructive uppercase font-bold tracking-widest block transition-colors mt-0.5"
@@ -61,7 +77,7 @@ export default function AdminLayout({
                 </button>
               </div>
               <div className="w-9 h-9 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center font-bold text-white shadow-lg shadow-primary/20 cursor-pointer group-hover:scale-105 transition-transform">
-                RA
+                {initials}
               </div>
             </div>
           </div>
@@ -73,4 +89,3 @@ export default function AdminLayout({
     </div>
   );
 }
-
