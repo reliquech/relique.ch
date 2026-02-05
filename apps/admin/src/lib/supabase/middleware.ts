@@ -49,9 +49,15 @@ export async function updateSession(request: NextRequest) {
   // supabase.auth.getUser(). A simple mistake could make it very hard to debug
   // issues with users being randomly logged out.
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user: { id: string } | null = null;
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch {
+    // Edge runtime có thể không resolve DNS / không outbound tới Supabase (ENOTFOUND).
+    // Cho request đi tiếp; auth sẽ được kiểm tra lại ở layout/server (Node runtime).
+    // Trên production cần set NEXT_PUBLIC_SUPABASE_URL đúng và đảm bảo Supabase reachable.
+  }
 
   if (
     !user &&

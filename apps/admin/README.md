@@ -65,7 +65,8 @@ RESEND_FROM_EMAIL=support@relique.co
 ### Deploy Checklist (Production)
 
 1. **Environment**
-   - Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+   - Trên Vercel/Netlify: set **đúng** `NEXT_PUBLIC_SUPABASE_URL` (phải trùng với project Supabase bạn đang dùng, ví dụ custom domain hoặc `https://<project-ref>.supabase.co`).
+   - Set `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
    - Set `RESEND_API_KEY`, `RESEND_FROM_EMAIL`
 2. **Migrations**
    - Run all SQL migrations in `apps/admin/supabase/migrations/`
@@ -79,6 +80,9 @@ RESEND_FROM_EMAIL=support@relique.co
 5. **Build & Start**
    - `pnpm build`
    - `pnpm start` (port 3600)
+
+**Lỗi `ENOTFOUND ... supabase.co` khi deploy:**  
+Lỗi này xảy ra khi **biến môi trường trên hosting** (Vercel/Netlify/…) đang trỏ sai URL Supabase (project không tồn tại hoặc hostname sai). Cần vào **Settings → Environment Variables** của project deploy và đặt `NEXT_PUBLIC_SUPABASE_URL` (và các key) **giống với môi trường local** (cùng project Supabase bạn dùng khi chạy `pnpm dev`). Sau khi sửa env, redeploy.
 
 ### QA Checklist (Manual)
 
