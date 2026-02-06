@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import type { Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,9 +9,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Upload, X, Loader2, Image as ImageIcon } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import {
+  MarketplaceImageSection,
+  type ImageUploadItem,
+} from "@/features/marketplace/components/MarketplaceImageSection";
+import { useMarketplaceTempUploads } from "@/features/marketplace/hooks/useMarketplaceTempUploads";
+import { createTempUploadPath } from "@/features/marketplace/utils/uploadPaths";
 
 // Validation schema matching API route
 const MarketplaceFormSchema = z.object({
@@ -40,9 +46,10 @@ const MarketplaceFormSchema = z.object({
 
 export type MarketplaceFormData = z.infer<typeof MarketplaceFormSchema>;
 
-interface FileWithPreview extends File {
-  preview?: string;
-}
+type UploadItem = ImageUploadItem & {
+  file?: File;
+  path?: string;
+};
 
 interface MarketplaceFormProps {
   onSubmit: (data: MarketplaceFormData) => Promise<void>;
@@ -51,9 +58,10 @@ interface MarketplaceFormProps {
 }
 
 export function MarketplaceForm({ onSubmit, onCancel, isSubmitting = false }: MarketplaceFormProps) {
-  const [coverImage, setCoverImage] = useState<FileWithPreview | null>(null);
-  const [additionalImages, setAdditionalImages] = useState<FileWithPreview[]>([]);
-  const [uploadingImage, setUploadingImage] = useState(false);
+  const [coverImage, setCoverImage] = useState<UploadItem | null>(null);
+  const [additionalImages, setAdditionalImages] = useState<UploadItem[]>([]);
+  const coverImageRef = useRef<UploadItem | null>(null);
+  const additionalImagesRef = useRef<UploadItem[]>([]);
 
   const inputClassName =
     "border-border/60 bg-bg-0/30 focus-visible:ring-[color:var(--relique-primary-blue)] focus-visible:ring-offset-2";
@@ -79,9 +87,64 @@ export function MarketplaceForm({ onSubmit, onCancel, isSubmitting = false }: Ma
     },
   });
 
-  const uploadFile = async (file: File): Promise<string> => {
+  useEffect(() => {
+    coverImageRef.current = coverImage;
+  }, [coverImage]);
+
+  useEffect(() => {
+    additionalImagesRef.current = additionalImages;
+  }, [additionalImages]);
+
+  useEffect(() => {
+    return () => {
+      if (coverImageRef.current?.previewUrl) {
+        URL.revokeObjectURL(coverImageRef.current.previewUrl);
+      }
+      additionalImagesRef.current.forEach((item) => {
+        if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
+      });
+    };
+  }, []);
+
+  const clearUploads = useCallback(() => {
+    const currentCover = coverImageRef.current;
+    if (currentCover?.previewUrl) {
+      URL.revokeObjectURL(currentCover.previewUrl);
+    }
+    additionalImagesRef.current.forEach((item) => {
+      if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
+    });
+    setCoverImage(null);
+    setAdditionalImages([]);
+    coverImageRef.current = null;
+    additionalImagesRef.current = [];
+    setValue("image", "");
+    setValue("images", null);
+  }, [setValue]);
+
+  const {
+    sessionId,
+    registerTempPath,
+    cleanupPaths,
+    finalizeTempUploads,
+    markFinalized,
+  } = useMarketplaceTempUploads({ onExpire: clearUploads });
+
+  const validateImageFile = useCallback((file: File, label?: string) => {
+    if (!file.type.startsWith("image/")) {
+      return `${label ?? "File"} must be an image`;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      return `${label ?? "Image"} exceeds 8MB limit`;
+    }
+    return null;
+  }, []);
+
+  const uploadFile = async (file: File, path: string): Promise<{ url: string; path: string }> => {
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("sessionId", sessionId);
+    formData.append("path", path);
 
     const response = await fetch("/api/marketplace/upload", {
       method: "POST",
@@ -94,120 +157,263 @@ export function MarketplaceForm({ onSubmit, onCancel, isSubmitting = false }: Ma
     }
 
     const data = await response.json();
-    return data.url;
+    return { url: data.url as string, path: data.path as string };
   };
+
+  const syncAdditionalUrls = useCallback(
+    (items: UploadItem[]) => {
+      const urls = items
+        .filter((item) => item.status === "uploaded" && item.url)
+        .map((item) => item.url!) as string[];
+      setValue("images", urls.length > 0 ? urls : null);
+    },
+    [setValue]
+  );
 
   const handleCoverImageChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
+      e.target.value = "";
       if (!file) return;
 
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        toast.error("Please select an image file");
+      const errorMessage = validateImageFile(file, "Cover image");
+      if (errorMessage) {
+        toast.error(errorMessage);
         return;
       }
 
-      // Validate file size (8MB)
-      if (file.size > 8 * 1024 * 1024) {
-        toast.error("Image size must be less than 8MB");
-        return;
+      if (coverImage?.previewUrl) {
+        URL.revokeObjectURL(coverImage.previewUrl);
+      }
+      if (coverImage?.path) {
+        void cleanupPaths([coverImage.path]);
       }
 
-      const fileWithPreview = Object.assign(file, {
-        preview: URL.createObjectURL(file),
-      }) as FileWithPreview;
+      const previewUrl = URL.createObjectURL(file);
+      const path = createTempUploadPath(sessionId, file.name);
+      registerTempPath(path);
 
-      setCoverImage(fileWithPreview);
+      const nextCover: UploadItem = {
+        id: path,
+        file,
+        previewUrl,
+        path,
+        status: "uploading",
+      };
+      coverImageRef.current = nextCover;
+      setCoverImage(nextCover);
+      setValue("image", "");
 
-      // Upload immediately
-      setUploadingImage(true);
       try {
-        const url = await uploadFile(file);
+        const { url, path: storedPath } = await uploadFile(file, path);
+        if (coverImageRef.current?.id !== path) {
+          void cleanupPaths([storedPath, path]);
+          return;
+        }
+        setCoverImage((prev) => {
+          if (!prev) return prev;
+          const next = { ...prev, url, path: storedPath, status: "uploaded" };
+          coverImageRef.current = next;
+          return next;
+        });
+        if (storedPath !== path) {
+          void cleanupPaths([path]);
+        }
+        registerTempPath(storedPath);
         setValue("image", url);
         toast.success("Cover image uploaded");
       } catch (error) {
+        setCoverImage((prev) => {
+          if (!prev) return prev;
+          const next = { ...prev, status: "error", error: "Upload failed" };
+          coverImageRef.current = next;
+          return next;
+        });
+        void cleanupPaths([path]);
         toast.error(error instanceof Error ? error.message : "Failed to upload image");
-        setCoverImage(null);
-      } finally {
-        setUploadingImage(false);
       }
     },
-    [setValue]
+    [cleanupPaths, coverImage, registerTempPath, sessionId, setValue, validateImageFile]
   );
 
   const handleAdditionalImagesChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = Array.from(e.target.files || []);
+      e.target.value = "";
       if (files.length === 0) return;
 
-      const validFiles: FileWithPreview[] = [];
-      for (const file of files) {
-        if (!file.type.startsWith("image/")) {
-          toast.error(`${file.name} is not an image file`);
-          continue;
+      const nextItems: UploadItem[] = [];
+      files.forEach((file) => {
+        const errorMessage = validateImageFile(file, file.name);
+        if (errorMessage) {
+          toast.error(errorMessage);
+          return;
         }
-        if (file.size > 8 * 1024 * 1024) {
-          toast.error(`${file.name} exceeds 8MB limit`);
-          continue;
-        }
-        validFiles.push(
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
-          }) as FileWithPreview
-        );
-      }
 
-      if (validFiles.length === 0) return;
+        const previewUrl = URL.createObjectURL(file);
+        const path = createTempUploadPath(sessionId, file.name);
+        registerTempPath(path);
+        nextItems.push({
+          id: path,
+          file,
+          previewUrl,
+          path,
+          status: "uploading",
+        });
+      });
 
-      setAdditionalImages((prev) => [...prev, ...validFiles]);
+      if (nextItems.length === 0) return;
 
-      // Upload all files
-      setUploadingImage(true);
-      try {
-        const urls = await Promise.all(validFiles.map((f) => uploadFile(f)));
-        const currentImages = watch("images") || [];
-        setValue("images", [...currentImages, ...urls]);
-        toast.success(`${validFiles.length} image(s) uploaded`);
-      } catch (error) {
-        toast.error(error instanceof Error ? error.message : "Failed to upload images");
-      } finally {
-        setUploadingImage(false);
+      setAdditionalImages((prev) => {
+        const next = [...prev, ...nextItems];
+        additionalImagesRef.current = next;
+        return next;
+      });
+
+      let successCount = 0;
+      await Promise.all(
+        nextItems.map(async (item) => {
+          try {
+            const { url, path: storedPath } = await uploadFile(item.file!, item.path!);
+            if (!additionalImagesRef.current.some((existing) => existing.id === item.id)) {
+              void cleanupPaths([storedPath, item.path!]);
+              return;
+            }
+            setAdditionalImages((prev) => {
+              const next = prev.map((existing) =>
+                existing.id === item.id
+                  ? { ...existing, url, path: storedPath, status: "uploaded" }
+                  : existing
+              );
+              additionalImagesRef.current = next;
+              syncAdditionalUrls(next);
+              return next;
+            });
+            if (storedPath !== item.path) {
+              void cleanupPaths([item.path!]);
+            }
+            registerTempPath(storedPath);
+            successCount += 1;
+          } catch (error) {
+            setAdditionalImages((prev) => {
+              const next = prev.map((existing) =>
+                existing.id === item.id
+                  ? { ...existing, status: "error", error: "Upload failed" }
+                  : existing
+              );
+              additionalImagesRef.current = next;
+              syncAdditionalUrls(next);
+              return next;
+            });
+            void cleanupPaths([item.path!]);
+            toast.error(error instanceof Error ? error.message : "Failed to upload image");
+          }
+        })
+      );
+      if (successCount > 0) {
+        toast.success(`${successCount} image(s) uploaded`);
       }
     },
-    [setValue, watch]
+    [cleanupPaths, registerTempPath, sessionId, syncAdditionalUrls, validateImageFile]
   );
 
-  const removeCoverImage = () => {
-    if (coverImage?.preview) {
-      URL.revokeObjectURL(coverImage.preview);
+  const removeCoverImage = useCallback(() => {
+    if (coverImage?.previewUrl) {
+      URL.revokeObjectURL(coverImage.previewUrl);
+    }
+    if (coverImage?.path) {
+      void cleanupPaths([coverImage.path]);
     }
     setCoverImage(null);
+    coverImageRef.current = null;
     setValue("image", "");
-  };
+  }, [cleanupPaths, coverImage, setValue]);
 
-  const removeAdditionalImage = (index: number) => {
-    const file = additionalImages[index];
-    if (file?.preview) {
-      URL.revokeObjectURL(file.preview);
-    }
-    const newImages = additionalImages.filter((_, i) => i !== index);
-    setAdditionalImages(newImages);
+  const removeAdditionalImage = useCallback(
+    (id: string) => {
+      setAdditionalImages((prev) => {
+        const target = prev.find((item) => item.id === id);
+        if (target?.previewUrl) {
+          URL.revokeObjectURL(target.previewUrl);
+        }
+        if (target?.path) {
+          void cleanupPaths([target.path]);
+        }
+        const next = prev.filter((item) => item.id !== id);
+        additionalImagesRef.current = next;
+        syncAdditionalUrls(next);
+        return next;
+      });
+    },
+    [cleanupPaths, syncAdditionalUrls]
+  );
 
-    // Update form value
-    const currentImages = watch("images") || [];
-    const newUrls = currentImages.filter((_, i) => i !== index);
-    setValue("images", newUrls.length > 0 ? newUrls : null);
-  };
+  const isUploading = useMemo(
+    () =>
+      coverImage?.status === "uploading" ||
+      additionalImages.some((item) => item.status === "uploading"),
+    [additionalImages, coverImage]
+  );
 
   const onFormSubmit = async (data: MarketplaceFormData) => {
     try {
+      const tempUploadPaths = Array.from(
+        new Set([
+          coverImage?.path,
+          ...additionalImages.map((item) => item.path),
+        ].filter(Boolean))
+      ) as string[];
+
+      if (tempUploadPaths.length > 0) {
+        const finalized = await finalizeTempUploads(tempUploadPaths);
+        const mapping = new Map(
+          finalized.files.map((file) => [file.from, file])
+        );
+
+        if (coverImage?.path && mapping.has(coverImage.path)) {
+          const next = mapping.get(coverImage.path)!;
+          data.image = next.url;
+          setCoverImage((prev) => {
+            if (!prev) return prev;
+            const updated = { ...prev, url: next.url, path: next.to };
+            coverImageRef.current = updated;
+            return updated;
+          });
+          setValue("image", next.url);
+        }
+
+        if (additionalImages.length > 0) {
+          const nextAdditional = additionalImages.map((item) => {
+            if (!item.path) return item;
+            const next = mapping.get(item.path);
+            return next ? { ...item, url: next.url, path: next.to } : item;
+          });
+          setAdditionalImages(nextAdditional);
+          additionalImagesRef.current = nextAdditional;
+          const nextUrls = nextAdditional
+            .filter((item) => item.url && item.status === "uploaded")
+            .map((item) => item.url!) as string[];
+          data.images = nextUrls.length > 0 ? nextUrls : null;
+          setValue("images", data.images);
+        }
+      }
+
+      markFinalized();
       await onSubmit(data);
     } catch (error) {
+      if (error instanceof Error && error.message.toLowerCase().includes("finalize")) {
+        toast.error(error.message);
+      }
       // Error handling is done in parent component
       console.error("Form submission error:", error);
     }
   };
+
+  const handleCancel = useCallback(async () => {
+    await cleanupPaths();
+    clearUploads();
+    onCancel?.() ?? window.history.back();
+  }, [cleanupPaths, clearUploads, onCancel]);
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-8">
@@ -304,135 +510,16 @@ export function MarketplaceForm({ onSubmit, onCancel, isSubmitting = false }: Ma
       </Card>
 
       {/* Images */}
-      <Card className="bg-surface/40 border-border/60">
-        <CardHeader>
-          <CardTitle>Images</CardTitle>
-          <CardDescription>Upload cover image and additional images</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label>
-              Cover Image <span className="text-destructive">*</span>
-            </Label>
-            {coverImage || watch("image") ? (
-              <div className="relative w-full h-48 clip-path-slant-lg border border-border/60 overflow-hidden bg-bg-0/20">
-                {coverImage?.preview ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={coverImage.preview}
-                    alt="Cover preview"
-                    className="absolute inset-0 w-full h-full object-cover"
-                    draggable={false}
-                  />
-                ) : watch("image") ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={watch("image")}
-                    alt="Cover"
-                    className="absolute inset-0 w-full h-full object-cover"
-                    draggable={false}
-                  />
-                ) : null}
-                <button
-                  type="button"
-                  onClick={removeCoverImage}
-                  className="absolute top-2 right-2 p-2 bg-destructive text-destructive-foreground clip-path-slant hover:bg-destructive/90 transition-base"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            ) : (
-              <label
-                htmlFor="cover-image"
-                className={cn(
-                  "clip-path-slant-lg flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-border/60 bg-bg-0/20 cursor-pointer hover:bg-white/5 transition-base",
-                  errors.image && "border-destructive",
-                  uploadingImage && "opacity-50 cursor-not-allowed"
-                )}
-              >
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  {uploadingImage ? (
-                    <Loader2 className="w-10 h-10 mb-3 text-muted-foreground animate-spin" />
-                  ) : (
-                    <Upload className="w-10 h-10 mb-3 text-muted-foreground" />
-                  )}
-                  <p className="mb-2 text-sm text-muted-foreground">
-                    <span className="font-semibold">Click to upload</span> or drag and drop
-                  </p>
-                  <p className="text-xs text-muted-foreground">PNG, JPG, WEBP up to 8MB</p>
-                </div>
-                <input
-                  id="cover-image"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleCoverImageChange}
-                  disabled={uploadingImage}
-                />
-              </label>
-            )}
-            {errors.image && (
-              <p className="text-sm text-destructive">{errors.image.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label>Additional Images</Label>
-            <label
-              htmlFor="additional-images"
-              className={cn(
-                "clip-path-slant-lg flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border/60 bg-bg-0/20 cursor-pointer hover:bg-white/5 transition-base",
-                uploadingImage && "opacity-50 cursor-not-allowed"
-              )}
-            >
-              <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                <ImageIcon className="w-8 h-8 mb-2 text-muted-foreground" />
-                <p className="mb-2 text-sm text-muted-foreground">
-                  <span className="font-semibold">Click to upload</span> multiple images
-                </p>
-                <p className="text-xs text-muted-foreground">PNG, JPG, WEBP up to 8MB each</p>
-              </div>
-              <input
-                id="additional-images"
-                type="file"
-                accept="image/*"
-                multiple
-                className="hidden"
-                onChange={handleAdditionalImagesChange}
-                disabled={uploadingImage}
-              />
-            </label>
-
-            {additionalImages.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-                {additionalImages.map((file, index) => (
-                  <div
-                    key={index}
-                    className="relative w-full h-32 clip-path-slant border border-border/60 overflow-hidden bg-bg-0/20"
-                  >
-                    {file.preview ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={file.preview}
-                        alt={`Additional ${index + 1}`}
-                        className="absolute inset-0 w-full h-full object-cover"
-                        draggable={false}
-                      />
-                    ) : null}
-                    <button
-                      type="button"
-                      onClick={() => removeAdditionalImage(index)}
-                      className="absolute top-1 right-1 p-2 bg-destructive text-destructive-foreground clip-path-slant hover:bg-destructive/90 transition-base"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      <MarketplaceImageSection
+        coverImage={coverImage}
+        additionalImages={additionalImages}
+        onCoverChange={handleCoverImageChange}
+        onCoverRemove={removeCoverImage}
+        onAdditionalChange={handleAdditionalImagesChange}
+        onAdditionalRemove={removeAdditionalImage}
+        coverError={errors.image?.message}
+        isUploading={isUploading}
+      />
 
       {/* Athlete & Authentication */}
       <Card className="bg-surface/40 border-border/60">
@@ -655,15 +742,15 @@ export function MarketplaceForm({ onSubmit, onCancel, isSubmitting = false }: Ma
         <Button
           type="button"
           variant="outline"
-          onClick={() => onCancel?.() ?? window.history.back()}
-          disabled={isSubmitting || uploadingImage}
+          onClick={handleCancel}
+          disabled={isSubmitting || isUploading}
           className="clip-path-slant border-border/70 bg-bg-0/30 text-xs font-black uppercase tracking-[0.2em] text-white hover:bg-[color:var(--relique-highlight-ice)] hover:text-[color:var(--relique-navy)] transition-base"
         >
           Cancel
         </Button>
         <Button
           type="submit"
-          disabled={isSubmitting || uploadingImage}
+          disabled={isSubmitting || isUploading}
           className="clip-path-slant bg-[color:var(--relique-primary-blue)] text-white text-xs font-black uppercase tracking-[0.2em] hover:bg-[color:var(--relique-accent-blue)] shadow-[0_20px_40px_rgba(28,77,141,0.2)] transition-base"
         >
           {isSubmitting ? (

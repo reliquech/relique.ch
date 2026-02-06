@@ -1,0 +1,69 @@
+{
+    "entity_type": "signed_football_jersey",
+    "id": "uuid-or-ulid",
+    "slug": "string",
+    "sku": "string",
+  
+    "state": {
+      "lifecycle": "draft|published|archived",
+      "visibility": "private|unlisted|public",
+      "featured": { "is": true, "order": 12 },
+      "publish_at": null,
+      "created_at": "datetime",
+      "updated_at": "datetime",
+      "created_by": "user_uuid"
+    },
+  
+    "listing": {
+      "title": "string",
+      "subtitle": null,
+      "short": "string",
+      "price": { "amount": 999, "currency": "USD", "compare_at": null },
+      "category": "premium|sport|collector|story",
+      "tags": ["zidane", "real-madrid"]
+    },
+  
+    "jersey": {
+      "sport": "football|soccer",
+      "club_id": "uuid",
+      "season": null,
+      "kit": "home|away|third|goalkeeper|training|special",
+      "edition": "replica|authentic|player_issue|match_prepared|match_worn",
+      "brand": { "id": "nike", "custom": null },
+      "size": { "id": "L", "region": "EU", "custom": null },
+      "style_code": null
+    },
+  
+    "signing": {
+      "type": "single|multi",
+      "signers": ["zinedine-zidane"],
+      "count": 1,
+      "ink": { "id": "black_sharpie", "custom": null },
+      "placement": { "id": "front_chest", "custom": null },
+      "inscription_text": null,
+      "sig_condition": "A|B|C|D|unknown"
+    },
+  
+    "condition": {
+      "grade": "A|B|C|D|F|unknown",
+      "wear": "new_with_tags|new_no_tags|lightly_used|used|heavily_used|match_worn",
+      "notes": null
+    },
+  
+    "auth": {
+      "status": "none|pending|verified|rejected",
+      "provider_id": null,
+      "coa_refs": []
+    },
+  
+    "refs": {
+      "content_id": "uuid|null",
+      "media_album_id": "uuid|null",
+      "proof_bundle_id": "uuid|null"
+    },
+  
+    "media": {
+      "hero_id": "media_id|null"
+    }
+  }
+  
