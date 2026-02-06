@@ -12,6 +12,7 @@ const MarketplaceItemSchema = z.object({
   currency: z.string().optional().default("USD"),
   image: z.string(),
   images: z.array(z.string()).optional().nullable(),
+  metadata: z.unknown().optional().nullable(),
   category: z.string(),
   status: z.enum(["draft", "pending", "published", "suspended", "unpublished", "archived"]).optional().default("draft"),
   authenticated: z.boolean().optional().default(false),
@@ -120,6 +121,11 @@ export async function POST(request: NextRequest) {
       .insert({
         ...validated,
         images: validated.images ? JSON.stringify(validated.images) : null,
+        metadata: validated.metadata
+          ? typeof validated.metadata === "string"
+            ? validated.metadata
+            : JSON.stringify(validated.metadata)
+          : null,
       })
       .select()
       .single();
