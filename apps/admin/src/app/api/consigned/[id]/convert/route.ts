@@ -33,34 +33,75 @@ export async function POST(
 
     const consignedItem = consignedItemData as ConsignedItem;
 
-    // Create marketplace item from consigned item
+    // Create marketplace item from consigned item (schema: entity_type, slug, sku, state, listing, jersey, signing, condition, auth, refs, media)
     const slug = consignedItem.item_description
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "")
       .substring(0, 50) + "-" + Date.now().toString(36);
 
+    const now = new Date().toISOString();
     type MarketplaceItemInsert = Database["public"]["Tables"]["marketplace_items"]["Insert"];
-    
+
     const insertData: MarketplaceItemInsert = {
+      entity_type: "consigned",
       slug,
-      title: consignedItem.item_description.substring(0, 200),
-      description: consignedItem.item_description,
-      price_usd: consignedItem.estimated_value || 0,
-      currency: "USD",
-      image: "", // Should be uploaded separately
-      category: consignedItem.category || "Other",
-      status: "draft",
-      coa_issuer: consignedItem.coa_issuer,
-      commission_rate: consignedItem.commission_rate,
-      created_by: consignedItem.created_by,
+      sku: `consigned-${id}-${Date.now().toString(36)}`,
+      state: {
+        lifecycle: "draft",
+        visibility: "private",
+        featured: { is: false, order: null },
+        publish_at: null,
+        created_at: now,
+        updated_at: now,
+        created_by: consignedItem.created_by ?? null,
+      },
+      listing: {
+        title: consignedItem.item_description.substring(0, 200),
+        subtitle: null,
+        short: consignedItem.item_description,
+        price: {
+          amount: consignedItem.estimated_value ?? 0,
+          currency: "USD",
+          compare_at: null,
+        },
+        category: consignedItem.category ?? "Other",
+        tags: [],
+      },
+      jersey: null,
+      signing: {
+        type: "single",
+        signers: [],
+        count: 1,
+        ink: { id: null, custom: null },
+        placement: { id: null, custom: null },
+        inscription_text: null,
+        sig_condition: null,
+      },
+      condition: {
+        grade: null,
+        wear: null,
+        notes: null,
+      },
+      auth: {
+        status: "none",
+        provider_id: consignedItem.coa_issuer ?? null,
+        coa_refs: [],
+      },
+      refs: {
+        content_id: null,
+        media_album_id: null,
+        proof_bundle_id: null,
+      },
+      media: { hero_id: null },
     };
 
     const { data: marketplaceItemData, error: createError } = await (supabase
       .from("marketplace_items")
-      .insert(insertData as any)
+      // @ts-expect-error - Supabase service role client types infer insert as never
+      .insert(insertData)
       .select()
-      .single() as any);
+      .single());
 
     if (createError || !marketplaceItemData) {
       return NextResponse.json(

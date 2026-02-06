@@ -212,7 +212,7 @@ export function MarketplaceForm({ onSubmit, onCancel, isSubmitting = false }: Ma
         }
         setCoverImage((prev) => {
           if (!prev) return prev;
-          const next = { ...prev, url, path: storedPath, status: "uploaded" };
+          const next: UploadItem = { ...prev, url, path: storedPath, status: "uploaded" };
           coverImageRef.current = next;
           return next;
         });
@@ -225,7 +225,7 @@ export function MarketplaceForm({ onSubmit, onCancel, isSubmitting = false }: Ma
       } catch (error) {
         setCoverImage((prev) => {
           if (!prev) return prev;
-          const next = { ...prev, status: "error", error: "Upload failed" };
+          const next: UploadItem = { ...prev, status: "error", error: "Upload failed" };
           coverImageRef.current = next;
           return next;
         });
@@ -280,9 +280,9 @@ export function MarketplaceForm({ onSubmit, onCancel, isSubmitting = false }: Ma
               return;
             }
             setAdditionalImages((prev) => {
-              const next = prev.map((existing) =>
+              const next: UploadItem[] = prev.map((existing) =>
                 existing.id === item.id
-                  ? { ...existing, url, path: storedPath, status: "uploaded" }
+                  ? ({ ...existing, url, path: storedPath, status: "uploaded" } as UploadItem)
                   : existing
               );
               additionalImagesRef.current = next;
@@ -296,9 +296,9 @@ export function MarketplaceForm({ onSubmit, onCancel, isSubmitting = false }: Ma
             successCount += 1;
           } catch (error) {
             setAdditionalImages((prev) => {
-              const next = prev.map((existing) =>
+              const next: UploadItem[] = prev.map((existing) =>
                 existing.id === item.id
-                  ? { ...existing, status: "error", error: "Upload failed" }
+                  ? ({ ...existing, status: "error", error: "Upload failed" } as UploadItem)
                   : existing
               );
               additionalImagesRef.current = next;

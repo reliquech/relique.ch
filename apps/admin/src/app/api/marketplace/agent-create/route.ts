@@ -430,7 +430,7 @@ export async function POST(request: NextRequest) {
       signing: {
         type: parsedPayload.signing?.type ?? "single",
         signers,
-        count: parsedPayload.signing?.count ?? signers.length || 1,
+        count: parsedPayload.signing?.count ?? (signers.length || 1),
         ink: parsedPayload.signing?.ink ?? { id: null, custom: null },
         placement: parsedPayload.signing?.placement ?? { id: null, custom: null },
         inscription_text: parsedPayload.signing?.inscription_text ?? null,
