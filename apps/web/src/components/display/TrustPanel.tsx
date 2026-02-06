@@ -9,6 +9,11 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Shield, Info, ChevronDown, Check, Clock, Package, FileCheck, Camera } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { MarketplaceListing } from "@relique/shared/domain";
+import {
+  getListingAuthStatus,
+  getListingCoaRef,
+  getListingPriceAmount,
+} from "@/lib/utils/marketplace";
 
 interface TrustPanelProps {
   listing: MarketplaceListing;
@@ -25,8 +30,8 @@ interface TraceabilityEvent {
 
 function generateMockTraceability(listing: MarketplaceListing): TraceabilityEvent[] {
   const events: TraceabilityEvent[] = [];
-  const baseDate = listing.authenticatedDate
-    ? new Date(listing.authenticatedDate)
+  const baseDate = listing.state?.updated_at
+    ? new Date(listing.state.updated_at)
     : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
   // Item submission
@@ -60,12 +65,12 @@ function generateMockTraceability(listing: MarketplaceListing): TraceabilityEven
   });
 
   // Authentication complete
-  if (listing.authenticated) {
+  if (getListingAuthStatus(listing) === "verified") {
     events.push({
       id: "4",
       type: "authenticated",
       title: "Authentication Verified",
-      description: `Status: ${listing.status || "Qualified"}. ${listing.coaIssuer ? `COA issued by ${listing.coaIssuer}` : ""}`,
+      description: `Status: ${getListingAuthStatus(listing) || "verified"}. ${listing.auth?.provider_id ? `COA issued by ${listing.auth.provider_id}` : ""}`,
       date: baseDate,
       icon: <Shield className="w-4 h-4" />,
     });
@@ -76,7 +81,7 @@ function generateMockTraceability(listing: MarketplaceListing): TraceabilityEven
     id: "5",
     type: "listed",
     title: "Listed on Marketplace",
-    description: `Listed at $${listing.price.toLocaleString()}`,
+    description: `Listed at $${getListingPriceAmount(listing).toLocaleString()}`,
     date: new Date(baseDate.getTime() + 2 * 24 * 60 * 60 * 1000),
     icon: <Check className="w-4 h-4" />,
   });
@@ -89,27 +94,27 @@ export function TrustPanel({ listing }: TrustPanelProps) {
   const traceability = generateMockTraceability(listing);
 
   const getStatusBadge = () => {
-    switch (listing.status) {
-      case "qualified":
+    switch (getListingAuthStatus(listing)) {
+      case "verified":
         return (
           <Badge className="bg-green-600 text-white border-0">
-            Qualified
+            Verified
           </Badge>
         );
-      case "inconclusive":
+      case "pending":
         return (
           <Badge className="bg-yellow-600 text-white border-0">
-            Inconclusive
+            Pending
           </Badge>
         );
-      case "disqualified":
+      case "rejected":
         return (
           <Badge className="bg-red-600 text-white border-0">
-            Disqualified
+            Rejected
           </Badge>
         );
       default:
-        return listing.authenticated ? (
+        return getListingAuthStatus(listing) === "verified" ? (
           <Badge className="bg-green-600 text-white border-0">
             Authenticated
           </Badge>
@@ -118,15 +123,15 @@ export function TrustPanel({ listing }: TrustPanelProps) {
   };
 
   const getStatusExplanation = () => {
-    switch (listing.status) {
-      case "qualified":
-        return "This item has been verified with high confidence. Our AI analysis indicates strong authenticity markers.";
-      case "inconclusive":
-        return "This item requires additional verification. Some authenticity markers are present but more information is needed.";
-      case "disqualified":
+    switch (getListingAuthStatus(listing)) {
+      case "verified":
+        return "This item has been verified with high confidence. Our analysis indicates strong authenticity markers.";
+      case "pending":
+        return "This item is pending verification. Additional review is in progress.";
+      case "rejected":
         return "This item did not pass our authentication process. Authenticity markers were not sufficient.";
       default:
-        return listing.authenticated
+        return getListingAuthStatus(listing) === "verified"
           ? "This item has been authenticated through our verification process."
           : "This item has not yet been authenticated.";
     }
@@ -143,9 +148,9 @@ export function TrustPanel({ listing }: TrustPanelProps) {
       <CardContent className="space-y-4">
         <div className="flex items-center gap-2">
           {getStatusBadge()}
-          {listing.certificate && (
+          {getListingCoaRef(listing) && (
             <Badge variant="outline" className="font-mono text-xs">
-              ID: {listing.certificate}
+              ID: {getListingCoaRef(listing)}
             </Badge>
           )}
         </div>
@@ -154,17 +159,17 @@ export function TrustPanel({ listing }: TrustPanelProps) {
           {getStatusExplanation()}
         </p>
 
-        {listing.authenticatedDate && (
+        {listing.state?.updated_at && (
           <div className="text-sm">
             <span className="text-muted-foreground">Verified on: </span>
-            <span>{new Date(listing.authenticatedDate).toLocaleDateString()}</span>
+            <span>{new Date(listing.state.updated_at).toLocaleDateString()}</span>
           </div>
         )}
 
-        {listing.coaIssuer && (
+        {listing.auth?.provider_id && (
           <div className="text-sm">
             <span className="text-muted-foreground">COA Issuer: </span>
-            <span>{listing.coaIssuer}</span>
+            <span>{listing.auth.provider_id}</span>
           </div>
         )}
 
@@ -230,10 +235,10 @@ export function TrustPanel({ listing }: TrustPanelProps) {
           </CollapsibleContent>
         </Collapsible>
 
-        {listing.certificate && (
+        {getListingCoaRef(listing) && (
           <div className="pt-4 border-t">
             <Button variant="outline" asChild className="w-full">
-              <Link href={`/verify?code=${encodeURIComponent(listing.certificate)}`}>
+              <Link href={`/verify?code=${encodeURIComponent(getListingCoaRef(listing) as string)}`}>
                 <Shield className="w-4 h-4 mr-2" />
                 Verify this item
               </Link>

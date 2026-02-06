@@ -20,6 +20,6 @@ drop policy if exists "Users can view own draft items" on public.marketplace_ite
 create policy "Select published or own drafts"
   on public.marketplace_items for select
   using (
-    (status = 'published')
-    or ((select auth.uid()) = created_by and status in ('draft', 'pending'))
+    (state_lifecycle = 'published' and state_visibility in ('public', 'unlisted'))
+    or ((select auth.uid()) = created_by)
   );

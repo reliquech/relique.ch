@@ -1,73 +1,96 @@
 -- =============================================================================
--- Marketplace Items
--- Bảng lưu sản phẩm trên marketplace (đồ sưu tầm, authenticated items, v.v.)
--- Liên kết: profiles (created_by), Storage bucket marketplace-images (image, images)
+-- Marketplace Items (Signed Jersey schema)
+-- Base schema aligned to marketplace listing payloads.
 -- =============================================================================
 
 create table public.marketplace_items (
   id uuid default gen_random_uuid() primary key,
+  entity_type text not null,
   slug text not null unique,
-  title text not null,
-  description text not null,
-  full_description text,
-  price_usd numeric(12,2) not null check (price_usd >= 0),
-  currency text not null default 'USD' check (char_length(currency) = 3),
-  image text not null,
-  images jsonb,
-  category text not null,
-  status text not null check (status in ('draft', 'pending', 'published', 'suspended', 'unpublished', 'archived')) default 'draft',
-  authenticated boolean default false,
-  certificate text,
-  authenticated_date timestamp with time zone,
-  coa_issuer text,
-  signed_by text,
-  condition text,
-  provenance text,
-  seller_name text,
-  seller_rating numeric(3,2) check (seller_rating is null or (seller_rating >= 0 and seller_rating <= 5)),
-  seller_verified boolean default false,
-  is_featured boolean default false,
-  featured_order integer check (featured_order is null or featured_order >= 0),
-  commission_rate numeric(5,2) check (commission_rate is null or (commission_rate >= 0 and commission_rate <= 100)),
-  created_at timestamp with time zone default now(),
-  updated_at timestamp with time zone default now(),
-  created_by uuid references public.profiles(id) on delete set null
+  sku text not null,
+
+  state jsonb not null,
+  listing jsonb not null,
+  jersey jsonb not null,
+  signing jsonb not null,
+  condition jsonb not null,
+  auth jsonb not null,
+  refs jsonb,
+  media jsonb,
+
+  -- Generated columns for filtering/sorting
+  state_lifecycle text generated always as (state->>'lifecycle') stored,
+  state_visibility text generated always as (state->>'visibility') stored,
+  featured_is boolean generated always as ((state->'featured'->>'is')::boolean) stored,
+  featured_order integer generated always as ((state->'featured'->>'order')::int) stored,
+  publish_at timestamp with time zone generated always as ((state->>'publish_at')::timestamptz) stored,
+  created_at timestamp with time zone generated always as ((state->>'created_at')::timestamptz) stored,
+  updated_at timestamp with time zone generated always as ((state->>'updated_at')::timestamptz) stored,
+  created_by uuid generated always as ((state->>'created_by')::uuid) stored,
+  listing_title text generated always as (listing->>'title') stored,
+  listing_category text generated always as (listing->>'category') stored,
+  price_amount numeric(12,2) generated always as ((listing->'price'->>'amount')::numeric) stored,
+  price_currency text generated always as (listing->'price'->>'currency') stored
 );
 
--- Comment bảng
-comment on table public.marketplace_items is 'Sản phẩm marketplace: đồ sưu tầm, có/không COA, trạng thái draft/published.';
-
--- Comment các cột quan trọng
+comment on table public.marketplace_items is 'Marketplace items stored as structured JSON payloads (state, listing, jersey, signing, condition, auth).';
 comment on column public.marketplace_items.slug is 'URL-friendly identifier, unique, dùng cho route /marketplace/[slug]';
-comment on column public.marketplace_items.image is 'URL ảnh chính (Storage path hoặc public URL)';
-comment on column public.marketplace_items.images is 'Mảng URL ảnh phụ, JSON array of strings';
-comment on column public.marketplace_items.status is 'draft: nháp, pending: chờ duyệt, published: hiển thị, suspended/unpublished/archived: ẩn/ngưng/lưu trữ';
-comment on column public.marketplace_items.authenticated is 'Item đã được xác thực (COA/authenticated)';
-comment on column public.marketplace_items.featured_order is 'Thứ tự hiển thị khi is_featured = true, số nhỏ ưu tiên trước';
-comment on column public.marketplace_items.commission_rate is 'Phần trăm hoa hồng platform (0-100)';
-comment on column public.marketplace_items.created_by is 'Admin/user tạo bản ghi, null khi xóa profile';
+comment on column public.marketplace_items.state is 'State envelope (lifecycle, visibility, featured, timestamps, created_by)';
+comment on column public.marketplace_items.listing is 'Listing content (title, short, price, category, tags)';
+comment on column public.marketplace_items.jersey is 'Jersey metadata (sport, club, kit, edition, brand, size)';
+comment on column public.marketplace_items.signing is 'Signing metadata (signers, ink, placement, condition)';
+comment on column public.marketplace_items.condition is 'Physical condition metadata';
+comment on column public.marketplace_items.auth is 'Authentication/COA status and references';
+comment on column public.marketplace_items.media is 'Media references (hero, gallery)';
+comment on column public.marketplace_items.state_lifecycle is 'Generated lifecycle for filtering';
+comment on column public.marketplace_items.listing_category is 'Generated category for filtering';
+comment on column public.marketplace_items.price_amount is 'Generated price amount for sorting';
+
+-- Keep timestamps in state.updated_at aligned on updates
+create or replace function public.set_marketplace_state_timestamps()
+returns trigger as $$
+declare
+  now_ts timestamp with time zone := now();
+begin
+  if new.state is null then
+    new.state := '{}'::jsonb;
+  end if;
+
+  if tg_op = 'INSERT' then
+    if new.state->>'created_at' is null then
+      new.state := jsonb_set(new.state, '{created_at}', to_jsonb(now_ts), true);
+    end if;
+  end if;
+
+  new.state := jsonb_set(new.state, '{updated_at}', to_jsonb(now_ts), true);
+
+  return new;
+end;
+$$ language plpgsql;
+
+create trigger set_marketplace_state_timestamps
+  before insert or update on public.marketplace_items
+  for each row
+  execute function public.set_marketplace_state_timestamps();
 
 -- Enable RLS
 alter table public.marketplace_items enable row level security;
 
--- Policy SELECT: published cho mọi người, draft/pending chỉ cho người tạo (1 policy để tránh multiple permissive)
+-- Policy SELECT: published public items, or owner can view all
 create policy "Select published or own drafts"
   on public.marketplace_items for select
   using (
-    (status = 'published')
-    or ((select auth.uid()) = created_by and status in ('draft', 'pending'))
+    (state_lifecycle = 'published' and state_visibility in ('public', 'unlisted'))
+    or ((select auth.uid()) = created_by)
   );
 
 -- Indexes
 create index marketplace_items_slug_idx on public.marketplace_items(slug);
-create index marketplace_items_status_idx on public.marketplace_items(status);
-create index marketplace_items_category_idx on public.marketplace_items(category);
-create index marketplace_items_is_featured_idx on public.marketplace_items(is_featured);
+create index marketplace_items_lifecycle_idx on public.marketplace_items(state_lifecycle);
+create index marketplace_items_visibility_idx on public.marketplace_items(state_visibility);
+create index marketplace_items_category_idx on public.marketplace_items(listing_category);
+create index marketplace_items_featured_idx on public.marketplace_items(featured_is);
+create index marketplace_items_featured_order_idx on public.marketplace_items(featured_order);
 create index marketplace_items_created_at_idx on public.marketplace_items(created_at desc);
 create index marketplace_items_created_by_idx on public.marketplace_items(created_by);
-
--- Trigger cập nhật updated_at
-create trigger set_marketplace_items_updated_at
-  before update on public.marketplace_items
-  for each row
-  execute function public.handle_updated_at();
+create index marketplace_items_price_amount_idx on public.marketplace_items(price_amount);

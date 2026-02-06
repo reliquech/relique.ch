@@ -3,15 +3,24 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { MarketplaceListing } from "@/lib/schemas/marketplace";
+import { getListingImages, getListingTitle } from "@/lib/utils/marketplace";
 
 interface DetailMediaSectionProps {
   listing: MarketplaceListing;
 }
 
 export function DetailMediaSection({ listing }: DetailMediaSectionProps) {
-  const images = listing.images?.length ? listing.images : [listing.image];
+  const images = getListingImages(listing);
   const [activeIndex, setActiveIndex] = useState(0);
-  const currentImage = images[activeIndex];
+  const currentImage = images[activeIndex] ?? images[0];
+
+  if (images.length === 0) {
+    return (
+      <div className="aspect-square bg-white/5 relative overflow-hidden border border-white/10 flex items-center justify-center text-white/40 text-xs uppercase tracking-[0.3em]">
+        No Media
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -20,7 +29,7 @@ export function DetailMediaSection({ listing }: DetailMediaSectionProps) {
           <motion.img
             key={currentImage}
             src={currentImage}
-            alt={listing.title}
+            alt={getListingTitle(listing)}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

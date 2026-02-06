@@ -5,6 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { FavoriteButton } from "@/components/interactive/FavoriteButton";
 import { cn } from "@/lib/utils";
 import type { MarketplaceListing } from "@/lib/schemas/marketplace";
+import {
+  getListingAuthStatus,
+  getListingCategory,
+  getListingHeroImage,
+  getListingPriceAmount,
+  getListingSignedBy,
+  getListingTitle,
+  getListingShortDescription,
+} from "@/lib/utils/marketplace";
 
 interface FeaturedItemCardProps {
   item: MarketplaceListing;
@@ -17,17 +26,15 @@ interface FeaturedItemCardProps {
  */
 export function FeaturedItemCard({ item, className }: FeaturedItemCardProps) {
   const getStatusBadge = () => {
-    if (item.status === "qualified") {
-      return <Badge className="bg-green-600 text-white border-0">Qualified</Badge>;
-    }
-    if (item.status === "inconclusive") {
-      return <Badge className="bg-yellow-600 text-white border-0">Inconclusive</Badge>;
-    }
-    if (item.status === "disqualified") {
-      return <Badge className="bg-red-600 text-white border-0">Disqualified</Badge>;
-    }
-    if (item.authenticated) {
+    const status = getListingAuthStatus(item);
+    if (status === "verified") {
       return <Badge className="bg-green-600 text-white border-0">Verified</Badge>;
+    }
+    if (status === "pending") {
+      return <Badge className="bg-yellow-600 text-white border-0">Pending</Badge>;
+    }
+    if (status === "rejected") {
+      return <Badge className="bg-red-600 text-white border-0">Rejected</Badge>;
     }
     return null;
   };
@@ -44,8 +51,8 @@ export function FeaturedItemCard({ item, className }: FeaturedItemCardProps) {
       <Link href={`/marketplace/${item.slug}`} className="flex-1 flex flex-col">
         <div className="relative w-full h-48 sm:h-56 md:h-64 rounded-none overflow-hidden">
           <Image
-            src={item.image}
-            alt={item.title}
+            src={getListingHeroImage(item)}
+            alt={getListingTitle(item)}
             fill
             className="object-cover"
           />
@@ -59,24 +66,23 @@ export function FeaturedItemCard({ item, className }: FeaturedItemCardProps) {
           )}
         </div>
         <CardHeader className="p-4 sm:p-6">
-          <CardTitle className="line-clamp-2 text-base sm:text-lg">{item.title}</CardTitle>
-          <CardDescription className="text-xs sm:text-sm">{item.category}</CardDescription>
+          <CardTitle className="line-clamp-2 text-base sm:text-lg">{getListingTitle(item)}</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">{getListingCategory(item)}</CardDescription>
         </CardHeader>
         <CardContent className="flex-1 p-4 sm:p-6 pt-0">
           <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
-            {item.description}
+            {getListingShortDescription(item)}
           </p>
-          {item.signedBy && (
+          {getListingSignedBy(item) && (
             <p className="text-[10px] sm:text-xs text-muted-foreground mt-2">
-              Signed by: {item.signedBy}
+              Signed by: {getListingSignedBy(item)}
             </p>
           )}
         </CardContent>
         <CardFooter className="flex items-center justify-between p-4 sm:p-6">
-          <span className="text-lg sm:text-xl font-bold">${item.price.toLocaleString()}</span>
+          <span className="text-lg sm:text-xl font-bold">${getListingPriceAmount(item).toLocaleString()}</span>
         </CardFooter>
       </Link>
     </Card>
   );
 }
-

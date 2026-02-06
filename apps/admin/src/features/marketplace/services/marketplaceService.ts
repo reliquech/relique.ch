@@ -19,6 +19,38 @@ export interface MarketplaceListParams {
 class MarketplaceAPIService {
   private baseUrl = "/api/marketplace";
 
+  private parseJson(value: any): any {
+    if (!value) return null;
+    if (typeof value === "string") {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return null;
+      }
+    }
+    return value;
+  }
+
+  private toMarketplaceItem(item: any): MarketplaceItem {
+    const listing = this.parseJson(item.listing) ?? {};
+    const signing = this.parseJson(item.signing) ?? {};
+    const state = this.parseJson(item.state) ?? {};
+    const media = this.parseJson(item.media) ?? {};
+
+    return {
+      id: item.id,
+      title: listing.title ?? "Untitled",
+      athlete: signing.signers?.[0] ?? listing.category ?? "—",
+      category: listing.category ?? "collector",
+      status: (state.lifecycle ?? "draft") as MarketplaceItem["status"],
+      is_featured: state.featured?.is ?? false,
+      price_usd: listing.price?.amount ?? 0,
+      updated_at: state.updated_at ?? item.updated_at ?? undefined,
+      cover_image_url: media.hero_id ?? undefined,
+      featured_order: state.featured?.order ?? null,
+    };
+  }
+
   async list(params?: MarketplaceListParams): Promise<MarketplaceListResponse> {
     const searchParams = new URLSearchParams();
     if (params?.status) searchParams.set("status", params.status);
@@ -50,20 +82,8 @@ class MarketplaceAPIService {
 
     const data = await response.json();
     
-    // Transform API response to match MarketplaceItem type
     return {
-      items: data.items.map((item: any) => ({
-        id: item.id,
-        title: item.title,
-        athlete: item.signed_by || item.category, // Map to athlete field
-        category: item.category,
-        status: item.status as MarketplaceItem["status"],
-        is_featured: item.is_featured,
-        price_usd: item.price_usd,
-        updated_at: item.updated_at,
-        cover_image_url: item.image,
-        featured_order: item.featured_order,
-      })),
+      items: (data.items || []).map((item: any) => this.toMarketplaceItem(item)),
       total: data.total,
       page: data.page,
       pageSize: data.pageSize,
@@ -79,18 +99,7 @@ class MarketplaceAPIService {
     }
 
     const item = await response.json();
-    return {
-      id: item.id,
-      title: item.title,
-      athlete: item.signed_by || item.category,
-      category: item.category,
-      status: item.status as MarketplaceItem["status"],
-      is_featured: item.is_featured,
-      price_usd: item.price_usd,
-      updated_at: item.updated_at,
-      cover_image_url: item.image,
-      featured_order: item.featured_order,
-    };
+    return this.toMarketplaceItem(item);
   }
 
   async create(item: Omit<MarketplaceItem, "id" | "updated_at">): Promise<MarketplaceItem> {
@@ -117,18 +126,7 @@ class MarketplaceAPIService {
     }
 
     const data = await response.json();
-    return {
-      id: data.id,
-      title: data.title,
-      athlete: data.signed_by || data.category,
-      category: data.category,
-      status: data.status as MarketplaceItem["status"],
-      is_featured: data.is_featured,
-      price_usd: data.price_usd,
-      updated_at: data.updated_at,
-      cover_image_url: data.image,
-      featured_order: data.featured_order,
-    };
+    return this.toMarketplaceItem(data);
   }
 
   async update(id: string, updates: Partial<MarketplaceItem>): Promise<MarketplaceItem> {
@@ -168,18 +166,7 @@ class MarketplaceAPIService {
     }
 
     const data = await response.json();
-    return {
-      id: data.id,
-      title: data.title,
-      athlete: data.signed_by || data.category,
-      category: data.category,
-      status: data.status as MarketplaceItem["status"],
-      is_featured: data.is_featured,
-      price_usd: data.price_usd,
-      updated_at: data.updated_at,
-      cover_image_url: data.image,
-      featured_order: data.featured_order,
-    };
+    return this.toMarketplaceItem(data);
   }
 
   async delete(id: string): Promise<void> {
@@ -206,20 +193,8 @@ class MarketplaceAPIService {
     }
 
     const data = await response.json();
-    return {
-      id: data.id,
-      title: data.title,
-      athlete: data.signed_by || data.category,
-      category: data.category,
-      status: data.status as MarketplaceItem["status"],
-      is_featured: data.is_featured,
-      price_usd: data.price_usd,
-      updated_at: data.updated_at,
-      cover_image_url: data.image,
-      featured_order: data.featured_order,
-    };
+    return this.toMarketplaceItem(data);
   }
 }
 
 export const marketplaceAPIService = new MarketplaceAPIService();
-

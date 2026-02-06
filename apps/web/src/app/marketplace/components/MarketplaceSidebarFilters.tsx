@@ -45,7 +45,7 @@ export function MarketplaceSidebarFilters({
                     className="w-4 h-4 rounded-none bg-bgDark border-white/10 text-primaryBlue focus:ring-0 focus:ring-offset-0"
                   />
                   <span className="text-xs font-semibold text-white/60 group-hover:text-white transition-colors">
-                    {cat}
+                    {cat.toUpperCase()}
                   </span>
                 </label>
               ))}
@@ -54,7 +54,7 @@ export function MarketplaceSidebarFilters({
         </div>
         <button
           type="button"
-          onClick={() => onCategoryChange("ALL SPORTS")}
+          onClick={() => onCategoryChange("ALL")}
           className="w-full text-[9px] font-black uppercase tracking-[0.3em] text-accentBlue hover:text-highlightIce transition-colors pt-4 text-left"
         >
           Reset Filters

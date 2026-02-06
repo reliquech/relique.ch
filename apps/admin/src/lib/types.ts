@@ -12,10 +12,7 @@ export enum VerificationStatus {
 
 export enum MarketplaceStatus {
   DRAFT = 'draft',
-  PENDING = 'pending',
   PUBLISHED = 'published',
-  SUSPENDED = 'suspended',
-  UNPUBLISHED = 'unpublished',
   ARCHIVED = 'archived'
 }
 

@@ -93,7 +93,7 @@ export interface IContentService {
 
 export interface IAdminMarketplaceService extends IMarketplaceService {
   create(
-    listing: Omit<MarketplaceListing, "id" | "slug" | "createdAt" | "updatedAt">
+    listing: Omit<MarketplaceListing, "id" | "slug">
   ): Promise<MarketplaceListing>;
   update(id: string, updates: Partial<MarketplaceListing>): Promise<MarketplaceListing | null>;
   delete(id: string): Promise<boolean>;
@@ -113,4 +113,3 @@ export interface IAdminContentService extends IContentService {
     delete(id: string): Promise<boolean>;
   };
 }
-

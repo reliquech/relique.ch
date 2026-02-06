@@ -4,7 +4,7 @@ import { requireUser } from "@/lib/supabase/requireUser";
 import { z } from "zod";
 
 const StatusUpdateSchema = z.object({
-  status: z.enum(["draft", "pending", "published", "suspended", "unpublished", "archived"]),
+  status: z.enum(["draft", "published", "archived"]),
 });
 
 // PATCH /api/marketplace/[id]/status - Update status
@@ -21,31 +21,47 @@ export async function PATCH(
 
     const validated = StatusUpdateSchema.parse(body);
 
+    const { data: existingItem, error: fetchError } = await supabase
+      .from("marketplace_items")
+      .select("state")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (fetchError) {
+      return NextResponse.json({ error: fetchError.message }, { status: 400 });
+    }
+
+    if (!existingItem) {
+      return NextResponse.json({ error: "Item not found" }, { status: 404 });
+    }
+
+    const nextState = {
+      ...(existingItem as any).state,
+      lifecycle: validated.status,
+    };
+
     const { data, error } = await supabase
       .from("marketplace_items")
       // @ts-expect-error - Supabase type inference issue with service role client
-      .update({ status: validated.status })
+      .update({ state: nextState })
       .eq("id", id)
       .select()
       .single();
 
     if (error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    // Log audit
-    await supabase.from("audit_logs")
+    await supabase
+      .from("audit_logs")
       // @ts-expect-error - Supabase type inference issue with service role client
       .insert({
         action: "STATUS_CHANGE",
         entity_type: "marketplace_item",
         entity_id: id,
-        metadata: { 
-          old_status: (data as any).status, 
-          new_status: validated.status 
+        metadata: {
+          old_status: (existingItem as any).state?.lifecycle,
+          new_status: validated.status,
         },
       });
 
@@ -58,9 +74,6 @@ export async function PATCH(
       );
     }
     console.error("Error updating marketplace item status:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

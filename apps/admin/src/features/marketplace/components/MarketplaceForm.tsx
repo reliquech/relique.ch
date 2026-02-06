@@ -28,7 +28,7 @@ const MarketplaceFormSchema = z.object({
   category: z.string().min(1, "Category is required"),
   image: z.string().min(1, "Image is required"),
   images: z.array(z.string()).optional().nullable(),
-  status: z.enum(["draft", "pending", "published", "suspended", "unpublished", "archived"]).optional(),
+  status: z.enum(["draft", "published", "archived"]).optional(),
   authenticated: z.boolean().optional(),
   certificate: z.string().optional().nullable(),
   authenticated_date: z.string().optional().nullable(),
@@ -684,10 +684,7 @@ export function MarketplaceForm({ onSubmit, onCancel, isSubmitting = false }: Ma
               className={selectClassName}
             >
               <option value="draft">Draft</option>
-              <option value="pending">Pending</option>
               <option value="published">Published</option>
-              <option value="suspended">Suspended</option>
-              <option value="unpublished">Unpublished</option>
               <option value="archived">Archived</option>
             </select>
             {errors.status && (

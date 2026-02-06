@@ -1,28 +1,69 @@
 export interface MarketplaceListing {
+  entity_type: string;
   id: string;
   slug: string;
-  title: string;
-  description: string;
-  fullDescription?: string;
-  price: number;
-  image: string;
-  images?: string[];
-  category: string;
-  authenticated: boolean;
-  certificate: string;
-  authenticatedDate?: string;
-  condition?: string;
-  provenance?: string;
-  signedBy?: string;
-  coaIssuer?: string;
-  status?: "qualified" | "inconclusive" | "disqualified";
-  seller?: {
-    name: string;
-    rating: number;
-    verified: boolean;
+  sku: string;
+  state: {
+    lifecycle: "draft" | "published" | "archived";
+    visibility: "private" | "unlisted" | "public";
+    featured: { is: boolean; order: number | null };
+    publish_at: string | null;
+    created_at: string;
+    updated_at: string;
+    created_by: string;
   };
-  createdAt?: string;
-  updatedAt?: string;
+  listing: {
+    title: string;
+    subtitle?: string | null;
+    short: string;
+    price: { amount: number; currency: string; compare_at?: number | null };
+    category: "premium" | "sport" | "collector" | "story";
+    tags: string[];
+  };
+  jersey: {
+    sport: "football" | "soccer";
+    club_id: string;
+    season?: string | null;
+    kit: "home" | "away" | "third" | "goalkeeper" | "training" | "special";
+    edition: "replica" | "authentic" | "player_issue" | "match_prepared" | "match_worn";
+    brand: { id: string; custom?: string | null };
+    size: { id: string; region: string; custom?: string | null };
+    style_code?: string | null;
+  };
+  signing: {
+    type: "single" | "multi";
+    signers: string[];
+    count: number;
+    ink: { id: string; custom?: string | null };
+    placement: { id: string; custom?: string | null };
+    inscription_text?: string | null;
+    sig_condition: "A" | "B" | "C" | "D" | "unknown";
+  };
+  condition: {
+    grade: "A" | "B" | "C" | "D" | "F" | "unknown";
+    wear:
+      | "new_with_tags"
+      | "new_no_tags"
+      | "lightly_used"
+      | "used"
+      | "heavily_used"
+      | "match_worn";
+    notes?: string | null;
+  };
+  auth: {
+    status: "none" | "pending" | "verified" | "rejected";
+    provider_id?: string | null;
+    coa_refs: string[];
+  };
+  refs: {
+    content_id?: string | null;
+    media_album_id?: string | null;
+    proof_bundle_id?: string | null;
+  };
+  media: {
+    hero_id?: string | null;
+    gallery?: string[] | null;
+  };
 }
 
 export interface Post {
@@ -99,4 +140,3 @@ export interface PaginatedResponse<T> {
   limit: number;
   totalPages: number;
 }
-

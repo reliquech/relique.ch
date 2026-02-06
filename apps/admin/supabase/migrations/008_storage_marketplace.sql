@@ -1,6 +1,6 @@
 -- =============================================================================
 -- Storage: Bucket cho ảnh Marketplace Items
--- Dùng để lưu ảnh sản phẩm (image, images) tham chiếu từ public.marketplace_items
+-- Dùng để lưu ảnh sản phẩm (media.hero_id, media.gallery) tham chiếu từ public.marketplace_items
 -- Upload qua Admin app (service role) hoặc authenticated user có quyền
 -- =============================================================================
 

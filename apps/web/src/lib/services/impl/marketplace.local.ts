@@ -47,10 +47,10 @@ function applySearch(items: MarketplaceListing[], q?: string): MarketplaceListin
   const searchLower = q.toLowerCase();
   return items.filter(
     (item) =>
-      item.title.toLowerCase().includes(searchLower) ||
-      item.description.toLowerCase().includes(searchLower) ||
-      item.signedBy?.toLowerCase().includes(searchLower) ||
-      item.category.toLowerCase().includes(searchLower)
+      item.listing.title.toLowerCase().includes(searchLower) ||
+      item.listing.short.toLowerCase().includes(searchLower) ||
+      item.signing.signers.join(" ").toLowerCase().includes(searchLower) ||
+      item.listing.category.toLowerCase().includes(searchLower)
   );
 }
 
@@ -62,42 +62,42 @@ function applyFilters(
   
   let filtered = items;
   
-  if (filters.category && filters.category !== "all") {
+  if (filters.category && filters.category.toLowerCase() !== "all") {
     filtered = filtered.filter((item) =>
-      item.category.toLowerCase().includes(filters.category!.toLowerCase())
+      item.listing.category.toLowerCase().includes(filters.category!.toLowerCase())
     );
   }
   
   if (filters.sport) {
     filtered = filtered.filter((item) =>
-      item.category.toLowerCase().includes("sports")
+      item.jersey.sport.toLowerCase().includes(filters.sport!.toLowerCase())
     );
   }
   
   if (filters.signedBy) {
     filtered = filtered.filter(
       (item) =>
-        item.signedBy?.toLowerCase() === filters.signedBy!.toLowerCase()
+        item.signing.signers.some((signer) => signer.toLowerCase() === filters.signedBy!.toLowerCase())
     );
   }
   
   if (filters.status) {
-    filtered = filtered.filter((item) => item.status === filters.status);
+    filtered = filtered.filter((item) => item.auth.status === filters.status);
   }
   
   if (filters.coaIssuer) {
     filtered = filtered.filter(
       (item) =>
-        item.coaIssuer?.toLowerCase() === filters.coaIssuer!.toLowerCase()
+        item.auth.provider_id?.toLowerCase() === filters.coaIssuer!.toLowerCase()
     );
   }
   
   if (filters.priceMin !== undefined) {
-    filtered = filtered.filter((item) => item.price >= filters.priceMin!);
+    filtered = filtered.filter((item) => item.listing.price.amount >= filters.priceMin!);
   }
   
   if (filters.priceMax !== undefined) {
-    filtered = filtered.filter((item) => item.price <= filters.priceMax!);
+    filtered = filtered.filter((item) => item.listing.price.amount <= filters.priceMax!);
   }
   
   return filtered;
@@ -106,8 +106,8 @@ function applyFilters(
 function applySort(items: MarketplaceListing[], sort?: string): MarketplaceListing[] {
   if (!sort) {
     return items.sort((a, b) => {
-      const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-      const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      const aDate = a.state.created_at ? new Date(a.state.created_at).getTime() : 0;
+      const bDate = b.state.created_at ? new Date(b.state.created_at).getTime() : 0;
       return bDate - aDate;
     });
   }
@@ -115,20 +115,20 @@ function applySort(items: MarketplaceListing[], sort?: string): MarketplaceListi
   switch (sort) {
     case "newest":
       return items.sort((a, b) => {
-        const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-        const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        const aDate = a.state.created_at ? new Date(a.state.created_at).getTime() : 0;
+        const bDate = b.state.created_at ? new Date(b.state.created_at).getTime() : 0;
         return bDate - aDate;
       });
     case "oldest":
       return items.sort((a, b) => {
-        const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-        const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        const aDate = a.state.created_at ? new Date(a.state.created_at).getTime() : 0;
+        const bDate = b.state.created_at ? new Date(b.state.created_at).getTime() : 0;
         return aDate - bDate;
       });
     case "price-asc":
-      return items.sort((a, b) => a.price - b.price);
+      return items.sort((a, b) => a.listing.price.amount - b.listing.price.amount);
     case "price-desc":
-      return items.sort((a, b) => b.price - a.price);
+      return items.sort((a, b) => b.listing.price.amount - a.listing.price.amount);
     case "featured":
       return items;
     default:
@@ -281,4 +281,3 @@ export const marketplaceServiceLocal: IMarketplaceService = {
     }
   },
 };
-

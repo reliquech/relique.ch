@@ -5,6 +5,4 @@ export type {
   MarketplaceFilters,
   PaginationParams,
   SortOption,
-  Seller,
 } from "../schemas/marketplace";
-
