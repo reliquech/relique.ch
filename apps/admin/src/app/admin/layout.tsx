@@ -52,10 +52,18 @@ export default function AdminLayout({
   };
 
   return (
-    <div className="flex h-screen bg-bg-0 text-white overflow-hidden selection:bg-primary/30">
-      <AlertScheduler />
-      <PortalSidebar onLogout={handleLogout} />
-      <main className="flex-1 flex flex-col min-w-0">
+    <div className="flex h-screen text-white overflow-hidden selection:bg-primary/30 relative">
+      {/* Background image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/admin background.jpeg')" }}
+        aria-hidden
+      />
+      <div className="absolute inset-0 bg-black/60" aria-hidden />
+      <div className="relative z-10 flex flex-1 min-h-0">
+        <AlertScheduler />
+        <PortalSidebar onLogout={handleLogout} />
+        <main className="flex-1 flex flex-col min-w-0">
         <header className="h-16 border-b border-border bg-surface/50 backdrop-blur-md flex items-center justify-between px-8 sticky top-0 z-10">
           <div className="flex items-center gap-4 flex-1">
             <div className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] flex items-center gap-3">
@@ -82,10 +90,11 @@ export default function AdminLayout({
             </div>
           </div>
         </header>
-        <div className="flex-1 overflow-y-auto p-8 bg-gradient-to-b from-transparent to-surface/20">
+        <div className="flex-1 overflow-y-auto p-8 bg-gradient-to-b from-transparent to-black/30">
           {children}
         </div>
       </main>
+      </div>
     </div>
   );
 }

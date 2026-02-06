@@ -291,6 +291,10 @@
   .clip-path-slant-lg {
     clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 100%, 24px 100%);
   }
+
+  .diagonal-clip {
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 95% 100%, 0 100%);
+  }
 }
 
 /* Print styles */

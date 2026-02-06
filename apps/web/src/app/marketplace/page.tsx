@@ -14,10 +14,8 @@ import { LoadingState } from "@/components/shared/LoadingState";
  */
 function MarketplacePageContent() {
   return (
-    <div className="py-24 bg-bgDark min-h-screen">
-      <div className="container mx-auto px-6">
-        <MarketplaceGrid />
-      </div>
+    <div className="min-h-screen bg-bgDark text-white font-sans selection:bg-primaryBlue selection:text-white py-24">
+      <MarketplaceGrid />
     </div>
   );
 }

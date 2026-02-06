@@ -91,7 +91,18 @@ export default function AboutPage() {
             </ul>
             <p>
               From the perspective of asset managers with extensive background in institutional finance, we realized that memorabilia—items tied to people, events, and history that cannot be replicated—possess many of the characteristics of long-term valuable assets: objective scarcity, sustainable collector demand, and cultural value across time.
-              <br /><br />
+            </p>
+            <figure className="my-10">
+              <img
+                src="/mock-images/maradona.png"
+                alt="Diego Maradona 1986 World Cup Match Worn Shirt"
+                className="w-full max-w-2xl mx-auto rounded-sm border border-white/10 object-cover"
+              />
+              <figcaption className="mt-3 text-sm text-textSec text-center max-w-2xl mx-auto leading-relaxed">
+                Diego Maradona 1986 World Cup &apos;The Hand of God&apos; &amp; &apos;Goal of the Century&apos; Match Worn Shirt, sold for a record-breaking $9.3 million, fetched what is believed to be the highest price ever paid for a sports item.
+              </figcaption>
+            </figure>
+            <p>
               Unlike most traditional financial assets, collectibles have an abstract value driven by a passionate base — much like fine art. According to Kiplinger, of the most reputable financial publication, the demand for sports collectibles has recorded unprecedented growth since the pandemic, outperforming even the S&P 500. Their valuation in the market is expected to have a CAGR of 21.8% over the next decade.
               The fact that Sotheby’s—whose past auctions include a $157.2 million Modigliani and a $139.4 million Picasso—has stepped into the sports memorabilia market speaks volume. We might as well be witnessing the emergence of a new blue chip investment class.
             </p>
@@ -132,21 +143,33 @@ export default function AboutPage() {
               <h3 className="text-3xl font-semibold text-highlightIce mb-8 relative z-10">
                 Artificial Intelligence - A Natural Extension, Not a Pivot
               </h3>
-              <div className="space-y-6 text-textSec text-base leading-relaxed">
-                <p>
-                  In this day and age, conventional certification methods have unfortunately become extremely
-                  vulnerable to forgery and digital manipulation. Expert opinions, while respected, are subjective and
-                  hard to scale efficiently.
-                </p>
-                <p>
-                  Relique believes that a rigorous AI-powered authentication technology is the answer we&apos;re looking
-                  for, providing a reliable, scalable, and objective measure of authenticity.
-                </p>
-                <p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div className="aspect-square rounded-sm border border-white/10 overflow-hidden relative z-10">
+                  <img
+                    src="/mock-images/aiImage.png"
+                    alt="AI-powered authentication"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="space-y-6 text-textSec text-base leading-relaxed md:pt-0">
+                  <p>
+                    In this day and age, conventional certification methods have unfortunately become extremely
+                    vulnerable to forgery and digital manipulation. Expert opinions, while respected, are subjective and
+                    hard to scale efficiently.
+                  </p>
+                  <p>
+                    Relique believes that a rigorous AI-powered authentication technology is the answer we&apos;re looking
+                    for, providing a reliable, scalable, and objective measure of authenticity.
+                  </p>
+                  <p>
                   For match-worn or used items, our AI virtually &quot;replays&quot; the event, analyzing every minute
                   detail from all footage available, including proprietary recordings and exclusive sources accessible
                   only to Relique. It will then be able to spot:
                 </p>
+                </div>
+              </div>
+              <div className="mt-8 space-y-6 text-textSec text-base leading-relaxed">
+
                 <ul className="list-disc pl-6 space-y-2">
                   <li>
                     Fabric patterns and material stains to subtle environmental markers—at a level of attention and

@@ -68,6 +68,9 @@ export interface CardItemData {
   price?: number;
   slug?: string;
   signedBy?: string;
+  backImage?: string;
+  condition?: string;
+  watchCount?: number;
 }
 
 /**
@@ -100,5 +103,7 @@ export function listingToCardItem(listing: MarketplaceListing): CardItemData {
     price: listing.price,
     slug: listing.slug,
     signedBy: listing.signedBy,
+    backImage: listing.images?.[1],
+    condition: listing.condition,
   };
 }

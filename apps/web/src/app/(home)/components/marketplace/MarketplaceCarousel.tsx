@@ -2,7 +2,7 @@
 
 import { useDragCarousel } from "@/lib/hooks/useDragCarousel";
 import { DraggableCarousel } from "@/components/primitives/DraggableCarousel";
-import { MarketplaceCard } from "@/components/cards/MarketplaceCard";
+import { MarketplaceJerseyCard } from "@/components/app/MarketplaceJerseyCard";
 import { ScrollProgressBar } from "@/components/primitives/ScrollProgressBar";
 import { toCardItem } from "@/lib/utils/marketplace";
 import type { MarketplaceItem } from "@/data/marketplace.data";
@@ -38,13 +38,14 @@ export function MarketplaceCarousel({ items, className = "" }: MarketplaceCarous
           onDragEnd={onDragEnd}
         >
           {items.map((item, idx) => (
-            <MarketplaceCard
-              key={item.id}
-              item={toCardItem(item)}
-              index={idx}
-              variant="carousel"
-              isDragging={isDragging}
-            />
+            <div key={item.id} className="flex-none w-[220px] sm:w-[240px] md:w-[280px] lg:w-[320px]">
+              <MarketplaceJerseyCard
+                item={toCardItem(item)}
+                index={idx}
+                variant="carousel"
+                isDragging={isDragging}
+              />
+            </div>
           ))}
         </DraggableCarousel>
       </div>
