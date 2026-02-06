@@ -17,7 +17,7 @@ export const ABOUT_CARDS: AboutCard[] = [
   },
   {
     title: "Investment Vehicle",
-    sub: "One to appreciates, but also one that appreciates.",
+    sub: "One to appreciate, but also one that appreciates.",
     href: "/about#investment-vehicle",
     size: "col-span-12 md:col-span-6",
     bg: "bg-primaryBlue/20",
