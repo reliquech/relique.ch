@@ -1,9 +1,11 @@
 "use client";
 
+const DEFAULT_COLORS = { text: "#F59E0B", bg: "rgba(245, 158, 11, 0.1)" } as const;
+
 /** Verification status badge (relique-marketplace style). Maps qualified/inconclusive/disqualified to colors. */
 const STATUS_COLORS: Record<string, { text: string; bg: string }> = {
   qualified: { text: "#22C55E", bg: "rgba(34, 197, 94, 0.1)" },
-  inconclusive: { text: "#F59E0B", bg: "rgba(245, 158, 11, 0.1)" },
+  inconclusive: { text: DEFAULT_COLORS.text, bg: DEFAULT_COLORS.bg },
   disqualified: { text: "#EF4444", bg: "rgba(239, 68, 68, 0.1)" },
 };
 
@@ -13,7 +15,7 @@ interface VerificationStatusBadgeProps {
 
 export function VerificationStatusBadge({ status }: VerificationStatusBadgeProps) {
   const key = (status ?? "inconclusive").toLowerCase();
-  const colors = STATUS_COLORS[key] ?? STATUS_COLORS.inconclusive;
+  const colors: { text: string; bg: string } = STATUS_COLORS[key] ?? DEFAULT_COLORS;
   const label = status ? status.toUpperCase() : "INCONCLUSIVE";
 
   return (
