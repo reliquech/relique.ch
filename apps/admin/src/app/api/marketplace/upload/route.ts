@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/supabase/requireUser";
+import { MARKETPLACE_UPLOAD_BUCKET } from "@/features/marketplace/constants";
+import {
+  createTempUploadPath,
+  isMarketplaceTempPath,
+} from "@/features/marketplace/utils/uploadPaths";
 
 const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -33,18 +38,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate unique filename
-    const timestamp = Date.now();
-    const randomString = Math.random().toString(36).substring(2, 15);
-    const fileExt = file.name.split(".").pop();
-    const fileName = `marketplace/${timestamp}-${randomString}.${fileExt}`;
+    const sessionIdRaw = formData.get("sessionId");
+    const sessionId =
+      typeof sessionIdRaw === "string" && sessionIdRaw.trim().length > 0
+        ? sessionIdRaw
+        : `session-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+    const requestedPath = formData.get("path");
+    const fileName =
+      typeof requestedPath === "string" && isMarketplaceTempPath(requestedPath)
+        ? requestedPath
+        : createTempUploadPath(sessionId, file.name);
 
     // Convert file to buffer
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
     // Bucket phải trùng với migration 008_storage_marketplace.sql (marketplace-images)
-    const BUCKET = "marketplace-images";
+    const BUCKET = MARKETPLACE_UPLOAD_BUCKET;
 
     // Upload to Supabase Storage
     const { data, error } = await supabase.storage
@@ -67,7 +78,10 @@ export async function POST(request: NextRequest) {
       data: { publicUrl },
     } = supabase.storage.from(BUCKET).getPublicUrl(data.path);
 
-    return NextResponse.json({ url: publicUrl, path: data.path }, { status: 200 });
+    return NextResponse.json(
+      { url: publicUrl, path: data.path, temporary: true },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error uploading file:", error);
     return NextResponse.json(
