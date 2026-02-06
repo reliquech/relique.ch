@@ -12,6 +12,7 @@ const UpdateMarketplaceItemSchema = z.object({
   currency: z.string().optional(),
   image: z.string().optional(),
   images: z.array(z.string()).optional().nullable(),
+  metadata: z.unknown().optional().nullable(),
   category: z.string().optional(),
   status: z.enum(["draft", "pending", "published", "suspended", "unpublished", "archived"]).optional(),
   authenticated: z.boolean().optional(),
@@ -94,6 +95,13 @@ export async function PATCH(
 
     if (validated.images !== undefined) {
       updateData.images = validated.images ? JSON.stringify(validated.images) : null;
+    }
+    if (validated.metadata !== undefined) {
+      updateData.metadata = validated.metadata
+        ? typeof validated.metadata === "string"
+          ? validated.metadata
+          : JSON.stringify(validated.metadata)
+        : null;
     }
 
     // Check if there's anything to update

@@ -83,6 +83,12 @@ export default function ItemsPage() {
               />
             </div>
             <button
+              onClick={() => router.push('/admin/marketplace/agent-create')}
+              className="border border-primary/40 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 text-primary hover:bg-primary/10 transition-colors"
+            >
+              Agent Create
+            </button>
+            <button
               onClick={() => router.push('/admin/marketplace/new')}
               className="bg-primary px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:scale-[1.02] transition-transform text-white"
             >

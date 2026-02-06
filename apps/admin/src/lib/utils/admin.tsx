@@ -66,6 +66,8 @@ export function getStatusPill(status: string) {
 export const routeToTabMap: Record<string, string> = {
   '/admin': 'dashboard',
   '/admin/items': 'items',
+  '/admin/marketplace/new': 'items',
+  '/admin/marketplace/agent-create': 'items',
   '/admin/featured': 'featured',
   '/admin/verify': 'verify',
   '/admin/logs': 'logs',

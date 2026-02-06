@@ -20,6 +20,7 @@ export interface Database {
           currency: string;
           image: string;
           images: Json | null;
+          metadata: Json | null;
           category: string;
           status: string;
           authenticated: boolean;
@@ -49,6 +50,7 @@ export interface Database {
           currency?: string;
           image: string;
           images?: Json | null;
+          metadata?: Json | null;
           category: string;
           status?: string;
           authenticated?: boolean;
@@ -78,6 +80,7 @@ export interface Database {
           currency?: string;
           image?: string;
           images?: Json | null;
+          metadata?: Json | null;
           category?: string;
           status?: string;
           authenticated?: boolean;
@@ -110,4 +113,3 @@ export interface Database {
     };
   };
 }
-
