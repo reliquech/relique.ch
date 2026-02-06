@@ -6,6 +6,15 @@ import { motion } from "framer-motion";
 import type { MarketplaceListing } from "@/lib/schemas/marketplace";
 import { VerificationStatusBadge } from "@/components/app/VerificationStatusBadge";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import {
+  getListingAuthStatus,
+  getListingCategory,
+  getListingConditionLabel,
+  getListingImages,
+  getListingPriceAmount,
+  getListingSignedBy,
+  getListingTitle,
+} from "@/lib/utils/marketplace";
 
 interface MarketplacePreviewOverlayProps {
   listing: MarketplaceListing;
@@ -23,8 +32,9 @@ export function MarketplacePreviewOverlay({ listing, onClose }: MarketplacePrevi
     return () => window.removeEventListener("keydown", handleEsc);
   }, [onClose]);
 
-  const images = listing.images?.length ? listing.images : [listing.image];
-  const priceFormatted = formatPrice(listing.price);
+  const images = getListingImages(listing);
+  const heroImage = images[0];
+  const priceFormatted = formatPrice(getListingPriceAmount(listing));
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 overflow-hidden">
@@ -45,7 +55,7 @@ export function MarketplacePreviewOverlay({ listing, onClose }: MarketplacePrevi
       >
         <div className="sticky top-0 z-10 bg-cardDark/80 border-b border-white/5 px-6 py-4 flex justify-between items-center backdrop-blur-xl">
           <div className="flex items-center gap-3">
-            <VerificationStatusBadge status={listing.status} />
+            <VerificationStatusBadge status={getListingAuthStatus(listing)} />
             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30">
               Inspection Module // {listing.id}
             </span>
@@ -64,12 +74,16 @@ export function MarketplacePreviewOverlay({ listing, onClose }: MarketplacePrevi
 
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div className="p-8 space-y-6 border-r border-white/5 bg-gradient-to-br from-navy/10 to-transparent">
-            <div className="aspect-square bg-white/5 relative border border-white/10 overflow-hidden">
-              <img
-                src={images[0]}
-                alt={listing.title}
-                className="w-full h-full object-cover"
-              />
+            <div className="aspect-square bg-white/5 relative border border-white/10 overflow-hidden flex items-center justify-center text-white/40 text-xs uppercase tracking-[0.3em]">
+              {heroImage ? (
+                <img
+                  src={heroImage}
+                  alt={getListingTitle(listing)}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                "No Media"
+              )}
             </div>
             <div className="grid grid-cols-4 gap-3">
               {images.slice(0, 4).map((src, i) => (
@@ -86,19 +100,19 @@ export function MarketplacePreviewOverlay({ listing, onClose }: MarketplacePrevi
           <div className="p-8 flex flex-col">
             <div className="mb-10">
               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-accentBlue block mb-3">
-                {listing.category || "Curated Listing"}
+                {getListingCategory(listing) || "Curated Listing"}
               </span>
               <h2 className="text-3xl font-black leading-tight tracking-tight text-white mb-4">
-                {listing.title}
+                {getListingTitle(listing)}
               </h2>
               <p className="text-3xl font-black text-white">{priceFormatted}</p>
             </div>
 
             <div className="grid grid-cols-2 gap-y-8 gap-x-12 mb-10">
               {[
-                { label: "Category", value: listing.category },
-                { label: "Condition", value: listing.condition || "—" },
-                { label: "Signed By", value: listing.signedBy || "—" },
+                { label: "Category", value: getListingCategory(listing) },
+                { label: "Condition", value: getListingConditionLabel(listing) || "—" },
+                { label: "Signed By", value: getListingSignedBy(listing) || "—" },
               ].map((item, i) => (
                 <div key={i}>
                   <p className="text-[9px] font-black uppercase tracking-[0.4em] text-white/30 mb-2">
@@ -111,7 +125,7 @@ export function MarketplacePreviewOverlay({ listing, onClose }: MarketplacePrevi
 
             <div className="mt-auto space-y-4">
               <a
-                href={`mailto:contact@relique.ch?subject=Inquiry about ${listing.title}`}
+                href={`mailto:contact@relique.ch?subject=Inquiry about ${getListingTitle(listing)}`}
                 className="block w-full bg-primaryBlue hover:bg-accentBlue text-white font-black uppercase tracking-[0.4em] py-5 text-xs text-center transition-colors shadow-xl"
                 style={{ clipPath: "polygon(0 0, 100% 0, 100% 85%, 95% 100%, 0 100%)" }}
               >

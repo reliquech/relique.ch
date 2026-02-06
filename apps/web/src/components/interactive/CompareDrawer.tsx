@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, createContext, useContext } from "react";
+import { useState, useEffect, useCallback, createContext, useContext, Fragment } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -17,6 +17,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Scale, X, Plus, Check, Trash2 } from "lucide-react";
 import type { MarketplaceListing } from "@relique/shared/domain";
 import { cn } from "@/lib/utils";
+import {
+  getListingAuthStatus,
+  getListingCategory,
+  getListingCoaRef,
+  getListingHeroImage,
+  getListingPriceAmount,
+  getListingSignedBy,
+  getListingTitle,
+} from "@/lib/utils/marketplace";
 
 const COMPARE_STORAGE_KEY = "relique.v1.marketplace.compare";
 const MAX_COMPARE_ITEMS = 3;
@@ -153,17 +162,16 @@ export function CompareDrawer() {
   if (compareItems.length === 0) return null;
 
   const compareFields = [
-    { key: "price", label: "Price", format: (v: number) => `$${v.toLocaleString()}` },
-    { key: "category", label: "Category" },
-    { key: "signedBy", label: "Signed By" },
-    { key: "coaIssuer", label: "COA Issuer" },
-    { key: "status", label: "Status" },
-    { key: "authenticated", label: "Verified", format: (v: boolean) => (v ? "Yes" : "No") },
+    { label: "Price", getValue: (item: MarketplaceListing) => `$${getListingPriceAmount(item).toLocaleString()}` },
+    { label: "Category", getValue: (item: MarketplaceListing) => getListingCategory(item) || "—" },
+    { label: "Signed By", getValue: (item: MarketplaceListing) => getListingSignedBy(item) || "—" },
+    { label: "COA Ref", getValue: (item: MarketplaceListing) => getListingCoaRef(item) || "—" },
+    { label: "Status", getValue: (item: MarketplaceListing) => getListingAuthStatus(item) || "—" },
+    { label: "Verified", getValue: (item: MarketplaceListing) => (getListingAuthStatus(item) === "verified" ? "Yes" : "No") },
   ] as const;
 
   return (
     <>
-      {/* Floating compare bar */}
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
@@ -187,8 +195,10 @@ export function CompareDrawer() {
             </SheetHeader>
 
             <div className="mt-6 overflow-x-auto">
-              <div className="grid gap-4" style={{ gridTemplateColumns: `200px repeat(${compareItems.length}, 1fr)` }}>
-                {/* Header row - images */}
+              <div
+                className="grid gap-4"
+                style={{ gridTemplateColumns: `200px repeat(${compareItems.length}, 1fr)` }}
+              >
                 <div />
                 {compareItems.map((item) => (
                   <Card key={item.id} className="relative">
@@ -203,8 +213,8 @@ export function CompareDrawer() {
                     <CardContent className="p-4">
                       <div className="relative aspect-square mb-3">
                         <Image
-                          src={item.image}
-                          alt={item.title}
+                          src={getListingHeroImage(item)}
+                          alt={getListingTitle(item)}
                           fill
                           className="object-cover"
                         />
@@ -213,39 +223,38 @@ export function CompareDrawer() {
                         href={`/marketplace/${item.slug}`}
                         className="font-medium hover:underline line-clamp-2"
                       >
-                        {item.title}
+                        {getListingTitle(item)}
                       </Link>
                     </CardContent>
                   </Card>
                 ))}
 
-                {/* Comparison rows */}
                 {compareFields.map((field) => (
-                  <>
-                    <div key={`label-${field.key}`} className="flex items-center font-medium text-muted-foreground py-2 border-t">
+                  <Fragment key={field.label}>
+                    <div
+                      className="flex items-center font-medium text-muted-foreground py-2 border-t"
+                    >
                       {field.label}
                     </div>
                     {compareItems.map((item) => {
-                      const value = item[field.key as keyof MarketplaceListing];
-                      const displayValue = "format" in field && field.format
-                        ? field.format(value as never)
-                        : value || "—";
+                      const value = field.getValue(item);
+                      const isVerifiedRow = field.label === "Verified" && value === "Yes";
                       return (
                         <div
-                          key={`${item.id}-${field.key}`}
+                          key={`${item.id}-${field.label}`}
                           className="flex items-center py-2 border-t"
                         >
-                          {field.key === "authenticated" && value ? (
+                          {isVerifiedRow ? (
                             <Badge variant="outline" className="bg-green-100 dark:bg-green-900">
                               Verified
                             </Badge>
                           ) : (
-                            <span>{String(displayValue)}</span>
+                            <span>{String(value)}</span>
                           )}
                         </div>
                       );
                     })}
-                  </>
+                  </Fragment>
                 ))}
               </div>
             </div>
@@ -255,4 +264,3 @@ export function CompareDrawer() {
     </>
   );
 }
-

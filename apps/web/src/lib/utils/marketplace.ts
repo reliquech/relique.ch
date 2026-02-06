@@ -25,8 +25,64 @@ export function formatPrice(price: number): string {
  * Converts status to uppercase display format
  */
 export function getStatusLabel(status?: string): string {
-  if (!status) return "QUALIFIED";
-  return status.toUpperCase();
+  if (!status) return "UNVERIFIED";
+  const normalized = status.toLowerCase();
+  const labels: Record<string, string> = {
+    verified: "VERIFIED",
+    pending: "PENDING",
+    rejected: "REJECTED",
+    none: "UNVERIFIED",
+  };
+  return labels[normalized] ?? status.toUpperCase();
+}
+
+export function getListingTitle(listing: MarketplaceListing): string {
+  return listing.listing?.title ?? "Untitled";
+}
+
+export function getListingCategory(listing: MarketplaceListing): string {
+  return listing.listing?.category ?? "collector";
+}
+
+export function getListingPriceAmount(listing: MarketplaceListing): number {
+  return listing.listing?.price?.amount ?? 0;
+}
+
+export function getListingPriceCurrency(listing: MarketplaceListing): string {
+  return listing.listing?.price?.currency ?? "USD";
+}
+
+export function getListingHeroImage(listing: MarketplaceListing): string {
+  return listing.media?.hero_id || listing.media?.gallery?.[0] || "/og-logo.png";
+}
+
+export function getListingImages(listing: MarketplaceListing): string[] {
+  const gallery = listing.media?.gallery ?? [];
+  const hero = listing.media?.hero_id ? [listing.media.hero_id] : [];
+  return hero.concat(gallery).filter(Boolean);
+}
+
+export function getListingSignedBy(listing: MarketplaceListing): string | undefined {
+  return listing.signing?.signers?.[0];
+}
+
+export function getListingConditionLabel(listing: MarketplaceListing): string | undefined {
+  const grade = listing.condition?.grade;
+  const wear = listing.condition?.wear;
+  if (grade && grade !== "unknown") return grade;
+  return wear ?? undefined;
+}
+
+export function getListingAuthStatus(listing: MarketplaceListing): string | undefined {
+  return listing.auth?.status;
+}
+
+export function getListingCoaRef(listing: MarketplaceListing): string | undefined {
+  return listing.auth?.coa_refs?.[0];
+}
+
+export function getListingShortDescription(listing: MarketplaceListing): string {
+  return listing.listing?.short ?? "";
 }
 
 /**
@@ -41,13 +97,11 @@ export const SORT_OPTIONS = [
  * Category options for marketplace
  */
 export const CATEGORY_OPTIONS = [
-  "ALL SPORTS",
-  "Basketball",
-  "Football",
-  "Baseball",
-  "Tennis",
-  "F1",
-  "Cricket",
+  "ALL",
+  "premium",
+  "sport",
+  "collector",
+  "story",
 ] as const;
 
 /**
@@ -96,14 +150,14 @@ export function toCardItem(item: MarketplaceItem): CardItemData {
 export function listingToCardItem(listing: MarketplaceListing): CardItemData {
   return {
     id: listing.id,
-    image: listing.image,
-    category: listing.category,
-    status: listing.status,
-    title: listing.title,
-    price: listing.price,
+    image: getListingHeroImage(listing),
+    category: getListingCategory(listing),
+    status: getListingAuthStatus(listing),
+    title: getListingTitle(listing),
+    price: getListingPriceAmount(listing),
     slug: listing.slug,
-    signedBy: listing.signedBy,
-    backImage: listing.images?.[1],
-    condition: listing.condition,
+    signedBy: getListingSignedBy(listing),
+    backImage: getListingImages(listing)[1],
+    condition: getListingConditionLabel(listing),
   };
 }

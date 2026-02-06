@@ -5,7 +5,7 @@ import type {
 import { marketplaceService } from "./marketplaceService";
 import { contentService } from "./contentService";
 import { storage } from "@/lib/storage";
-import { MarketplaceListingSchema, ItemStatusSchema } from "@/lib/schemas/marketplace";
+import { MarketplaceListingSchema } from "@/lib/schemas/marketplace";
 import { PostSchema, EventSchema } from "@/lib/schemas/content";
 import type { MarketplaceListing } from "@/lib/schemas/marketplace";
 import type { Post, Event } from "@/lib/schemas/content";
@@ -15,17 +15,24 @@ const adminMarketplaceService: IAdminMarketplaceService = {
   ...marketplaceService,
   
   async create(
-    listing: Omit<MarketplaceListing, "id" | "slug" | "createdAt" | "updatedAt">
+    listing: Omit<MarketplaceListing, "id" | "slug">
   ): Promise<MarketplaceListing> {
     const mutations = storage.marketplace.listings.get<MarketplaceListing>();
     const now = new Date().toISOString();
-    
+    const slug = listing.listing?.title
+      ? listing.listing.title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
+      : `listing-${Date.now()}`;
+
     const newListing: MarketplaceListing = {
       ...listing,
       id: `admin-${Date.now()}`,
-      slug: listing.title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, ""),
-      createdAt: now,
-      updatedAt: now,
+      slug,
+      state: {
+        ...listing.state,
+        created_at: listing.state?.created_at ?? now,
+        updated_at: now,
+        created_by: listing.state?.created_by ?? "admin",
+      },
     };
     
     const validated = MarketplaceListingSchema.safeParse(newListing);
@@ -54,7 +61,11 @@ const adminMarketplaceService: IAdminMarketplaceService = {
     const updated: MarketplaceListing = {
       ...existing,
       ...updates,
-      updatedAt: new Date().toISOString(),
+      state: {
+        ...existing.state,
+        ...updates.state,
+        updated_at: new Date().toISOString(),
+      },
     };
     
     const validated = MarketplaceListingSchema.safeParse(updated);
@@ -91,7 +102,11 @@ const adminMarketplaceService: IAdminMarketplaceService = {
         mutations[index] = {
           ...mutations[index],
           ...updates,
-          updatedAt: new Date().toISOString(),
+          state: {
+            ...mutations[index].state,
+            ...updates.state,
+            updated_at: new Date().toISOString(),
+          },
         };
         updatedCount++;
       }

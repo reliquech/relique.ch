@@ -5,6 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import type { MarketplaceListing } from "@/lib/schemas/marketplace";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import {
+  getListingCategory,
+  getListingCoaRef,
+  getListingPriceAmount,
+  getListingTitle,
+} from "@/lib/utils/marketplace";
 
 interface DetailPurchasePanelProps {
   listing: MarketplaceListing;
@@ -18,8 +24,8 @@ export function DetailPurchasePanel({ listing }: DetailPurchasePanelProps) {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `Relique Archive | ${listing.title}`,
-          text: `Explore this authenticated ${listing.category} - ${listing.title} on Relique.`,
+          title: `Relique Archive | ${getListingTitle(listing)}`,
+          text: `Explore this authenticated ${getListingCategory(listing)} - ${getListingTitle(listing)} on Relique.`,
           url: window.location.href,
         });
       } catch {
@@ -35,7 +41,8 @@ export function DetailPurchasePanel({ listing }: DetailPurchasePanelProps) {
     }
   };
 
-  const priceFormatted = formatPrice(listing.price);
+  const priceFormatted = formatPrice(getListingPriceAmount(listing));
+  const certificate = getListingCoaRef(listing);
 
   return (
     <div className="bg-cardDark border border-white/10 p-10 shadow-2xl relative overflow-hidden">
@@ -70,9 +77,9 @@ export function DetailPurchasePanel({ listing }: DetailPurchasePanelProps) {
           Share Listing
         </button>
 
-        {listing.certificate && (
+        {certificate && (
           <Link
-            href={`/verify?code=${encodeURIComponent(listing.certificate)}`}
+            href={`/verify?code=${encodeURIComponent(certificate)}`}
             className="block w-full bg-transparent border border-white/10 text-white font-black uppercase tracking-[0.4em] py-4 text-[9px] text-center transition-all hover:bg-white/5 hover:border-white/30"
           >
             Verify this item
@@ -80,7 +87,7 @@ export function DetailPurchasePanel({ listing }: DetailPurchasePanelProps) {
         )}
 
         <a
-          href={`mailto:contact@relique.ch?subject=Inquiry about ${listing.title}`}
+          href={`mailto:contact@relique.ch?subject=Inquiry about ${getListingTitle(listing)}`}
           className="block w-full bg-primaryBlue hover:bg-accentBlue text-white font-black uppercase tracking-[0.5em] py-6 text-xs transition-all duration-300 diagonal-clip shadow-[0_0_40px_rgba(28,77,141,0.2)] text-center"
         >
           Acquire Piece

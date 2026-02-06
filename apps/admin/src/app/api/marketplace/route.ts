@@ -2,32 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/supabase/requireUser";
 import { z } from "zod";
+import {
+  normalizeMarketplaceCreate,
+  buildMarketplaceInsertPayload,
+} from "./marketplaceUtils";
 
-const MarketplaceItemSchema = z.object({
-  slug: z.string(),
-  title: z.string(),
-  description: z.string(),
-  full_description: z.string().optional().nullable(),
-  price_usd: z.number(),
-  currency: z.string().optional().default("USD"),
-  image: z.string(),
-  images: z.array(z.string()).optional().nullable(),
-  category: z.string(),
-  status: z.enum(["draft", "pending", "published", "suspended", "unpublished", "archived"]).optional().default("draft"),
-  authenticated: z.boolean().optional().default(false),
-  certificate: z.string().optional().nullable(),
-  authenticated_date: z.string().optional().nullable(),
-  coa_issuer: z.string().optional().nullable(),
-  signed_by: z.string().optional().nullable(),
-  condition: z.string().optional().nullable(),
-  provenance: z.string().optional().nullable(),
-  seller_name: z.string().optional().nullable(),
-  seller_rating: z.number().optional().nullable(),
-  seller_verified: z.boolean().optional().nullable(),
-  is_featured: z.boolean().optional().default(false),
-  featured_order: z.number().optional().nullable(),
-  commission_rate: z.number().optional().nullable(),
-  created_by: z.string().optional().nullable(),
+const MarketplaceListQuerySchema = z.object({
+  status: z.string().optional(),
+  category: z.string().optional(),
+  is_featured: z.string().optional(),
+  page: z.string().optional(),
+  pageSize: z.string().optional(),
 });
 
 // GET /api/marketplace - List items
@@ -37,12 +22,17 @@ export async function GET(request: NextRequest) {
     if (!user) return response;
     const supabase = createServiceRoleClient();
     const searchParams = request.nextUrl.searchParams;
-    
-    const status = searchParams.get("status");
-    const category = searchParams.get("category");
-    const isFeatured = searchParams.get("is_featured");
-    const page = parseInt(searchParams.get("page") || "1");
-    const pageSize = parseInt(searchParams.get("pageSize") || "100");
+
+    const parsed = MarketplaceListQuerySchema.parse({
+      status: searchParams.get("status") ?? undefined,
+      category: searchParams.get("category") ?? undefined,
+      is_featured: searchParams.get("is_featured") ?? undefined,
+      page: searchParams.get("page") ?? undefined,
+      pageSize: searchParams.get("pageSize") ?? undefined,
+    });
+
+    const page = parsed.page ? parseInt(parsed.page, 10) : 1;
+    const pageSize = parsed.pageSize ? parseInt(parsed.pageSize, 10) : 100;
     const offset = (page - 1) * pageSize;
 
     let query = supabase
@@ -51,56 +41,46 @@ export async function GET(request: NextRequest) {
       .order("created_at", { ascending: false })
       .range(offset, offset + pageSize - 1);
 
-    if (status) {
-      query = query.eq("status", status);
+    if (parsed.status) {
+      query = query.eq("state_lifecycle", parsed.status);
     }
-    if (category) {
-      query = query.eq("category", category);
+    if (parsed.category) {
+      query = query.eq("listing_category", parsed.category);
     }
-    if (isFeatured !== null) {
-      query = query.eq("is_featured", isFeatured === "true");
+    if (parsed.is_featured !== undefined) {
+      query = query.eq("featured_is", parsed.is_featured === "true");
     }
 
     const { data, error, count } = await query;
 
     if (error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const responseData = {
+    return NextResponse.json({
       items: data || [],
       total: count || 0,
       page,
       pageSize,
       totalPages: Math.ceil((count || 0) / pageSize),
-    };
-    return NextResponse.json(responseData);
+    });
   } catch (error) {
     console.error("Error fetching marketplace items:", error);
-    
-    // Return more descriptive error message
-    const errorMessage = error instanceof Error 
-      ? error.message 
-      : "Internal server error";
-    
-    // Check if it's a configuration error
+
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
+
     if (errorMessage.includes("Missing Supabase configuration")) {
       return NextResponse.json(
-        { 
+        {
           error: errorMessage,
-          details: "Please check your .env.local file and ensure all required Supabase environment variables are set."
+          details:
+            "Please check your .env.local file and ensure all required Supabase environment variables are set.",
         },
         { status: 500 }
       );
     }
-    
-    return NextResponse.json(
-      { error: errorMessage },
-      { status: 500 }
-    );
+
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 
@@ -112,27 +92,21 @@ export async function POST(request: NextRequest) {
     const supabase = createServiceRoleClient();
     const body = await request.json();
 
-    const validated = MarketplaceItemSchema.parse(body);
+    const listing = normalizeMarketplaceCreate(body, user.id);
 
     const { data, error } = await supabase
       .from("marketplace_items")
       // @ts-expect-error - Supabase type inference issue with service role client
-      .insert({
-        ...validated,
-        images: validated.images ? JSON.stringify(validated.images) : null,
-      })
+      .insert(buildMarketplaceInsertPayload(listing))
       .select()
       .single();
 
     if (error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    // Log audit
-    await supabase.from("audit_logs")
+    await supabase
+      .from("audit_logs")
       // @ts-expect-error - Supabase type inference issue with service role client
       .insert({
         action: "CREATE",
@@ -150,9 +124,6 @@ export async function POST(request: NextRequest) {
       );
     }
     console.error("Error creating marketplace item:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

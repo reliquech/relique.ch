@@ -17,7 +17,7 @@ export function RelatedAssetsSection({ currentListing, limit = 4 }: RelatedAsset
   useEffect(() => {
     const load = async () => {
       const result = await marketplaceService.list({
-        filters: { category: currentListing.category },
+        filters: { category: currentListing.listing?.category },
         page: 1,
         pageSize: 20,
       });
@@ -27,7 +27,7 @@ export function RelatedAssetsSection({ currentListing, limit = 4 }: RelatedAsset
       setRelated(filtered);
     };
     load();
-  }, [currentListing.id, currentListing.category, limit]);
+  }, [currentListing.id, currentListing.listing?.category, limit]);
 
   if (related.length === 0) return null;
 

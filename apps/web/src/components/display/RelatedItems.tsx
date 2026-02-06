@@ -10,6 +10,13 @@ import type { MarketplaceListing } from "@/lib/schemas/marketplace";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import {
+  getListingCategory,
+  getListingPriceAmount,
+  getListingTitle,
+  getListingHeroImage,
+  getListingAuthStatus,
+} from "@/lib/utils/marketplace";
 
 interface RelatedItemsProps {
   currentListing: MarketplaceListing;
@@ -24,7 +31,7 @@ export function RelatedItems({ currentListing, limit = 4 }: RelatedItemsProps) {
     const loadRelated = async () => {
       const result = await marketplaceService.list({
         filters: {
-          category: currentListing.category,
+          category: currentListing.listing?.category,
         },
         page: 1,
         pageSize: 20,
@@ -35,7 +42,7 @@ export function RelatedItems({ currentListing, limit = 4 }: RelatedItemsProps) {
       setRelated(filtered);
     };
     loadRelated();
-  }, [currentListing.id, currentListing.category, limit]);
+  }, [currentListing.id, currentListing.listing?.category, limit]);
 
   if (related.length === 0) return null;
 
@@ -56,20 +63,20 @@ export function RelatedItems({ currentListing, limit = 4 }: RelatedItemsProps) {
               <Link href={`/marketplace/${item.slug}`}>
                 <div className="relative w-full h-48">
                   <Image
-                    src={item.image}
-                    alt={item.title}
+                    src={getListingHeroImage(item)}
+                    alt={getListingTitle(item)}
                     fill
                     className="object-cover"
                   />
                 </div>
                 <CardHeader>
-                  <CardTitle className="line-clamp-2 text-base">{item.title}</CardTitle>
-                  <CardDescription className="text-xs">{item.category}</CardDescription>
+                  <CardTitle className="line-clamp-2 text-base">{getListingTitle(item)}</CardTitle>
+                  <CardDescription className="text-xs">{getListingCategory(item)}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold">${item.price.toLocaleString()}</span>
-                    {item.authenticated && (
+                    <span className="text-lg font-bold">${getListingPriceAmount(item).toLocaleString()}</span>
+                    {getListingAuthStatus(item) === "verified" && (
                       <Badge variant="outline" className="text-xs">
                         Verified
                       </Badge>
@@ -108,4 +115,3 @@ export function RelatedItems({ currentListing, limit = 4 }: RelatedItemsProps) {
     </div>
   );
 }
-

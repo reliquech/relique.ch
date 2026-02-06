@@ -9,6 +9,11 @@ import { DetailMediaSection } from "@/components/app/marketplace-detail/DetailMe
 import { DetailPurchasePanel } from "@/components/app/marketplace-detail/DetailPurchasePanel";
 import { RelatedAssetsSection } from "@/components/app/marketplace-detail/RelatedAssetsSection";
 import { DetailBackToTop } from "@/components/app/marketplace-detail/DetailBackToTop";
+import {
+  getListingCategory,
+  getListingTitle,
+  getListingAuthStatus,
+} from "@/lib/utils/marketplace";
 
 interface MarketplaceDetailViewProps {
   listing: MarketplaceListing;
@@ -28,13 +33,14 @@ export function MarketplaceDetailView({ listing }: MarketplaceDetailViewProps) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [listing.id]);
 
-  const category = listing.category || "CURATED LISTING";
-  const hasProvenance = Boolean(listing.provenance);
-  const hasCoa = Boolean(listing.coaIssuer);
+  const category = getListingCategory(listing) || "CURATED LISTING";
+  const narrative = listing.listing?.subtitle || listing.listing?.short || "";
+  const hasNarrative = Boolean(narrative);
+  const hasCoa = Boolean(listing.auth?.coa_refs?.length);
 
   const anchorLinks = [
     { name: "Overview", href: "#overview" },
-    hasProvenance && { name: "Provenance", href: "#provenance" },
+    hasNarrative && { name: "Narrative", href: "#narrative" },
   ].filter(Boolean) as { name: string; href: string }[];
 
   return (
@@ -73,7 +79,7 @@ export function MarketplaceDetailView({ listing }: MarketplaceDetailViewProps) {
                   {category}
                 </span>
                 <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
-                <VerificationStatusBadge status={listing.status} />
+                <VerificationStatusBadge status={getListingAuthStatus(listing)} />
                 {hasCoa && (
                   <div className="flex items-center gap-2 border border-green-500/20 bg-green-500/5 px-3 py-1">
                     <span className="text-[9px] font-black uppercase tracking-[0.3em] text-green-500">
@@ -83,14 +89,14 @@ export function MarketplaceDetailView({ listing }: MarketplaceDetailViewProps) {
                 )}
               </div>
               <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-[1.1] mb-10 max-w-4xl">
-                {listing.title}
+                {getListingTitle(listing)}
               </h1>
               <DetailMediaSection listing={listing} />
             </motion.section>
 
-            {hasProvenance && (
+            {hasNarrative && (
               <motion.section
-                id="provenance"
+                id="narrative"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
@@ -98,11 +104,11 @@ export function MarketplaceDetailView({ listing }: MarketplaceDetailViewProps) {
                 className="pt-24 border-t border-white/5"
               >
                 <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/30 mb-12">
-                  I. Provenance & Narrative
+                  I. Listing Narrative
                 </h2>
                 <div className="max-w-3xl">
                   <p className="text-xl leading-relaxed text-white font-medium mb-16 italic opacity-90">
-                    {listing.provenance}
+                    {narrative}
                   </p>
                 </div>
               </motion.section>

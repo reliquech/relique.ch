@@ -20,7 +20,7 @@ export function MarketplaceGrid() {
   const [search, setSearch] = useState("");
   const [selectedListing, setSelectedListing] = useState<MarketplaceListing | null>(null);
   const [categoryFilter, setCategoryFilter] = useState(
-    searchParams.get("category") || "ALL SPORTS"
+    searchParams.get("category") || "ALL"
   );
   const [sortBy, setSortBy] = useState("price-desc");
 
@@ -29,7 +29,7 @@ export function MarketplaceGrid() {
       setLoading(true);
       try {
         const filters: { category?: string } = {};
-        if (categoryFilter !== "ALL SPORTS") {
+        if (categoryFilter !== "ALL") {
           filters.category = categoryFilter;
         }
         const result = await marketplaceService.list({
@@ -51,19 +51,24 @@ export function MarketplaceGrid() {
   const filteredItems = useMemo(() => {
     if (!search.trim()) return items;
     const q = search.toLowerCase();
-    return items.filter(
-      (item) =>
-        item.title.toLowerCase().includes(q) ||
-        item.description?.toLowerCase().includes(q) ||
-        item.signedBy?.toLowerCase().includes(q) ||
-        item.category.toLowerCase().includes(q)
-    );
+    return items.filter((item) => {
+      const title = item.listing?.title?.toLowerCase() ?? "";
+      const short = item.listing?.short?.toLowerCase() ?? "";
+      const signers = item.signing?.signers?.join(" ").toLowerCase() ?? "";
+      const category = item.listing?.category?.toLowerCase() ?? "";
+      return (
+        title.includes(q) ||
+        short.includes(q) ||
+        signers.includes(q) ||
+        category.includes(q)
+      );
+    });
   }, [items, search]);
 
   const handleCategoryChange = (value: string) => {
     setCategoryFilter(value);
     const params = new URLSearchParams(searchParams.toString());
-    if (value === "ALL SPORTS") {
+    if (value === "ALL") {
       params.delete("category");
     } else {
       params.set("category", value);
