@@ -4,6 +4,9 @@ import { motion } from "framer-motion";
 import { StrategicPartnerSection } from "../(home)/components/StrategicPartnerSection";
 import { TeamSection } from "../(home)/components/TeamSection";
 
+/** Chỉnh độ sáng ảnh Who We Are (0 = tối hết, 1 = gốc). Ví dụ: 0.85, 0.9 */
+const WHO_WE_ARE_IMG_BRIGHTNESS = 0.85;
+
 export default function AboutPage() {
   return (
     <div className="bg-bgDark pt-20 sm:pt-24 pb-8 sm:pb-12">
@@ -16,19 +19,29 @@ export default function AboutPage() {
           viewport={{ once: true }}
           className="py-16 sm:py-20 md:py-24 border-b border-white/5"
         >
-          <div className="mb-8 sm:mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight mb-6 sm:mb-8 leading-none">
-              Who We Are - The Relique Story
-            </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start mb-8 sm:mb-12">
+            <div className="space-y-4">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-none border-b-2 border-primaryBlue w-fit pb-2">
+                Who We Are - The Relique Story
+              </h1>
+              <p className="pt-4 text-textSec text-base sm:text-lg leading-relaxed font-medium">
+                Relique was founded by a group of financial professionals with extensive experience in
+                managing investment funds and high-value assets, in a quest for a new investment vehicle. Drawing on years
+                of exposure to global capital markets, we recognized that memorabilia possesses all the characteristics of
+                a legitimate financial asset—scarcity, provenance, and enduring value—yet has been held back by
+                inconsistent verification and fragmented infrastructure.
+              </p>
+            </div>
+            <div className="aspect-square rounded-sm border border-white/10 overflow-hidden relative">
+              <img
+                src="/mock-images/whoweareimage.jpg"
+                alt="Who We Are - The Relique Story"
+                className="w-full h-full object-cover brightness-90 contrast-[1.5]"
+              />
+              <div className="absolute inset-0 bg-black/15 pointer-events-none" aria-hidden />
+            </div>
           </div>
           <div className="space-y-6 sm:space-y-8 text-textSec text-base sm:text-lg leading-relaxed font-medium">
-            <p>
-              Relique was founded by a group of financial professionals with extensive experience in
-              managing investment funds and high-value assets, in a quest for a new investment vehicle. Drawing on years
-              of exposure to global capital markets, we recognized that memorabilia possesses all the characteristics of
-              a legitimate financial asset—scarcity, provenance, and enduring value—yet has been held back by
-              inconsistent verification and fragmented infrastructure.
-            </p>
             <p>
               Determined to transform this space, the team set out to address the barriers that have historically
               limited memorabilia&apos;s capacity as an investment asset. By combining rigorous financial discipline with

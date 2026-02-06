@@ -331,16 +331,22 @@ export function isNegativeStatus(status: string): boolean {
 // ============================================
 
 /**
- * Format price with currency
- * 
- * @param price - Price in USD
+ * Format price with currency.
+ * Use when not inside CurrencyProvider; otherwise prefer useCurrency().formatPrice.
+ *
+ * @param price - Price value
  * @param showCents - Whether to show cents
+ * @param currency - Currency code (default USD)
  * @returns Formatted price string
  */
-export function formatPrice(price: number, showCents: boolean = false): string {
+export function formatPrice(
+  price: number,
+  showCents: boolean = false,
+  currency: string = "USD"
+): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD",
+    currency,
     minimumFractionDigits: showCents ? 2 : 0,
     maximumFractionDigits: showCents ? 2 : 0,
   }).format(price);

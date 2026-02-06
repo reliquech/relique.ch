@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import type { MarketplaceListing } from "@/lib/schemas/marketplace";
 import { VerificationStatusBadge } from "@/components/app/VerificationStatusBadge";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 interface MarketplacePreviewOverlayProps {
   listing: MarketplaceListing;
@@ -12,6 +13,8 @@ interface MarketplacePreviewOverlayProps {
 }
 
 export function MarketplacePreviewOverlay({ listing, onClose }: MarketplacePreviewOverlayProps) {
+  const { formatPrice } = useCurrency();
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -21,11 +24,7 @@ export function MarketplacePreviewOverlay({ listing, onClose }: MarketplacePrevi
   }, [onClose]);
 
   const images = listing.images?.length ? listing.images : [listing.image];
-  const priceFormatted = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(listing.price);
+  const priceFormatted = formatPrice(listing.price);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 overflow-hidden">

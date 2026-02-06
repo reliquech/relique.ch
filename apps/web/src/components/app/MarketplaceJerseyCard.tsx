@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import type { CardItemData } from "@/lib/utils/marketplace";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 interface MarketplaceJerseyCardProps {
   item: CardItemData;
@@ -48,6 +49,7 @@ export function MarketplaceJerseyCard({
   preventNavigation = false,
 }: MarketplaceJerseyCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const { formatPrice } = useCurrency();
 
   const title = item.title || item.name || "UNTITLED";
   const player = item.signedBy || item.athlete || "—";
@@ -95,7 +97,7 @@ export function MarketplaceJerseyCard({
         <div className="mt-auto pt-5 border-t border-white/5 flex flex-col gap-4">
           <div className="flex justify-between items-baseline">
             <p className="text-xl font-black text-white">
-              {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(price)}
+              {formatPrice(price)}
             </p>
             {watchCount > 0 && (
               <div className="flex items-center gap-1.5">

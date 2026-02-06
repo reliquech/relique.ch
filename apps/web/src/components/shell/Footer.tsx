@@ -4,9 +4,20 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ReliqueMark } from "../logo/ReliqueMark";
+import { useCurrency } from "@/contexts/CurrencyContext";
+import { SUPPORTED_CURRENCIES } from "@/lib/constants/currency";
+import type { Currency } from "@/lib/constants/currency";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function Footer() {
   const router = useRouter();
+  const { currency, setCurrency } = useCurrency();
 
   const links = [
     { name: "Authenticate", href: "/authenticate" },
@@ -95,12 +106,38 @@ export function Footer() {
           <p className="text-[9px] sm:text-[10px] font-black tracking-[0.3em] sm:tracking-[0.4em] uppercase text-textSec text-center md:text-left">
             © {new Date().getFullYear()} RELIQUE.CH. ALL RIGHTS RESERVED.
           </p>
-          <div className="flex gap-4 sm:gap-6">
-            {["TW", "IG", "LI"].map((social) => (
-              <a key={social} href="#" className="text-textSec hover:text-white font-black text-[10px] sm:text-xs">
-                {social}
-              </a>
-            ))}
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+            <div className="flex items-center gap-2">
+              <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-textSec">
+                Currency
+              </span>
+              <Select
+                value={currency}
+                onValueChange={(value) => setCurrency(value as Currency)}
+              >
+                <SelectTrigger className="h-8 w-[5rem] sm:w-[5.5rem] border-white/10 bg-cardDark text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-textSec hover:text-white focus:ring-primaryBlue">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="border-white/10 bg-cardDark">
+                  {SUPPORTED_CURRENCIES.map((code) => (
+                    <SelectItem
+                      key={code}
+                      value={code}
+                      className="text-[10px] font-black uppercase text-textSec focus:bg-white/10 focus:text-white"
+                    >
+                      {code}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex gap-4 sm:gap-6">
+              {["TW", "IG", "LI"].map((social) => (
+                <a key={social} href="#" className="text-textSec hover:text-white font-black text-[10px] sm:text-xs">
+                  {social}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </div>

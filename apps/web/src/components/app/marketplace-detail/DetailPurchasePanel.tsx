@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import type { MarketplaceListing } from "@/lib/schemas/marketplace";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 interface DetailPurchasePanelProps {
   listing: MarketplaceListing;
@@ -11,6 +12,7 @@ interface DetailPurchasePanelProps {
 
 export function DetailPurchasePanel({ listing }: DetailPurchasePanelProps) {
   const [copied, setCopied] = useState(false);
+  const { formatPrice } = useCurrency();
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -33,11 +35,7 @@ export function DetailPurchasePanel({ listing }: DetailPurchasePanelProps) {
     }
   };
 
-  const priceFormatted = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(listing.price);
+  const priceFormatted = formatPrice(listing.price);
 
   return (
     <div className="bg-cardDark border border-white/10 p-10 shadow-2xl relative overflow-hidden">
