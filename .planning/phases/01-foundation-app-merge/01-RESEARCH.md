@@ -467,19 +467,18 @@ Wave 5 — Config consolidation (FND-05, FND-06)
 | A3 | Phase 1 keeps `apps/admin` in `pnpm-workspace.yaml` but excludes from `pnpm dev` via `--filter=web` | FND-06 | Low — planner must clarify workspace vs scripts |
 | A4 | ESLint `boundaries.js` cross-app import rule becomes moot after merge — no code imports from apps/admin | Architecture | Low — copy files, don't import across apps |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Keep `apps/admin` in pnpm workspace during Phase 1?**
-   - What we know: D-11 keeps directory; FND-06 removes references
-   - Recommendation: Remove from `tsconfig.json` references and turbo `dev` filter; keep in workspace until Phase 5 to avoid breaking path references in docs/scripts
+1. **Keep `apps/admin` in pnpm workspace during Phase 1?** — **RESOLVED**
+   - Decision: **Keep** `apps/admin` in `pnpm-workspace.yaml` until Phase 5 (CONS-02) per D-11
+   - Remove from `tsconfig.json` references and root `dev` script filter (`--filter=web`); directory stays as reference only
 
-2. **CommandPalette scope — global or admin-only?**
-   - What we know: Admin has it in root layout; public site doesn't use it
-   - Recommendation: Root layout (harmless on public); or lazy-load in `(portal)` layout only — planner discretion
+2. **CommandPalette scope — global or admin-only?** — **RESOLVED**
+   - Decision: **Root layout** — wire CommandPalette in `apps/web/src/app/layout.tsx` (harmless on public routes; matches admin pattern)
+   - Planner discretion applied in Plan 04 Task 2
 
-3. **Consolidate duplicate `components/ui/` now or Phase 4 (CONS-04)?**
-   - What we know: Phase 1 scope excludes CONS-04
-   - Recommendation: Copy admin ui components to web `components/ui/` as-is for build pass; dedup later
+3. **Consolidate duplicate `components/ui/` now or Phase 4 (CONS-04)?** — **RESOLVED (deferred)**
+   - Decision: **Defer dedup to Phase 4 (CONS-04)** — Phase 1 copies admin `components/ui/` as-is for build pass only; no consolidation work in this phase
 
 ## Environment Availability
 
