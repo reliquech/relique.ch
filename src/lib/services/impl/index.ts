@@ -1,6 +1,6 @@
 /**
- * Service implementations (adapters) for web app
- * These implement contracts from @/lib/domain using localStorage/fixtures
+ * Service implementations (adapters) for web app.
+ * Production public flows use Supabase/API adapters — not localStorage.
  */
 
 export { verifyServiceSupabase as verifyService } from "./verify.supabase";

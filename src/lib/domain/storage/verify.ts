@@ -4,6 +4,7 @@ import { pruneByLimit } from "./utils";
 import { VerifyHistoryEntrySchema, type VerifyHistoryEntry } from "../schemas/verify";
 
 /**
+ * @deprecated Legacy browser storage; public verify uses Supabase (Phase 2). Removed in Phase 4.
  * Typed storage helpers for Verify domain
  */
 

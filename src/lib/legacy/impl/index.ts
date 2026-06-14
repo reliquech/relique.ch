@@ -1,6 +1,6 @@
 /**
- * Service implementations (adapters) for portal app
- * These implement contracts from @/lib/domain using localStorage
+ * Legacy admin dashboard adapters only — localStorage/fixtures.
+ * NOT used by public site (Phase 2). Removed in Phase 4 (CONS-03).
  */
 
 export { verifyServiceLocal as verifyService } from "./verify.local";

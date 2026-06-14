@@ -4,6 +4,7 @@ import { pruneByLimit } from "./utils";
 import type { ConsignDraft, ConsignSubmission } from "../schemas/consign";
 
 /**
+ * @deprecated Legacy browser storage; public consign uses Supabase API (Phase 2). Removed in Phase 4.
  * Typed storage helpers for Consign domain
  */
 
