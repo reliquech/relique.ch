@@ -123,13 +123,57 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| — | — | Pending roadmap |
+| FND-01 | Phase 1 | Pending |
+| FND-02 | Phase 1 | Pending |
+| FND-03 | Phase 1 | Pending |
+| FND-04 | Phase 1 | Pending |
+| FND-05 | Phase 1 | Pending |
+| FND-06 | Phase 1 | Pending |
+| DATA-01 | Phase 2 | Pending |
+| DATA-02 | Phase 2 | Pending |
+| DATA-03 | Phase 2 | Pending |
+| DATA-04 | Phase 2 | Pending |
+| VRFY-01 | Phase 2 | Pending |
+| VRFY-02 | Phase 2 | Pending |
+| VRFY-03 | Phase 2 | Pending |
+| VRFY-04 | Phase 2 | Pending |
+| CNSG-01 | Phase 2 | Pending |
+| CNSG-02 | Phase 2 | Pending |
+| CNSG-03 | Phase 2 | Pending |
+| CNSG-04 | Phase 2 | Pending |
+| CNSG-05 | Phase 2 | Pending |
+| CNTC-01 | Phase 2 | Pending |
+| CNTC-02 | Phase 2 | Pending |
+| CNTC-03 | Phase 2 | Pending |
+| SEC-01 | Phase 3 | Pending |
+| SEC-02 | Phase 3 | Pending |
+| SEC-03 | Phase 3 | Pending |
+| SEC-04 | Phase 3 | Pending |
+| PAY-01 | Phase 4 | Pending |
+| PAY-02 | Phase 4 | Pending |
+| PAY-03 | Phase 4 | Pending |
+| PAY-04 | Phase 4 | Pending |
+| ADM-04 | Phase 4 | Pending |
+| CONS-01 | Phase 5 | Pending |
+| CONS-02 | Phase 5 | Pending |
+| CONS-03 | Phase 5 | Pending |
+| CONS-04 | Phase 5 | Pending |
+| CONS-05 | Phase 5 | Pending |
+| DATA-05 | Phase 5 | Pending |
+| DATA-06 | Phase 5 | Pending |
+| UX-01 | Phase 6 | Pending |
+| UX-02 | Phase 6 | Pending |
+| UX-03 | Phase 6 | Pending |
+| UX-04 | Phase 6 | Pending |
+| ADM-01 | Phase 6 | Pending |
+| ADM-02 | Phase 6 | Pending |
+| ADM-03 | Phase 6 | Pending |
 
 **Coverage:**
-- v1 requirements: 42 total
-- Mapped to phases: 0
-- Unmapped: 42 ⚠️
+- v1 requirements: 45 total
+- Mapped to phases: 45
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-06-14*
-*Last updated: 2026-06-14 after initial definition*
+*Last updated: 2026-06-14 after roadmap creation*
