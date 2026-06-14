@@ -1,0 +1,31 @@
+[
+  {
+    "id": "1",
+    "name": "Dr. Sarah Chen",
+    "role": "Chief Authentication Officer",
+    "bio": "Expert in forensic document analysis with over 15 years of experience in authenticating historical documents and autographs.",
+    "image": "https://picsum.photos/300/300?random=1"
+  },
+  {
+    "id": "2",
+    "name": "Michael Rodriguez",
+    "role": "Sports Memorabilia Specialist",
+    "bio": "Former sports journalist turned authentication expert, specializing in sports memorabilia and athlete autographs.",
+    "image": "https://picsum.photos/300/300?random=2"
+  },
+  {
+    "id": "3",
+    "name": "Emily Watson",
+    "role": "Entertainment Memorabilia Expert",
+    "bio": "Curator and authentication specialist with expertise in music, film, and entertainment memorabilia.",
+    "image": "https://picsum.photos/300/300?random=3"
+  },
+  {
+    "id": "4",
+    "name": "James Park",
+    "role": "Technology Lead",
+    "bio": "AI and machine learning engineer developing advanced authentication algorithms for probabilistic verification.",
+    "image": "https://picsum.photos/300/300?random=4"
+  }
+]
+

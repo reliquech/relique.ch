@@ -1,0 +1,59 @@
+{
+  "policies": {
+    "title": "Privacy Policy",
+    "lastUpdated": "2024-01-01",
+    "sections": [
+      {
+        "heading": "1. Introduction",
+        "content": "Relique is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your personal information when you use our authentication and verification services."
+      },
+      {
+        "heading": "2. Information We Collect",
+        "content": "We collect information that you provide directly to us, including but not limited to: name, email address, payment information, and items submitted for authentication. We also collect technical information such as IP addresses and browser types."
+      },
+      {
+        "heading": "3. How We Use Your Information",
+        "content": "We use the information we collect to provide, maintain, and improve our services, process transactions, send you technical notices and support messages, and communicate with you about products and services that may be of interest."
+      },
+      {
+        "heading": "4. Data Security",
+        "content": "We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction."
+      },
+      {
+        "heading": "5. Your Rights",
+        "content": "You have the right to access, update, or delete your personal information at any time. You may also opt out of certain communications from us."
+      }
+    ]
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "lastUpdated": "2024-01-01",
+    "sections": [
+      {
+        "heading": "1. Acceptance of Terms",
+        "content": "By accessing and using Relique's services, you accept and agree to be bound by the terms and provision of this agreement."
+      },
+      {
+        "heading": "2. Service Description",
+        "content": "Relique provides probabilistic authentication services for collectibles and memorabilia. Our authentication is based on available evidence and is not guaranteed to be 100% accurate."
+      },
+      {
+        "heading": "3. User Responsibilities",
+        "content": "Users are responsible for providing accurate information and ensuring that items submitted for authentication are legally owned by them. Users must not submit counterfeit or stolen items."
+      },
+      {
+        "heading": "4. Authentication Results",
+        "content": "Authentication results are probabilistic and based on available evidence. Relique does not guarantee the accuracy of authentication results and users should use results as a reference only."
+      },
+      {
+        "heading": "5. Limitation of Liability",
+        "content": "Relique shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from the use or inability to use our services."
+      },
+      {
+        "heading": "6. Modifications to Terms",
+        "content": "Relique reserves the right to modify these terms at any time. Continued use of our services after changes constitutes acceptance of the modified terms."
+      }
+    ]
+  }
+}
+

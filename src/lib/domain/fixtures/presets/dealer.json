@@ -1,0 +1,85 @@
+{
+  "userState": {
+    "favorites": ["1", "2", "3", "4", "5"],
+    "verifyHistory": [
+      {
+        "productId": "RLQ-QUAL-001",
+        "result": "qualified",
+        "timestamp": 1704067200000
+      },
+      {
+        "productId": "RLQ-DISQ-001",
+        "result": "disqualified",
+        "timestamp": 1704153600000
+      }
+    ],
+    "drafts": [
+      {
+        "name": "John Smith",
+        "email": "john.smith@example.com",
+        "phone": "+1-555-0100",
+        "country": "United States",
+        "itemDescription": "Vintage baseball card collection from 1950s",
+        "category": "Sports Memorabilia",
+        "signedBy": "Multiple Players",
+        "numberOfSignatures": 5,
+        "estimatedValue": 15000,
+        "provenance": "Estate sale acquisition",
+        "background": "Collection includes rare cards from Topps and Bowman",
+        "coaIssuer": "PSA",
+        "howDidYouHear": "Online search",
+        "files": [
+          {
+            "name": "card-front.jpg",
+            "size": 245760,
+            "type": "image/jpeg"
+          },
+          {
+            "name": "card-back.jpg",
+            "size": 198432,
+            "type": "image/jpeg"
+          }
+        ],
+        "status": "draft",
+        "timestamp": 1704240000000
+      },
+      {
+        "name": "Jane Doe",
+        "email": "jane.doe@example.com",
+        "itemDescription": "Signed concert poster",
+        "category": "Entertainment",
+        "status": "draft",
+        "timestamp": 1704326400000
+      }
+    ],
+    "submissions": [
+      {
+        "id": "submission-1",
+        "name": "Robert Johnson",
+        "email": "robert.johnson@example.com",
+        "phone": "+1-555-0200",
+        "country": "Canada",
+        "itemDescription": "Authenticated signed jersey from championship game",
+        "category": "Sports Memorabilia",
+        "estimatedValue": 25000,
+        "coaIssuer": "JSA",
+        "howDidYouHear": "Referral",
+        "files": [
+          {
+            "name": "jersey-front.jpg",
+            "size": 512000,
+            "type": "image/jpeg"
+          },
+          {
+            "name": "certificate.pdf",
+            "size": 128000,
+            "type": "application/pdf"
+          }
+        ],
+        "status": "submitted",
+        "createdAt": "2024-01-15T10:00:00Z",
+        "updatedAt": "2024-01-15T10:00:00Z"
+      }
+    ]
+  }
+}

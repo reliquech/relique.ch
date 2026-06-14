@@ -1,0 +1,25 @@
+{
+  "id": "1",
+  "slug": "michael-jordan-signed-basketball",
+  "title": "Michael Jordan Signed Basketball",
+  "description": "Authenticated basketball signed by Michael Jordan in 1996 during his championship season. This rare collectible comes with full authentication certificate and provenance documentation.",
+  "fullDescription": "This exceptional piece of sports memorabilia features an official NBA basketball signed by Michael Jordan in 1996, one of the most significant years in his career. The basketball has been professionally authenticated and comes with a complete certificate of authenticity. The signature is clear and well-preserved, making this a highly sought-after collectible for any basketball enthusiast or memorabilia collector.",
+  "price": 15000,
+  "images": [
+    "https://picsum.photos/800/600?random=1",
+    "https://picsum.photos/800/600?random=2",
+    "https://picsum.photos/800/600?random=3"
+  ],
+  "category": "Sports Memorabilia",
+  "authenticated": true,
+  "certificate": "REL-2024-001",
+  "authenticatedDate": "2024-01-15",
+  "condition": "Excellent",
+  "provenance": "Originally obtained at a charity event in 1996. Maintained in climate-controlled storage since acquisition.",
+  "seller": {
+    "name": "Premium Collectibles",
+    "rating": 4.9,
+    "verified": true
+  }
+}
+

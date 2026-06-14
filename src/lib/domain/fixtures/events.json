@@ -1,0 +1,73 @@
+[
+  {
+    "id": "1",
+    "slug": "collectors-showcase-2024-spring",
+    "title": "Collectors Showcase 2024 - Spring Edition",
+    "description": "Join us for our spring collectors showcase featuring authenticated memorabilia and live verification demonstrations.",
+    "image": "https://picsum.photos/1200/600?random=200",
+    "date": "2024-04-15",
+    "time": "10:00 AM - 6:00 PM",
+    "location": "Convention Center, New York, NY",
+    "type": "exhibition",
+    "featured": true,
+    "createdAt": "2024-01-01T10:00:00Z",
+    "updatedAt": "2024-01-01T10:00:00Z"
+  },
+  {
+    "id": "2",
+    "slug": "sports-memorabilia-auction-may",
+    "title": "Sports Memorabilia Auction - May 2024",
+    "description": "Exclusive auction featuring authenticated sports memorabilia including signed jerseys, equipment, and collectibles.",
+    "image": "https://picsum.photos/1200/600?random=201",
+    "date": "2024-05-20",
+    "time": "2:00 PM",
+    "location": "Auction House, Los Angeles, CA",
+    "type": "auction",
+    "featured": true,
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "2024-01-15T10:00:00Z"
+  },
+  {
+    "id": "3",
+    "slug": "relique-authentication-workshop",
+    "title": "Relique Authentication Workshop",
+    "description": "Learn about our authentication process and how to verify your collectibles. Hands-on demonstrations included.",
+    "image": "https://picsum.photos/1200/600?random=202",
+    "date": "2024-06-10",
+    "time": "1:00 PM - 4:00 PM",
+    "location": "Relique HQ, San Francisco, CA",
+    "type": "appearance",
+    "featured": false,
+    "createdAt": "2024-02-01T10:00:00Z",
+    "updatedAt": "2024-02-01T10:00:00Z"
+  },
+  {
+    "id": "4",
+    "slug": "entertainment-collectibles-expo",
+    "title": "Entertainment Collectibles Expo",
+    "description": "Showcase of authenticated entertainment memorabilia including signed albums, movie props, and celebrity items.",
+    "image": "https://picsum.photos/1200/600?random=203",
+    "date": "2024-07-05",
+    "time": "9:00 AM - 7:00 PM",
+    "location": "Expo Center, Las Vegas, NV",
+    "type": "exhibition",
+    "featured": false,
+    "createdAt": "2024-02-10T10:00:00Z",
+    "updatedAt": "2024-02-10T10:00:00Z"
+  },
+  {
+    "id": "5",
+    "slug": "historical-documents-special-auction",
+    "title": "Historical Documents Special Auction",
+    "description": "Rare authenticated historical documents and letters from notable figures. Pre-auction viewing available.",
+    "image": "https://picsum.photos/1200/600?random=204",
+    "date": "2024-08-15",
+    "time": "3:00 PM",
+    "location": "Heritage Auction House, Chicago, IL",
+    "type": "auction",
+    "featured": true,
+    "createdAt": "2024-02-20T10:00:00Z",
+    "updatedAt": "2024-02-20T10:00:00Z"
+  }
+]
+

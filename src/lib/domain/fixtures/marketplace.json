@@ -1,0 +1,698 @@
+[
+  {
+    "entity_type": "signed_football_jersey",
+    "id": "1",
+    "slug": "michael-jordan-signed-basketball",
+    "sku": "SKU-0001",
+    "state": {
+      "lifecycle": "published",
+      "visibility": "public",
+      "featured": {
+        "is": false,
+        "order": null
+      },
+      "publish_at": null,
+      "created_at": "2024-02-01T00:00:00.000Z",
+      "updated_at": "2024-02-01T00:00:00.000Z",
+      "created_by": "00000000-0000-0000-0000-000000000000"
+    },
+    "listing": {
+      "title": "Michael Jordan Signed Basketball",
+      "subtitle": null,
+      "short": "Authenticated basketball signed by Michael Jordan in 1996",
+      "price": {
+        "amount": 15000,
+        "currency": "USD",
+        "compare_at": null
+      },
+      "category": "sport",
+      "tags": [
+        "michael-jordan-signed-basketball"
+      ]
+    },
+    "jersey": {
+      "sport": "football",
+      "club_id": "00000000-0000-0000-0000-000000000000",
+      "season": null,
+      "kit": "home",
+      "edition": "replica",
+      "brand": {
+        "id": "nike",
+        "custom": null
+      },
+      "size": {
+        "id": "L",
+        "region": "EU",
+        "custom": null
+      },
+      "style_code": null
+    },
+    "signing": {
+      "type": "single",
+      "signers": [
+        "Michael Jordan"
+      ],
+      "count": 1,
+      "ink": {
+        "id": "black_sharpie",
+        "custom": null
+      },
+      "placement": {
+        "id": "front_chest",
+        "custom": null
+      },
+      "inscription_text": null,
+      "sig_condition": "A"
+    },
+    "condition": {
+      "grade": "A",
+      "wear": "new_with_tags",
+      "notes": null
+    },
+    "auth": {
+      "status": "verified",
+      "provider_id": "PSA",
+      "coa_refs": [
+        "REL-2024-001"
+      ]
+    },
+    "refs": {
+      "content_id": null,
+      "media_album_id": null,
+      "proof_bundle_id": null
+    },
+    "media": {
+      "hero_id": "https://picsum.photos/400/400?random=1",
+      "gallery": []
+    }
+  },
+  {
+    "entity_type": "signed_football_jersey",
+    "id": "2",
+    "slug": "babe-ruth-autograph",
+    "sku": "SKU-0002",
+    "state": {
+      "lifecycle": "published",
+      "visibility": "public",
+      "featured": {
+        "is": false,
+        "order": null
+      },
+      "publish_at": null,
+      "created_at": "2024-02-02T00:00:00.000Z",
+      "updated_at": "2024-02-02T00:00:00.000Z",
+      "created_by": "00000000-0000-0000-0000-000000000000"
+    },
+    "listing": {
+      "title": "Babe Ruth Autographed Baseball",
+      "subtitle": null,
+      "short": "Rare autographed baseball from the legendary Babe Ruth",
+      "price": {
+        "amount": 25000,
+        "currency": "USD",
+        "compare_at": null
+      },
+      "category": "sport",
+      "tags": [
+        "babe-ruth-autograph"
+      ]
+    },
+    "jersey": {
+      "sport": "football",
+      "club_id": "00000000-0000-0000-0000-000000000000",
+      "season": null,
+      "kit": "home",
+      "edition": "replica",
+      "brand": {
+        "id": "nike",
+        "custom": null
+      },
+      "size": {
+        "id": "L",
+        "region": "EU",
+        "custom": null
+      },
+      "style_code": null
+    },
+    "signing": {
+      "type": "single",
+      "signers": [
+        "Babe Ruth"
+      ],
+      "count": 1,
+      "ink": {
+        "id": "black_sharpie",
+        "custom": null
+      },
+      "placement": {
+        "id": "front_chest",
+        "custom": null
+      },
+      "inscription_text": null,
+      "sig_condition": "A"
+    },
+    "condition": {
+      "grade": "A",
+      "wear": "new_with_tags",
+      "notes": null
+    },
+    "auth": {
+      "status": "verified",
+      "provider_id": "JSA",
+      "coa_refs": [
+        "REL-2024-002"
+      ]
+    },
+    "refs": {
+      "content_id": null,
+      "media_album_id": null,
+      "proof_bundle_id": null
+    },
+    "media": {
+      "hero_id": "https://picsum.photos/400/400?random=2",
+      "gallery": []
+    }
+  },
+  {
+    "entity_type": "signed_football_jersey",
+    "id": "3",
+    "slug": "elvis-presley-signed-photo",
+    "sku": "SKU-0003",
+    "state": {
+      "lifecycle": "published",
+      "visibility": "public",
+      "featured": {
+        "is": false,
+        "order": null
+      },
+      "publish_at": null,
+      "created_at": "2024-02-03T00:00:00.000Z",
+      "updated_at": "2024-02-03T00:00:00.000Z",
+      "created_by": "00000000-0000-0000-0000-000000000000"
+    },
+    "listing": {
+      "title": "Elvis Presley Signed Photograph",
+      "subtitle": null,
+      "short": "Original signed photograph from Elvis Presley's 1970s tour",
+      "price": {
+        "amount": 8500,
+        "currency": "USD",
+        "compare_at": null
+      },
+      "category": "collector",
+      "tags": [
+        "elvis-presley-signed-photo"
+      ]
+    },
+    "jersey": {
+      "sport": "football",
+      "club_id": "00000000-0000-0000-0000-000000000000",
+      "season": null,
+      "kit": "home",
+      "edition": "replica",
+      "brand": {
+        "id": "nike",
+        "custom": null
+      },
+      "size": {
+        "id": "L",
+        "region": "EU",
+        "custom": null
+      },
+      "style_code": null
+    },
+    "signing": {
+      "type": "single",
+      "signers": [
+        "Elvis Presley"
+      ],
+      "count": 1,
+      "ink": {
+        "id": "black_sharpie",
+        "custom": null
+      },
+      "placement": {
+        "id": "front_chest",
+        "custom": null
+      },
+      "inscription_text": null,
+      "sig_condition": "A"
+    },
+    "condition": {
+      "grade": "A",
+      "wear": "new_with_tags",
+      "notes": null
+    },
+    "auth": {
+      "status": "verified",
+      "provider_id": "PSA",
+      "coa_refs": [
+        "REL-2024-003"
+      ]
+    },
+    "refs": {
+      "content_id": null,
+      "media_album_id": null,
+      "proof_bundle_id": null
+    },
+    "media": {
+      "hero_id": "https://picsum.photos/400/400?random=3",
+      "gallery": []
+    }
+  },
+  {
+    "entity_type": "signed_football_jersey",
+    "id": "4",
+    "slug": "muhammad-ali-gloves",
+    "sku": "SKU-0004",
+    "state": {
+      "lifecycle": "published",
+      "visibility": "public",
+      "featured": {
+        "is": false,
+        "order": null
+      },
+      "publish_at": null,
+      "created_at": "2024-02-04T00:00:00.000Z",
+      "updated_at": "2024-02-04T00:00:00.000Z",
+      "created_by": "00000000-0000-0000-0000-000000000000"
+    },
+    "listing": {
+      "title": "Muhammad Ali Boxing Gloves",
+      "subtitle": null,
+      "short": "Authenticated boxing gloves worn by Muhammad Ali",
+      "price": {
+        "amount": 35000,
+        "currency": "USD",
+        "compare_at": null
+      },
+      "category": "sport",
+      "tags": [
+        "muhammad-ali-gloves"
+      ]
+    },
+    "jersey": {
+      "sport": "football",
+      "club_id": "00000000-0000-0000-0000-000000000000",
+      "season": null,
+      "kit": "home",
+      "edition": "replica",
+      "brand": {
+        "id": "nike",
+        "custom": null
+      },
+      "size": {
+        "id": "L",
+        "region": "EU",
+        "custom": null
+      },
+      "style_code": null
+    },
+    "signing": {
+      "type": "single",
+      "signers": [
+        "Muhammad Ali"
+      ],
+      "count": 1,
+      "ink": {
+        "id": "black_sharpie",
+        "custom": null
+      },
+      "placement": {
+        "id": "front_chest",
+        "custom": null
+      },
+      "inscription_text": null,
+      "sig_condition": "A"
+    },
+    "condition": {
+      "grade": "A",
+      "wear": "new_with_tags",
+      "notes": null
+    },
+    "auth": {
+      "status": "verified",
+      "provider_id": "JSA",
+      "coa_refs": [
+        "REL-2024-004"
+      ]
+    },
+    "refs": {
+      "content_id": null,
+      "media_album_id": null,
+      "proof_bundle_id": null
+    },
+    "media": {
+      "hero_id": "https://picsum.photos/400/400?random=4",
+      "gallery": []
+    }
+  },
+  {
+    "entity_type": "signed_football_jersey",
+    "id": "5",
+    "slug": "einstein-handwritten-letter",
+    "sku": "SKU-0005",
+    "state": {
+      "lifecycle": "published",
+      "visibility": "public",
+      "featured": {
+        "is": false,
+        "order": null
+      },
+      "publish_at": null,
+      "created_at": "2024-02-05T00:00:00.000Z",
+      "updated_at": "2024-02-05T00:00:00.000Z",
+      "created_by": "00000000-0000-0000-0000-000000000000"
+    },
+    "listing": {
+      "title": "Einstein Handwritten Letter",
+      "subtitle": null,
+      "short": "Rare handwritten letter by Albert Einstein discussing physics",
+      "price": {
+        "amount": 45000,
+        "currency": "USD",
+        "compare_at": null
+      },
+      "category": "collector",
+      "tags": [
+        "einstein-handwritten-letter"
+      ]
+    },
+    "jersey": {
+      "sport": "football",
+      "club_id": "00000000-0000-0000-0000-000000000000",
+      "season": null,
+      "kit": "home",
+      "edition": "replica",
+      "brand": {
+        "id": "nike",
+        "custom": null
+      },
+      "size": {
+        "id": "L",
+        "region": "EU",
+        "custom": null
+      },
+      "style_code": null
+    },
+    "signing": {
+      "type": "single",
+      "signers": [
+        "Albert Einstein"
+      ],
+      "count": 1,
+      "ink": {
+        "id": "black_sharpie",
+        "custom": null
+      },
+      "placement": {
+        "id": "front_chest",
+        "custom": null
+      },
+      "inscription_text": null,
+      "sig_condition": "A"
+    },
+    "condition": {
+      "grade": "A",
+      "wear": "new_with_tags",
+      "notes": null
+    },
+    "auth": {
+      "status": "verified",
+      "provider_id": "PSA",
+      "coa_refs": [
+        "REL-2024-005"
+      ]
+    },
+    "refs": {
+      "content_id": null,
+      "media_album_id": null,
+      "proof_bundle_id": null
+    },
+    "media": {
+      "hero_id": "https://picsum.photos/400/400?random=5",
+      "gallery": []
+    }
+  },
+  {
+    "entity_type": "signed_football_jersey",
+    "id": "6",
+    "slug": "beatles-signed-album",
+    "sku": "SKU-0006",
+    "state": {
+      "lifecycle": "published",
+      "visibility": "public",
+      "featured": {
+        "is": false,
+        "order": null
+      },
+      "publish_at": null,
+      "created_at": "2024-02-06T00:00:00.000Z",
+      "updated_at": "2024-02-06T00:00:00.000Z",
+      "created_by": "00000000-0000-0000-0000-000000000000"
+    },
+    "listing": {
+      "title": "The Beatles Signed Album Cover",
+      "subtitle": null,
+      "short": "Original Sgt. Pepper's album cover signed by all four members",
+      "price": {
+        "amount": 55000,
+        "currency": "USD",
+        "compare_at": null
+      },
+      "category": "collector",
+      "tags": [
+        "beatles-signed-album"
+      ]
+    },
+    "jersey": {
+      "sport": "football",
+      "club_id": "00000000-0000-0000-0000-000000000000",
+      "season": null,
+      "kit": "home",
+      "edition": "replica",
+      "brand": {
+        "id": "nike",
+        "custom": null
+      },
+      "size": {
+        "id": "L",
+        "region": "EU",
+        "custom": null
+      },
+      "style_code": null
+    },
+    "signing": {
+      "type": "single",
+      "signers": [
+        "The Beatles"
+      ],
+      "count": 1,
+      "ink": {
+        "id": "black_sharpie",
+        "custom": null
+      },
+      "placement": {
+        "id": "front_chest",
+        "custom": null
+      },
+      "inscription_text": null,
+      "sig_condition": "A"
+    },
+    "condition": {
+      "grade": "A",
+      "wear": "new_with_tags",
+      "notes": null
+    },
+    "auth": {
+      "status": "verified",
+      "provider_id": "JSA",
+      "coa_refs": [
+        "REL-2024-006"
+      ]
+    },
+    "refs": {
+      "content_id": null,
+      "media_album_id": null,
+      "proof_bundle_id": null
+    },
+    "media": {
+      "hero_id": "https://picsum.photos/400/400?random=6",
+      "gallery": []
+    }
+  },
+  {
+    "entity_type": "signed_football_jersey",
+    "id": "7",
+    "slug": "tiger-woods-signed-golf-ball",
+    "sku": "SKU-0007",
+    "state": {
+      "lifecycle": "published",
+      "visibility": "public",
+      "featured": {
+        "is": false,
+        "order": null
+      },
+      "publish_at": null,
+      "created_at": "2024-02-07T00:00:00.000Z",
+      "updated_at": "2024-02-07T00:00:00.000Z",
+      "created_by": "00000000-0000-0000-0000-000000000000"
+    },
+    "listing": {
+      "title": "Tiger Woods Signed Golf Ball",
+      "subtitle": null,
+      "short": "Authenticated golf ball signed by Tiger Woods",
+      "price": {
+        "amount": 12000,
+        "currency": "USD",
+        "compare_at": null
+      },
+      "category": "sport",
+      "tags": [
+        "tiger-woods-signed-golf-ball"
+      ]
+    },
+    "jersey": {
+      "sport": "football",
+      "club_id": "00000000-0000-0000-0000-000000000000",
+      "season": null,
+      "kit": "home",
+      "edition": "replica",
+      "brand": {
+        "id": "nike",
+        "custom": null
+      },
+      "size": {
+        "id": "L",
+        "region": "EU",
+        "custom": null
+      },
+      "style_code": null
+    },
+    "signing": {
+      "type": "single",
+      "signers": [
+        "Tiger Woods"
+      ],
+      "count": 1,
+      "ink": {
+        "id": "black_sharpie",
+        "custom": null
+      },
+      "placement": {
+        "id": "front_chest",
+        "custom": null
+      },
+      "inscription_text": null,
+      "sig_condition": "A"
+    },
+    "condition": {
+      "grade": "A",
+      "wear": "new_with_tags",
+      "notes": null
+    },
+    "auth": {
+      "status": "verified",
+      "provider_id": "PSA",
+      "coa_refs": [
+        "REL-2024-007"
+      ]
+    },
+    "refs": {
+      "content_id": null,
+      "media_album_id": null,
+      "proof_bundle_id": null
+    },
+    "media": {
+      "hero_id": "https://picsum.photos/400/400?random=7",
+      "gallery": []
+    }
+  },
+  {
+    "entity_type": "signed_football_jersey",
+    "id": "8",
+    "slug": "marilyn-monroe-signed-photo",
+    "sku": "SKU-0008",
+    "state": {
+      "lifecycle": "published",
+      "visibility": "public",
+      "featured": {
+        "is": false,
+        "order": null
+      },
+      "publish_at": null,
+      "created_at": "2024-02-08T00:00:00.000Z",
+      "updated_at": "2024-02-08T00:00:00.000Z",
+      "created_by": "00000000-0000-0000-0000-000000000000"
+    },
+    "listing": {
+      "title": "Marilyn Monroe Signed Photograph",
+      "subtitle": null,
+      "short": "Rare signed photograph of Marilyn Monroe",
+      "price": {
+        "amount": 28000,
+        "currency": "USD",
+        "compare_at": null
+      },
+      "category": "collector",
+      "tags": [
+        "marilyn-monroe-signed-photo"
+      ]
+    },
+    "jersey": {
+      "sport": "football",
+      "club_id": "00000000-0000-0000-0000-000000000000",
+      "season": null,
+      "kit": "home",
+      "edition": "replica",
+      "brand": {
+        "id": "nike",
+        "custom": null
+      },
+      "size": {
+        "id": "L",
+        "region": "EU",
+        "custom": null
+      },
+      "style_code": null
+    },
+    "signing": {
+      "type": "single",
+      "signers": [
+        "Marilyn Monroe"
+      ],
+      "count": 1,
+      "ink": {
+        "id": "black_sharpie",
+        "custom": null
+      },
+      "placement": {
+        "id": "front_chest",
+        "custom": null
+      },
+      "inscription_text": null,
+      "sig_condition": "A"
+    },
+    "condition": {
+      "grade": "A",
+      "wear": "new_with_tags",
+      "notes": null
+    },
+    "auth": {
+      "status": "verified",
+      "provider_id": "JSA",
+      "coa_refs": [
+        "REL-2024-008"
+      ]
+    },
+    "refs": {
+      "content_id": null,
+      "media_album_id": null,
+      "proof_bundle_id": null
+    },
+    "media": {
+      "hero_id": "https://picsum.photos/400/400?random=8",
+      "gallery": []
+    }
+  }
+]

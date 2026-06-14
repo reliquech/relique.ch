@@ -1,0 +1,73 @@
+[
+  {
+    "id": "1",
+    "slug": "introducing-relique-authentication-platform",
+    "title": "Introducing Relique: The Future of Collectibles Authentication",
+    "excerpt": "Discover how Relique is revolutionizing the authentication of collectibles and memorabilia through advanced AI technology.",
+    "content": "# Introducing Relique\n\nRelique.co represents a new era in collectibles authentication. Our platform combines cutting-edge AI technology with rigorous verification processes to ensure the authenticity of your most valuable items.\n\n## Why Relique?\n\n- **Probabilistic Authentication**: Our AI analyzes multiple factors to provide confidence scores\n- **Transparent Process**: Every verification includes detailed explanations\n- **Trusted Platform**: Built for collectors, by collectors\n\n## Getting Started\n\nWhether you're looking to verify an item or browse authenticated collectibles, Relique makes it easy.",
+    "featured": true,
+    "image": "https://picsum.photos/1200/600?random=100",
+    "tags": ["announcement", "technology", "authentication"],
+    "author": "Relique Team",
+    "publishedAt": "2024-01-15T10:00:00Z",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "updatedAt": "2024-01-15T10:00:00Z"
+  },
+  {
+    "id": "2",
+    "slug": "how-to-verify-your-collectibles",
+    "title": "How to Verify Your Collectibles: A Step-by-Step Guide",
+    "excerpt": "Learn the simple process of verifying your collectibles through Relique's platform.",
+    "content": "# How to Verify Your Collectibles\n\nVerifying your collectibles with Relique is straightforward and secure.\n\n## Step 1: Prepare Your Item\n\nTake clear photos of your item from multiple angles. Include any certificates or documentation you have.\n\n## Step 2: Submit for Verification\n\nUse our verification tool to upload images and provide details about your item.\n\n## Step 3: Review Results\n\nOur AI analyzes your submission and provides a detailed authentication report with confidence scores.\n\n## Understanding Results\n\n- **Qualified**: High confidence in authenticity\n- **Inconclusive**: More information needed\n- **Disqualified**: Likely not authentic",
+    "featured": false,
+    "image": "https://picsum.photos/1200/600?random=101",
+    "tags": ["guide", "verification", "how-to"],
+    "author": "Relique Team",
+    "publishedAt": "2024-01-20T10:00:00Z",
+    "createdAt": "2024-01-20T10:00:00Z",
+    "updatedAt": "2024-01-20T10:00:00Z"
+  },
+  {
+    "id": "3",
+    "slug": "marketplace-launch-authenticated-items",
+    "title": "Marketplace Launch: Browse Authenticated Collectibles",
+    "excerpt": "Our marketplace is now live! Browse verified collectibles and memorabilia from trusted sellers.",
+    "content": "# Marketplace Launch\n\nWe're excited to announce the launch of the Relique Marketplace, where you can browse and purchase authenticated collectibles with confidence.\n\n## What Makes Our Marketplace Different\n\nEvery item in our marketplace has been verified through our authentication process. You can trust that what you're buying is authentic.\n\n## Featured Categories\n\n- Sports Memorabilia\n- Entertainment Collectibles\n- Historical Documents\n- Autographed Items\n\n## For Sellers\n\nInterested in consigning your items? Our consignment process is simple and transparent.",
+    "featured": true,
+    "image": "https://picsum.photos/1200/600?random=102",
+    "tags": ["marketplace", "announcement", "collectibles"],
+    "author": "Relique Team",
+    "publishedAt": "2024-02-01T10:00:00Z",
+    "createdAt": "2024-02-01T10:00:00Z",
+    "updatedAt": "2024-02-01T10:00:00Z"
+  },
+  {
+    "id": "4",
+    "slug": "spotlight-michael-jordan-signed-basketball",
+    "title": "Spotlight: Michael Jordan Signed Basketball",
+    "excerpt": "This month's featured item showcases an authenticated basketball signed by Michael Jordan.",
+    "content": "# Spotlight: Michael Jordan Signed Basketball\n\nThis exceptional piece of sports memorabilia features an official NBA basketball signed by Michael Jordan in 1996.\n\n## Authentication Details\n\n- **Verification Status**: Qualified\n- **Confidence Score**: 94%\n- **Certificate**: REL-2024-001\n\n## Item History\n\nThe basketball was obtained at a charity event in 1996 and has been maintained in climate-controlled storage since acquisition.\n\n## Why This Item Matters\n\nMichael Jordan memorabilia from his championship years represents some of the most sought-after collectibles in sports history.",
+    "featured": false,
+    "image": "https://picsum.photos/1200/600?random=103",
+    "tags": ["spotlight", "sports", "memorabilia"],
+    "author": "Relique Team",
+    "publishedAt": "2024-02-10T10:00:00Z",
+    "createdAt": "2024-02-10T10:00:00Z",
+    "updatedAt": "2024-02-10T10:00:00Z"
+  },
+  {
+    "id": "5",
+    "slug": "upcoming-events-collectors-showcase",
+    "title": "Upcoming Events: Collectors Showcase 2024",
+    "excerpt": "Join us at upcoming events where you can meet collectors and learn more about authentication.",
+    "content": "# Upcoming Events\n\nRelique will be participating in several collector showcases and events throughout 2024.\n\n## What to Expect\n\n- Live authentication demonstrations\n- Meet other collectors\n- Learn about our verification process\n- Browse featured items\n\n## Event Schedule\n\nCheck our events page for the latest schedule and locations.\n\n## Register\n\nRegistration for events will open soon. Stay tuned for updates!",
+    "featured": false,
+    "image": "https://picsum.photos/1200/600?random=104",
+    "tags": ["events", "community", "showcase"],
+    "author": "Relique Team",
+    "publishedAt": "2024-02-15T10:00:00Z",
+    "createdAt": "2024-02-15T10:00:00Z",
+    "updatedAt": "2024-02-15T10:00:00Z"
+  }
+]
+

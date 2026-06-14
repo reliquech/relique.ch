@@ -1,9 +1,18 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./packages/shared" },
-    { "path": "./packages/ui" },
-    { "path": "./apps/web" }
-  ]
+  "extends": "./typescript-config/nextjs.json",
+  "compilerOptions": {
+    "plugins": [{ "name": "next" }],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "next-env.d.ts",
+    "next.config.js",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": ["node_modules", "apps", "packages", "relique-marketplace"]
 }
-

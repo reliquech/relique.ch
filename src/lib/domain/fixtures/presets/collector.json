@@ -1,0 +1,54 @@
+{
+  "userState": {
+    "favorites": ["1", "2", "3", "4", "5", "6", "7"],
+    "verifyHistory": [
+      {
+        "productId": "RLQ-QUAL-001",
+        "result": "qualified",
+        "timestamp": 1704067200000
+      },
+      {
+        "productId": "RLQ-QUAL-002",
+        "result": "qualified",
+        "timestamp": 1704153600000
+      },
+      {
+        "productId": "RLQ-INCON-001",
+        "result": "inconclusive",
+        "timestamp": 1704240000000
+      },
+      {
+        "productId": "RLQ-DISQ-001",
+        "result": "disqualified",
+        "timestamp": 1704330000000
+      },
+      {
+        "productId": "RLQ-QUAL-003",
+        "result": "qualified",
+        "timestamp": 1704416400000
+      }
+    ],
+    "savedSearches": [
+      {
+        "id": "search-1",
+        "name": "Michael Jordan Items",
+        "query": "Michael Jordan",
+        "filters": {
+          "signedBy": "Michael Jordan",
+          "category": "Sports Memorabilia"
+        },
+        "createdAt": 1704067200000
+      },
+      {
+        "id": "search-2",
+        "name": "Qualified Items Only",
+        "filters": {
+          "status": "qualified"
+        },
+        "createdAt": 1704153600000
+      }
+    ],
+    "bookmarks": ["1", "3"],
+    "drafts": []
+  }
+}

@@ -15,9 +15,9 @@ Brownfield monorepo chuyển từ hai app Next.js tách rời + mock public flow
 - [x] **Phase 1: Foundation & App Merge** — Gộp `apps/admin` vào `apps/web`, route group `/admin`, unified API và migrations (completed 2026-06-14)
 - [ ] **Phase 2: Supabase Data Layer & Public Flows** — Verify, consign, contact thật; transactional emails; xóa localStorage adapters (code complete — UAT pending)
 - [ ] **Phase 3: Security Hardening** — Vá register endpoint, audit API routes, enforce RLS và role checks
-- [ ] **Phase 4: Stack Consolidation** — Xóa legacy apps/prototype, schema dedup, type safety (một phần absorb vào Phase 6)
+- [ ] **Phase 4: Stack Consolidation** — Schema dedup, type safety (post-restructure)
 - [ ] **Phase 5: Admin UX Redesign** — CRM/dashboard/marketplace UI overhaul + admin ops fixes
-- [ ] **Phase 6: Flat Root App & npm Simplify** — Flatten `apps/web` → root `src/`, bỏ Turbo/pnpm workspace, npm đơn giản, upgrade packages mới nhất
+- [x] **Phase 6: Flat Root App & npm Simplify** — Flatten `apps/web` → root `src/`, bỏ Turbo/pnpm workspace, npm đơn giản (completed 2026-06-14)
 
 ## Phase Details
 
@@ -115,7 +115,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 3. Security Hardening | 0/TBD | Not started | - |
 | 4. Stack Consolidation | 0/TBD | Not started | - |
 | 5. Admin UX Redesign | 0/TBD | Not started | - |
-| 6. Flat Root App & npm Simplify | 0/TBD | Not started | - |
+| 6. Flat Root App & npm Simplify | 1/1 | Complete | 2026-06-14 |
 
 ### Phase 6: Flat Root App & npm Simplify
 **Goal**: Một Next.js app tại repo root — `src/` + `supabase/` + `public/`, không còn `apps/` hay Turborepo; toolchain đơn giản bằng npm; dependencies lên bản mới nhất tương thích

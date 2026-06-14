@@ -1,0 +1,47 @@
+{
+  "userState": {
+    "favorites": ["1", "2", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
+    "verifyHistory": [
+      {
+        "productId": "RLQ-QUAL-001",
+        "result": "qualified",
+        "timestamp": 1704067200000
+      },
+      {
+        "productId": "RLQ-QUAL-002",
+        "result": "qualified",
+        "timestamp": 1704153600000
+      }
+    ],
+    "savedSearches": [
+      {
+        "id": "search-1",
+        "name": "High Value Items",
+        "filters": {
+          "priceMin": 20000,
+          "status": "qualified"
+        },
+        "createdAt": 1704067200000
+      },
+      {
+        "id": "search-2",
+        "name": "PSA Certified",
+        "filters": {
+          "coaIssuer": "PSA"
+        },
+        "createdAt": 1704153600000
+      },
+      {
+        "id": "search-3",
+        "name": "Sports Memorabilia",
+        "filters": {
+          "category": "Sports Memorabilia",
+          "status": "qualified"
+        },
+        "createdAt": 1704240000000
+      }
+    ],
+    "bookmarks": ["1", "2", "3", "4", "5"],
+    "drafts": []
+  }
+}

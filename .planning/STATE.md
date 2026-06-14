@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 3–6 context gathered — ready for planning
-last_updated: "2026-06-14T18:00:00.000Z"
-last_activity: 2026-06-14 -- discuss-phase 3-6 complete (auto)
+stopped_at: Phase 6 complete — resume Phase 3 security or Phase 2 UAT
+last_updated: "2026-06-14T20:00:00.000Z"
+last_activity: 2026-06-14 -- Phase 6 restructure executed (autonomous)
 progress:
   total_phases: 6
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 10
   completed_plans: 10
-  percent: 17
+  percent: 33
 ---
 
 # Project State
@@ -21,21 +21,20 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-14)
 
 **Core value:** Người dùng có thể tin tưởng Relique — verify thật, consign/submit thật, liên hệ được — browse-only marketplace v1 (payments v2).
-**Current focus:** Phase 6 planning — restructure ưu tiên (user request); hoặc Phase 3 security
+**Current focus:** Phase 3 Security — hoặc Phase 2 UAT (migrations)
 
 ## Current Position
 
-Phase: 3–6 — CONTEXT gathered (auto-discuss 2026-06-14)
-Plan: 0 of TBD per phase
-Status: Ready for `/gsd-plan-phase`
-Last activity: 2026-06-14 -- discuss-phase 3,4,5,6 complete
+Phase: 6 — COMPLETE (restructure)
+Next: Phase 3 (Security) — `/gsd-autonomous --from 3`
+Status: Flat root npm app; `npm run dev` at repo root
+Last activity: 2026-06-14 -- Phase 6 autonomous execute
 
-Progress: [██░░░░░░░░] 17% (1/6 phases complete; Phase 2 code done, UAT pending)
+Progress: [████░░░░░░] 33% (Phases 1+6 complete; Phase 2 code done UAT pending)
 
 ## Roadmap Evolution
 
-- **2026-06-14**: Phase 6 added — flatten `apps/web` to root `src/`, drop Turbo/pnpm workspace, simplify to npm, upgrade latest packages. Slug: `06-flat-root-npm-restructure`. Overlaps Phase 4 CONS-01/02 (delete legacy apps/prototype).
-- **2026-06-14**: CONTEXT gathered for Phases 3–6 (auto-discuss). Phase 6 may reorder to run after Phase 2.
+- **2026-06-14**: Phase 6 executed — single Next.js app at root (`src/`, `supabase/`, `public/`), npm toolchain, legacy monorepo removed.
 
 ## Performance Metrics
 
