@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 2 planned — ready for execution
-last_updated: "2026-06-14T14:29:01.552Z"
+stopped_at: Phase 7 executed — 035 remote apply pending
+last_updated: "2026-06-14T14:34:04.642Z"
 last_activity: 2026-06-14 -- Phase 8 planning complete
 progress:
   total_phases: 8
-  completed_phases: 0
+  completed_phases: 2
   total_plans: 12
-  completed_plans: 0
-  percent: 0
+  completed_plans: 7
+  percent: 58
 ---
 
 # Project State
@@ -55,6 +55,7 @@ Progress: [██████░░░░] 57% (4/7 phases code-complete)
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 07-supabase-migrations-optimize Pall | 21min | 8 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,8 @@ Recent decisions affecting current work:
 - Payments removed from v1 (2026-06-14) — browse-only marketplace; Stripe defer v2
 - Single app survivor: `apps/web` with `/admin` route group → **target Phase 6:** root `src/` single npm app
 - Admin-only UX redesign v1; public site functional fixes only
+- [Phase 07]: Migration docs canonical at supabase/migrations/; brownfield additive chain 001-035 preserved
+- [Phase 07]: 035 remote apply requires supabase link — manual db push or SQL Editor documented in 07-VERIFICATION.md
 
 ### Pending Todos
 
@@ -80,9 +83,10 @@ From `.planning/codebase/CONCERNS.md`:
 - ~50 `@ts-expect-error` on Supabase mutations — addressed Phase 5 (DATA-06)
 - Unauthenticated register endpoint — addressed Phase 3 (SEC-01)
 - Big-bang merge risk — Phase 1 must be incremental (layout → auth → API → UI)
+- Migration 035 not applied on remote Supabase — run supabase link + db push
 
 ## Session Continuity
 
-Last session: 2026-06-14T04:01:09.766Z
-Stopped at: Phase 2 planned — ready for execution
-Resume file: .planning/phases/02-supabase-data-layer-public-flows/02-01-PLAN.md
+Last session: 2026-06-14T14:33:56.841Z
+Stopped at: Phase 7 executed — 035 remote apply pending
+Resume file: None

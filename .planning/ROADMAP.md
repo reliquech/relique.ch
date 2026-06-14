@@ -136,9 +136,9 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 **Plans**: 3 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — Docs + manifest: root paths, buckets/RPC inventory, STORAGE_GUIDE fix
-- [ ] 07-02-PLAN.md — 035 additive indexes + brownfield chain integrity (001–035)
-- [ ] 07-03-PLAN.md — [BLOCKING] `supabase db push` apply 035 + phase gate (types deferred Phase 4)
+- [x] 07-01-PLAN.md — Docs + manifest: root paths, buckets/RPC inventory, STORAGE_GUIDE fix
+- [x] 07-02-PLAN.md — 035 additive indexes + brownfield chain integrity (001–035)
+- [x] 07-03-PLAN.md — [BLOCKING] `supabase db push` apply 035 + phase gate (types deferred Phase 4)
 
 ### Phase 6: Flat Root App & npm Simplify
 **Goal**: Một Next.js app tại repo root — `src/` + `supabase/` + `public/`, không còn `apps/` hay Turborepo; toolchain đơn giản bằng npm; dependencies lên bản mới nhất tương thích

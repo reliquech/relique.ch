@@ -9,6 +9,7 @@ import path from "node:path";
 const ROOT = path.resolve(import.meta.dirname, "..");
 const SRC = path.join(ROOT, "src");
 const MIGRATIONS = path.join(ROOT, "supabase", "migrations");
+const LEGACY = path.join(MIGRATIONS, "legacy");
 const OUTPUT = path.join(ROOT, "supabase", "SUPABASE_USAGE.md");
 const SKIP_DIRS = new Set(["node_modules", ".next", "graphify-out"]);
 
@@ -123,13 +124,21 @@ function scanMigrations() {
   const functions = new Map();
   const buckets = new Map();
 
-  const sqlFiles = fs
-    .readdirSync(MIGRATIONS)
-    .filter((f) => f.endsWith(".sql"))
-    .sort();
+  const dirs = [MIGRATIONS, LEGACY].filter((d) => fs.existsSync(d));
+  const sqlFiles = [];
+  for (const dir of dirs) {
+    sqlFiles.push(
+      ...fs
+        .readdirSync(dir)
+        .filter((f) => f.endsWith(".sql"))
+        .map((f) => path.join(dir, f))
+    );
+  }
+  sqlFiles.sort();
 
-  for (const file of sqlFiles) {
-    const content = fs.readFileSync(path.join(MIGRATIONS, file), "utf8");
+  for (const fullPath of sqlFiles) {
+    const file = path.basename(fullPath);
+    const content = fs.readFileSync(fullPath, "utf8");
 
     const tableRe = /create\s+table\s+(?:if\s+not\s+exists\s+)?(?:public\.)?([a-z_][a-z0-9_]*)/gi;
     let m;

@@ -89,6 +89,12 @@ Incremental chain for Relique.co unified platform. **Do not reorder** files alre
 
 Authoritative table/RPC/bucket usage map with KEEP/PRUNE verdicts: [`SUPABASE_USAGE.md`](./SUPABASE_USAGE.md) (regenerate via `node scripts/audit-supabase-usage.mjs`).
 
-## Fresh install baseline (D-04)
+## Fresh install baseline (Phase 8)
 
-Squashing 001–035 into a single `000_baseline.sql` is **deferred to Phase 8**. New projects apply the full incremental chain `001` → `035` until baseline is published. Do **not** create `000_baseline.sql` in Phase 7.
+| File | Purpose |
+|------|---------|
+| `000_baseline.sql` | Squashed 001–035 **post-prune** state for **fresh installs only** |
+| `legacy/001`–`legacy/035` | Archived incremental chain for brownfield |
+| `036_prune_dead_schema.sql` | Brownfield prune — drop dead objects |
+
+See [`MIGRATIONS.md`](./MIGRATIONS.md) dual-path table. Regenerate baseline: `node scripts/squash-baseline.mjs`.
