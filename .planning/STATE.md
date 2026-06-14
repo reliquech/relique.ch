@@ -3,39 +3,35 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 6 complete — resume Phase 3 security or Phase 2 UAT
-last_updated: "2026-06-14T20:00:00.000Z"
-last_activity: 2026-06-14 -- Phase 6 restructure executed (autonomous)
+stopped_at: Phase 3+7 executed — resume Phase 4 stack or Phase 2 UAT
+last_updated: "2026-06-14T22:00:00.000Z"
+last_activity: 2026-06-14 -- autonomous: Phase 3 security + Phase 7 migrations
 progress:
   total_phases: 7
-  completed_phases: 2
-  total_plans: 10
-  completed_plans: 10
-  percent: 29
+  completed_phases: 4
+  total_plans: 12
+  completed_plans: 12
+  percent: 57
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-06-14)
-
-**Core value:** Người dùng có thể tin tưởng Relique — verify thật, consign/submit thật, liên hệ được — browse-only marketplace v1 (payments v2).
-**Current focus:** Phase 7 planning — Supabase migrations optimize (`supabase/migrations/`)
+**Current focus:** Phase 4 Stack Consolidation — hoặc apply migration 035 + Phase 2 UAT
 
 ## Current Position
 
-Phase: 7 — PLANNED (not started)
-Next: `/gsd-discuss-phase 7` hoặc `/gsd-plan-phase 7`
-Status: 34 migration files at `supabase/migrations/` (001–034); MIGRATIONS.md stale (refs apps/web)
-Last activity: 2026-06-14 -- Phase 7 added to roadmap
+Phase: 3 ✅ + 7 ✅ (code) | Next: Phase 4
+Status: `npm run build` pass; migration 035 chưa apply remote
+Last activity: 2026-06-14 -- autonomous partial run
 
-Progress: [████░░░░░░] 29% (2/7 phases complete)
+Progress: [██████░░░░] 57% (4/7 phases code-complete)
 
 ## Roadmap Evolution
 
-- **2026-06-14**: Phase 7 added — optimize `supabase/migrations`: squash baseline, dedup overlapping DDL, RLS/index audit, regen types. Slug: `07-supabase-migrations-optimize`.
-- **2026-06-14**: Phase 6 executed — single Next.js app at root (`src/`, `supabase/`, `public/`), npm toolchain, legacy monorepo removed.
+- **2026-06-14**: Phase 3 security executed — register 403, anon public reads, role guards, SEC-04 visibility.
+- **2026-06-14**: Phase 7 migrations — MIGRATIONS.md, MIGRATION_MANIFEST.md, `035_optimize_public_browse_indexes.sql`.
 
 ## Performance Metrics
 

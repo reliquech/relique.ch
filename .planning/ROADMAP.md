@@ -14,11 +14,11 @@ Brownfield monorepo chuyển từ hai app Next.js tách rời + mock public flow
 
 - [x] **Phase 1: Foundation & App Merge** — Gộp `apps/admin` vào `apps/web`, route group `/admin`, unified API và migrations (completed 2026-06-14)
 - [ ] **Phase 2: Supabase Data Layer & Public Flows** — Verify, consign, contact thật; transactional emails; xóa localStorage adapters (code complete — UAT pending)
-- [ ] **Phase 3: Security Hardening** — Vá register endpoint, audit API routes, enforce RLS và role checks
+- [ ] **Phase 3: Security Hardening** — Vá register endpoint, audit API routes, enforce RLS và role checks (code complete — UAT pending)
 - [ ] **Phase 4: Stack Consolidation** — Schema dedup, type safety (post-restructure)
 - [ ] **Phase 5: Admin UX Redesign** — CRM/dashboard/marketplace UI overhaul + admin ops fixes
 - [x] **Phase 6: Flat Root App & npm Simplify** — Flatten `apps/web` → root `src/`, bỏ Turbo/pnpm workspace, npm đơn giản (completed 2026-06-14)
-- [ ] **Phase 7: Supabase Migrations Optimize** — Tối ưu `supabase/migrations`: squash baseline, dedup, RLS/index audit, regen types
+- [ ] **Phase 7: Supabase Migrations Optimize** — Tối ưu `supabase/migrations`: manifest, 035 indexes, docs (code complete — apply 035 pending)
 
 ## Phase Details
 
@@ -113,11 +113,11 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Foundation & App Merge | 5/5 | Complete   | 2026-06-14 |
 | 2. Supabase Data Layer & Public Flows | 5/5 | Code complete — UAT pending | 2026-06-14 |
-| 3. Security Hardening | 0/TBD | Not started | - |
+| 3. Security Hardening | 1/1 | Code complete — UAT pending | 2026-06-14 |
 | 4. Stack Consolidation | 0/TBD | Not started | - |
 | 5. Admin UX Redesign | 0/TBD | Not started | - |
 | 6. Flat Root App & npm Simplify | 1/1 | Complete | 2026-06-14 |
-| 7. Supabase Migrations Optimize | 0/TBD | Not started | - |
+| 7. Supabase Migrations Optimize | 1/1 | Code complete — apply 035 pending | 2026-06-14 |
 
 ### Phase 7: Supabase Migrations Optimize
 **Goal**: `supabase/migrations/` gọn, nhất quán, production-ready — fresh deploy nhanh, schema khớp types, RLS/index tối ưu
