@@ -53,7 +53,15 @@ Plans:
   5. User submit contact form → thấy confirmation; operator nhận email notification; data persist trong CRM
   6. User consign submit nhận confirmation email; consign auto-create lead trong CRM
   7. Transactional emails (consign, contact) hoạt động từ unified app
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Migrations (product_id, consign-submissions bucket, email_logs) + sendTransactional helper + VerifyResult schema [BLOCKING db push]
+- [ ] 02-02-PLAN.md — Verify flow: `/api/public/verify`, supabase adapter, result display, admin verify placeholder
+- [ ] 02-03-PLAN.md — Consign flow: `/api/public/consign` multipart, photo upload UI, lead + email
+- [ ] 02-04-PLAN.md — Contact flow: `/api/public/contact`, inline success, operator + user emails
+- [ ] 02-05-PLAN.md — Cleanup local adapters (DATA-04) + env docs + build gate
+
 **UI hint**: yes
 
 ### Phase 3: Security Hardening
