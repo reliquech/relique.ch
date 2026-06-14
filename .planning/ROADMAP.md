@@ -13,12 +13,12 @@ Brownfield monorepo chuyển từ hai app Next.js tách rời + mock public flow
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Foundation & App Merge** — Gộp `apps/admin` vào `apps/web`, route group `/admin`, unified API và migrations (completed 2026-06-14)
-- [ ] **Phase 2: Supabase Data Layer & Public Flows** — Verify, consign, contact thật; transactional emails; xóa localStorage adapters (code complete — UAT pending)
+- [ ] **Phase 2: Supabase Data Layer & Public Flows** — Verify, consign, contact thật; CRM persist (no email); xóa localStorage adapters (code complete — UAT pending)
 - [ ] **Phase 3: Security Hardening** — Vá register endpoint, audit API routes, enforce RLS và role checks (code complete — UAT pending)
 - [ ] **Phase 4: Stack Consolidation** — Schema dedup, type safety (post-restructure)
 - [ ] **Phase 5: Admin UX Redesign** — CRM/dashboard/marketplace UI overhaul + admin ops fixes
 - [x] **Phase 6: Flat Root App & npm Simplify** — Flatten `apps/web` → root `src/`, bỏ Turbo/pnpm workspace, npm đơn giản (completed 2026-06-14)
-- [ ] **Phase 7: Supabase Migrations Optimize** — Tối ưu `supabase/migrations`: manifest, 035 indexes, docs (code complete — apply 035 pending)
+- [ ] **Phase 7: Supabase Migrations Optimize** — Tối ưu `supabase/migrations`: manifest, 035 indexes, docs (planned — apply 035 pending)
 - [ ] **Phase 8: Supabase Database Audit & Prune** — Inventory tables/functions, gỡ schema không dùng, baseline squash, RLS/index audit
 
 ## Phase Details
@@ -47,23 +47,22 @@ Plans:
 ### Phase 2: Supabase Data Layer & Public Flows
 **Goal**: Người dùng verify, consign, và contact thật — data persist Supabase, không mock/localStorage
 **Depends on**: Phase 1
-**Requirements**: DATA-01, DATA-02, DATA-03, DATA-04, VRFY-01, VRFY-02, VRFY-03, VRFY-04, CNSG-01, CNSG-02, CNSG-03, CNSG-04, CNSG-05, CNTC-01, CNTC-02, CNTC-03, ADM-04
+**Requirements**: DATA-01, DATA-02, DATA-03, DATA-04, VRFY-01, VRFY-02, VRFY-03, VRFY-04, CNSG-01, CNSG-02, CNSG-03, CNSG-04, CNSG-05, CNTC-01, CNTC-02, CNTC-03 *(ADM-04 out of scope — no email)*
 **Success Criteria** (what must be TRUE):
   1. User nhập cert/product ID trên verify page → nhận kết quả authenticated/inconclusive/disqualified từ database
   2. User scan QR/barcode → hệ thống parse code thật từ input, không generate random mock
   3. Verify result hiển thị certificate details (signer, item type, grade, date, images) và link tới marketplace listing nếu item đang listed
   4. User submit consign form với photos → thấy on-screen confirmation; submission xuất hiện trong admin queue với status workflow
-  5. User submit contact form → thấy confirmation; operator nhận email notification; data persist trong CRM
-  6. User consign submit nhận confirmation email; consign auto-create lead trong CRM
-  7. Transactional emails (consign, contact) hoạt động từ unified app
-**Plans**: 5 plans
+  5. User submit contact form → thấy on-screen confirmation; lead + message persist trong CRM (operator xem admin)
+  6. User consign submit → on-screen `/consign/success`; consign auto-create lead trong CRM
+  7. Không còn Resend/email code paths — transactional email out of v1 scope
+**Plans**: 4 plans (REPLAN 2026-06-14 — UAT + cleanup; code largely implemented)
 
 Plans:
-- [x] 02-01-PLAN.md — Migrations (product_id, consign-submissions bucket, email_logs) + sendTransactional helper + VerifyResult schema [BLOCKING db push]
-- [x] 02-02-PLAN.md — Verify flow: `/api/public/verify`, supabase adapter, result display, admin verify placeholder
-- [x] 02-03-PLAN.md — Consign flow: `/api/public/consign` multipart, photo upload UI, lead + email
-- [x] 02-04-PLAN.md — Contact flow: `/api/public/contact`, inline success, operator + user emails
-- [x] 02-05-PLAN.md — Cleanup local adapters (DATA-04) + env docs + build gate
+- [ ] 02-01-PLAN.md — No-email dead code cleanup + `phase2:no-email-gate` grep gate (D-24)
+- [ ] 02-02-PLAN.md — Verify/consign/contact UAT checklist + smoke script + gap fixes
+- [ ] 02-03-PLAN.md — localStorage adapter removal verification + `phase2:data-layer-gate` (DATA-04)
+- [ ] 02-04-PLAN.md — Composite `phase2:gate` (typecheck/lint/build) + VERIFICATION.md sign-off
 
 **UI hint**: yes
 
@@ -118,7 +117,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Stack Consolidation | 0/TBD | Not started | - |
 | 5. Admin UX Redesign | 0/TBD | Not started | - |
 | 6. Flat Root App & npm Simplify | 1/1 | Complete | 2026-06-14 |
-| 7. Supabase Migrations Optimize | 1/1 | Code complete — apply 035 pending | 2026-06-14 |
+| 7. Supabase Migrations Optimize | 0/3 | Planned — apply 035 pending | - |
 
 ### Phase 7: Supabase Migrations Optimize
 **Goal**: `supabase/migrations/` gọn, nhất quán, production-ready — fresh deploy nhanh, schema khớp types, RLS/index tối ưu
@@ -133,11 +132,12 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
   6. `src/lib/supabase/types.ts` regenerated từ schema cuối — giảm `as never` casts trên API routes
   7. `supabase db push` / manual apply path documented cho 034 files; fresh env bootstrap ≤ N migration files
   8. Storage buckets + RPC functions documented trong single migration manifest
-**Plans**: TBD
-**Notes**: 34 incremental files (001–034) từ brownfield merge; optimize ≠ break applied production DB — strategy: baseline for new + keep chain for existing
+**Plans**: 3 plans
 
 Plans:
-- [ ] TBD (run `/gsd-discuss-phase 7` rồi `/gsd-plan-phase 7`)
+- [ ] 07-01-PLAN.md — Docs + manifest: root paths, buckets/RPC inventory, STORAGE_GUIDE fix
+- [ ] 07-02-PLAN.md — 035 additive indexes + brownfield chain integrity (001–035)
+- [ ] 07-03-PLAN.md — [BLOCKING] `supabase db push` apply 035 + phase gate (types deferred Phase 4)
 
 ### Phase 6: Flat Root App & npm Simplify
 **Goal**: Một Next.js app tại repo root — `src/` + `supabase/` + `public/`, không còn `apps/` hay Turborepo; toolchain đơn giản bằng npm; dependencies lên bản mới nhất tương thích
@@ -161,7 +161,7 @@ Plans:
 **Context**: ✅ `08-CONTEXT.md` — inventory tables/RPC/buckets + checklist audit
 **Success Criteria** (what must be TRUE):
   1. `SUPABASE_USAGE.md` — mọi table/function/bucket có verdict KEEP/PRUNE/WIRE với evidence từ `src/`
-  2. Dead schema pruned qua migration mới (036+): ít nhất `admin_upsert_profile`; `email_logs` có quyết định rõ (wire Resend hoặc drop)
+  2. Dead schema pruned qua migration mới (036+): drop `email_logs`, drop `admin_upsert_profile`
   3. `000_baseline.sql` cho fresh install — không cần apply 35 files incremental
   4. RLS audit matrix — policies align SEC-04 public read paths
   5. `src/lib/supabase/types.ts` regenerated sau prune — build pass
