@@ -22,14 +22,22 @@ supabase db push
 
 Requires [Supabase CLI](https://supabase.com/docs/guides/cli) and `supabase/config.toml`.
 
+## Brownfield rule (D-03)
+
+On databases that already have migrations applied:
+
+- **Never rename, reorder, or delete** migration files that appear in `supabase_migrations.schema_migrations`.
+- **Additive only** — new work goes in the next numbered file (currently `035`).
+- Do **not** squash applied history into `000_baseline.sql` until Phase 8 publishes a baseline (see manifest).
+
+Moving or editing files locally does **not** re-run DDL on an already-provisioned remote DB.
+
 ## Strategies
 
 | Environment | Approach |
 |-------------|----------|
-| **Existing brownfield DB** | Keep incremental chain 001–035; never rename applied files |
-| **Fresh local/staging** | Apply full chain in order, or use baseline doc in `MIGRATION_MANIFEST.md` |
-
-Moving files does **not** re-run DDL on an already-provisioned remote DB.
+| **Existing brownfield DB** | Apply only unapplied files in order via `db push` or SQL Editor |
+| **Fresh local/staging** | Apply full chain `001` → `035` in order |
 
 ## Verification
 

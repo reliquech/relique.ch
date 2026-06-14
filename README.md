@@ -18,7 +18,7 @@ Relique.co là platform probabilistic authentication cho sports collectibles và
 - **Theme System:** Dark-only với standardized colors, typography, và animations
 - **Developer Tools:** Motion variants, theme utilities, typography classes
 - **Responsive:** Desktop-first design với mobile support
-- **Monorepo Structure:** Web app (port 3000) + Admin Dashboard (port 3001)
+- **Single App:** Public site + Admin CRM trong một Next.js app (port 1300)
 - **Documentation:** Complete guides cho design system, components, và improvements
 
 ---
@@ -47,8 +47,8 @@ Relique.co là platform probabilistic authentication cho sports collectibles và
 
 ### Prerequisites
 
-- Node.js 18+ 
-- pnpm (recommended) hoặc npm/yarn
+- Node.js 20+
+- npm
 
 ### Installation
 
@@ -58,39 +58,28 @@ git clone [repository-url]
 cd relique.co
 
 # Install dependencies
-pnpm install
+npm install
 
-# Run development server
-pnpm dev
+# Run development server (port 1300)
+npm run dev
 
 # Build for production
-pnpm build
+npm run build
 
 # Start production server
-pnpm start
+npm start
 ```
 
 ### Development
 
-```bash
-# Run web app (port 3000)
-pnpm dev:web
-# hoặc
-cd apps/web
-pnpm dev
+- App: `http://localhost:1300`
+- Admin CRM: `http://localhost:1300/admin`
 
-# Run admin dashboard (port 3001)
-pnpm dev:admin
-# hoặc
-cd apps/admin
-pnpm dev
+### Database / Supabase
 
-# Run cả hai apps cùng lúc
-pnpm dev:all
-```
-
-- Web app: `http://localhost:3000`
-- Admin dashboard: `http://localhost:3001`
+- **Migrations:** `supabase/migrations/` (canonical path, 001–035 incremental chain)
+- **Docs:** [`supabase/MIGRATIONS.md`](supabase/MIGRATIONS.md) (apply workflow), [`supabase/MIGRATION_MANIFEST.md`](supabase/MIGRATION_MANIFEST.md) (inventory), [`supabase/STORAGE_GUIDE.md`](supabase/STORAGE_GUIDE.md) (buckets)
+- **Brownfield:** keep incremental chain on existing DBs; see manifest for overlap notes and baseline deferral
 
 ---
 

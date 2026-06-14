@@ -16,16 +16,12 @@ Migration đã tạo sẵn:
 ### Cách 1: Supabase CLI (khuyến nghị)
 
 ```bash
-cd apps/admin
-npx supabase db push
-```
-
-Hoặc nếu dùng link tới project:
-
-```bash
+# From repo root
 npx supabase link --project-ref <project-ref>
 npx supabase db push
 ```
+
+Xem [`MIGRATIONS.md`](./MIGRATIONS.md) cho full apply workflow.
 
 Migration `008_storage_marketplace.sql` sẽ:
 1. Tạo bucket **marketplace-images** (public, 5MB/file, chỉ ảnh).
@@ -34,7 +30,7 @@ Migration `008_storage_marketplace.sql` sẽ:
 ### Cách 2: Chạy SQL thủ công trên Dashboard
 
 1. Vào [Supabase Dashboard](https://supabase.com/dashboard) → project → **SQL Editor**.
-2. Mở file `apps/admin/supabase/migrations/008_storage_marketplace.sql`, copy toàn bộ nội dung.
+2. Mở file `supabase/migrations/008_storage_marketplace.sql`, copy toàn bộ nội dung.
 3. Paste vào SQL Editor và chạy **Run**.
 
 Nếu gặp lỗi kiểu **column "file_size_limit" does not exist** (schema cũ):
