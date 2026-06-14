@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { consignService } from "@/lib/services/consignService";
 import { toast } from "sonner";
+import { ConsignPhotoUpload } from "@/components/shared/ConsignPhotoUpload";
+import { submitPublicConsign } from "@/lib/services/impl/consign.supabase";
 
 /**
  * Consignment form component
@@ -12,6 +13,7 @@ import { toast } from "sonner";
 export function ConsignForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [photos, setPhotos] = useState<File[]>([]);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -24,22 +26,29 @@ export function ConsignForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (photos.length < 1) {
+      toast.error("Please upload at least one photo");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const draft = await consignService.drafts.save({
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        phone: formData.phone || undefined,
-        itemDescription: formData.itemDescription,
-        category: formData.category,
-        coaIssuer: formData.coaIssuer || undefined,
-      });
+      const fd = new FormData();
+      fd.append("contact_name", `${formData.firstName} ${formData.lastName}`.trim());
+      fd.append("contact_email", formData.email);
+      if (formData.phone) fd.append("contact_phone", formData.phone);
+      fd.append("item_description", formData.itemDescription);
+      fd.append("category", formData.category);
+      if (formData.coaIssuer) fd.append("coa_issuer", formData.coaIssuer);
+      fd.append("website", "");
+      photos.forEach((photo) => fd.append("photos", photo));
 
-      await consignService.submitMock(String(draft.timestamp));
+      const result = await submitPublicConsign(fd);
 
       toast.success("Consignment request submitted successfully");
-      router.push("/consign/success");
+      router.push(`/consign/success?id=${encodeURIComponent(result.id)}`);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to submit consignment request");
     } finally {
@@ -51,6 +60,8 @@ export function ConsignForm() {
     <div className="bg-cardDark border border-white/5 p-12 relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primaryBlue/5 to-transparent opacity-50 pointer-events-none" />
       <form onSubmit={handleSubmit} className="relative z-10 space-y-8">
+        <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden />
+
         {/* Name Fields */}
         <div className="grid md:grid-cols-2 gap-8">
           <div className="space-y-2">
@@ -119,6 +130,8 @@ export function ConsignForm() {
             placeholder="Tell us about the history of the item..."
           />
         </div>
+
+        <ConsignPhotoUpload files={photos} onChange={setPhotos} disabled={loading} />
 
         {/* COA & Category */}
         <div className="grid md:grid-cols-2 gap-8">

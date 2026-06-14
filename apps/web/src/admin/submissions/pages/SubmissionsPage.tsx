@@ -4,7 +4,6 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { SubmissionsTable, type SubmissionRow } from "@/admin/submissions/components/SubmissionsTable";
 import { SubmissionsHeader } from "@/admin/submissions/components/SubmissionsHeader";
-import { verifyService } from "@/lib/legacy/verifyService";
 import { consignedService } from "@/admin/submissions/services/consignedService";
 import { useSearchParams } from "next/navigation";
 import { useSubmissionsColumns } from "@/admin/submissions/components/useSubmissionsColumns";
@@ -54,24 +53,9 @@ function SubmissionsPageContent() {
     setLoading(true);
     setError(null);
     try {
-      const [history, consignedRes] = await Promise.all([
-        verifyService.history.list(),
-        consignedService.list({ pageSize: 500 }),
-      ]);
+      const consignedRes = await consignedService.list({ pageSize: 500 });
 
       const rows: SubmissionRow[] = [];
-
-      history.forEach((entry) => {
-        rows.push({
-          id: `verify-${entry.productId}`,
-          type: "verify",
-          reference: entry.productId,
-          itemName: `Item ${entry.productId}`,
-          status: entry.result,
-          dateUpdated: entry.timestamp,
-          data: entry,
-        });
-      });
 
       (consignedRes.items || []).forEach((item: { id: string; item_description: string; status: string; updated_at: string }) => {
         rows.push({

@@ -1,25 +1,15 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, ArrowLeft } from "lucide-react";
-import { consignService } from "@/lib/services/consignService";
-import type { ConsignSubmission } from "@/lib/schemas/consign";
 import Link from "next/link";
 
 function ConsignSuccessPageContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const submissionId = searchParams.get("id");
-  const [submission, setSubmission] = useState<ConsignSubmission | null>(null);
-
-  useEffect(() => {
-    if (submissionId) {
-      consignService.get(submissionId).then(setSubmission);
-    }
-  }, [submissionId]);
 
   return (
     <div className="container mx-auto px-4 py-16">
@@ -39,16 +29,13 @@ function ConsignSuccessPageContent() {
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            {submission && (
+            {submissionId && (
               <div className="space-y-2">
                 <p className="text-sm text-muted-foreground">
-                  Submission ID: <span className="font-mono">{submission.id}</span>
+                  Submission ID: <span className="font-mono">{submissionId}</span>
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Status: <span className="font-medium">{submission.status}</span>
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Submitted: {new Date(submission.createdAt).toLocaleString()}
+                  Status: <span className="font-medium">submitted</span>
                 </p>
               </div>
             )}

@@ -13,7 +13,7 @@ Brownfield monorepo chuyển từ hai app Next.js tách rời + mock public flow
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Foundation & App Merge** — Gộp `apps/admin` vào `apps/web`, route group `/admin`, unified API và migrations (completed 2026-06-14)
-- [ ] **Phase 2: Supabase Data Layer & Public Flows** — Verify, consign, contact thật; transactional emails; xóa localStorage adapters
+- [ ] **Phase 2: Supabase Data Layer & Public Flows** — Verify, consign, contact thật; transactional emails; xóa localStorage adapters (code complete — UAT pending)
 - [ ] **Phase 3: Security Hardening** — Vá register endpoint, audit API routes, enforce RLS và role checks
 - [ ] **Phase 4: Stack Consolidation** — Xóa legacy apps/prototype, schema dedup, type safety
 - [ ] **Phase 5: Admin UX Redesign** — CRM/dashboard/marketplace UI overhaul + admin ops fixes
@@ -56,11 +56,11 @@ Plans:
 **Plans**: 5 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Migrations (product_id, consign-submissions bucket, email_logs) + sendTransactional helper + VerifyResult schema [BLOCKING db push]
-- [ ] 02-02-PLAN.md — Verify flow: `/api/public/verify`, supabase adapter, result display, admin verify placeholder
-- [ ] 02-03-PLAN.md — Consign flow: `/api/public/consign` multipart, photo upload UI, lead + email
-- [ ] 02-04-PLAN.md — Contact flow: `/api/public/contact`, inline success, operator + user emails
-- [ ] 02-05-PLAN.md — Cleanup local adapters (DATA-04) + env docs + build gate
+- [x] 02-01-PLAN.md — Migrations (product_id, consign-submissions bucket, email_logs) + sendTransactional helper + VerifyResult schema [BLOCKING db push]
+- [x] 02-02-PLAN.md — Verify flow: `/api/public/verify`, supabase adapter, result display, admin verify placeholder
+- [x] 02-03-PLAN.md — Consign flow: `/api/public/consign` multipart, photo upload UI, lead + email
+- [x] 02-04-PLAN.md — Contact flow: `/api/public/contact`, inline success, operator + user emails
+- [x] 02-05-PLAN.md — Cleanup local adapters (DATA-04) + env docs + build gate
 
 **UI hint**: yes
 

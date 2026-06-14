@@ -15,6 +15,13 @@ export const VerifyResultSchema = z.object({
   certificate: z.string(),
   authenticationResult: z.string(),
   dateOfAnalysis: z.string(),
+  marketplaceSlug: z.string().optional(),
+  marketplaceUrl: z.string().optional(),
+  signerNames: z.array(z.string()).optional(),
+  itemType: z.string().optional(),
+  grade: z.string().optional(),
+  heroImageUrl: z.string().optional(),
+  galleryImageUrls: z.array(z.string()).optional(),
 });
 
 export const VerifyHistoryEntrySchema = z.object({
