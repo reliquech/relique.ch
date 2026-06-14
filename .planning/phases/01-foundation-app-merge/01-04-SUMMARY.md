@@ -139,7 +139,7 @@ Run `pnpm dev:web` (port 1300). Requires `apps/web/.env.local` with Supabase key
 - **Found during:** Task 2 (layout references `/admin background.jpeg`)
 - **Issue:** Background image existed in `apps/admin/public/` but not copied to web
 - **Fix:** Copied to `apps/web/public/admin background.jpeg`
-- **Committed in:** (this session fix commit)
+- **Committed in:** `e54063c`
 
 ---
 
@@ -174,6 +174,8 @@ Same as Plan 02 — `apps/web/.env.local` needs Supabase URL, anon key, and serv
 - FOUND: apps/web/src/components/command/CommandPalette.tsx
 - FOUND commit: 133917e
 - FOUND commit: de909cb
+- FOUND: apps/web/public/admin background.jpeg
+- FOUND commit: e54063c
 - Admin module files: 105
 - Portal page count: 21
 - No @/features/ in src/admin: verified
