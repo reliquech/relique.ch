@@ -79,7 +79,12 @@ const config: Config = {
 			bgDark: '#0A0A0A',
 			cardDark: '#121212',
 			textSec: '#B3B3B3',
-			borderDark: '#333333'
+			borderDark: '#333333',
+			// Admin theme tokens (unified app — admin routes)
+			surface: '#121212',
+			'bg-0': '#0A0A0A',
+			success: '#10B981',
+			warning: '#F59E0B',
 		},
   		keyframes: {
   			'accordion-down': {

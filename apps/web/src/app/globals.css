@@ -44,6 +44,18 @@
     --relique-border: #333333;
     --relique-text-primary: #FFFFFF;
     --relique-text-secondary: #B3B3B3;
+
+    /* Admin theme tokens (unified app — admin routes) */
+    --bg-0: var(--relique-bg-0);
+    --surface: var(--relique-bg-1);
+    --success: #10B981;
+    --warning: #F59E0B;
+    --sidebar-background: var(--relique-bg-1);
+    --sidebar-foreground: var(--relique-text-primary);
+    --sidebar-border: var(--relique-border);
+    --sidebar-accent: var(--relique-primary-blue);
+    --sidebar-accent-foreground: var(--relique-text-primary);
+    --sidebar-ring: var(--relique-accent-blue);
   }
 
   .dark {
