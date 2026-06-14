@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient, createServiceRoleClient } from "@/lib/supabase/server";
+import { createClient, createAnonClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/supabase/requireUser";
+import { requireRole } from "@/lib/supabase/requireRole";
 import { z } from "zod";
 import { mapRowToListing } from "./utils";
 import {
@@ -79,7 +80,7 @@ async function adminGet(request: NextRequest) {
 }
 
 async function publicGet(request: NextRequest) {
-  const supabase = createServiceRoleClient();
+  const supabase = createAnonClient();
   const searchParams = request.nextUrl.searchParams;
 
   const category = searchParams.get("category");
@@ -164,6 +165,11 @@ export async function POST(request: NextRequest) {
   try {
     const { user, response } = await requireUser();
     if (!user) return response;
+    const { response: roleResponse } = await requireRole({
+      userId: user.id,
+      allow: ["admin", "editor"],
+    });
+    if (roleResponse) return roleResponse;
 
     const supabase = createServiceRoleClient();
     const body = await request.json();

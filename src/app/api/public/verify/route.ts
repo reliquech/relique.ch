@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServiceRoleClient } from "@/lib/supabase/server";
+import { createAnonClient } from "@/lib/supabase/server";
 import { VerifyResultSchema } from "@/lib/domain";
 import { lookupMarketplaceItemByCode } from "@/lib/verify/lookupCode";
 import { mapMarketplaceToVerifyResult } from "@/lib/verify/mapMarketplaceToResult";
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Missing code parameter" }, { status: 400 });
     }
 
-    const supabase = createServiceRoleClient();
+    const supabase = createAnonClient();
     const row = await lookupMarketplaceItemByCode(supabase, code);
 
     if (!row) {

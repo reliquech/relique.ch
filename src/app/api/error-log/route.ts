@@ -14,7 +14,9 @@ const BodySchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const { user } = await requireUser();
+    const { user, response } = await requireUser();
+    if (!user) return response;
+
     const body = await request.json();
     const parsed = BodySchema.safeParse(body);
     if (!parsed.success) {

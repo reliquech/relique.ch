@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/supabase/requireUser";
+import { requireRole } from "@/lib/supabase/requireRole";
 import { z } from "zod";
 
 const ConsignedItemSchema = z.object({
@@ -75,6 +76,11 @@ export async function POST(request: NextRequest) {
   try {
     const { user, response } = await requireUser();
     if (!user) return response;
+    const { response: roleResponse } = await requireRole({
+      userId: user.id,
+      allow: ["admin", "editor"],
+    });
+    if (roleResponse) return roleResponse;
     const supabase = createServiceRoleClient();
     const body = await request.json();
 

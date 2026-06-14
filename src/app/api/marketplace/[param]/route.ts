@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient, createServiceRoleClient } from "@/lib/supabase/server";
+import { createClient, createAnonClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/supabase/requireUser";
 import { z } from "zod";
 import { mapRowToListing } from "../utils";
@@ -49,13 +49,13 @@ async function adminGetById(id: string) {
 }
 
 async function publicGetBySlug(slug: string) {
-  const supabase = createServiceRoleClient();
+  const supabase = createAnonClient();
   const { data: itemData, error } = await supabase
     .from("marketplace_items")
     .select("*")
     .eq("slug", slug)
     .eq("state_lifecycle", "published")
-    .in("state_visibility", ["public", "unlisted"])
+    .eq("state_visibility", "public")
     .single();
 
   if (error) {
