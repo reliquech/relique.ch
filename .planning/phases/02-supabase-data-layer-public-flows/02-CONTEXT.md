@@ -10,9 +10,9 @@ Thay thế mock/localStorage backends cho **verify**, **consign**, và **contact
 
 - Verify lookup qua database (`marketplace_items`) — không còn `verify.local.ts`
 - Consign public submit → `consigned_items` + photo uploads + auto-lead CRM
-- Contact form persist CRM + transactional emails (Resend)
+- Contact form persist CRM (leads + messages) — **không gửi email**
 - Xóa localStorage adapters cho verify/consign production data (DATA-04)
-- Transactional emails consign/contact hoạt động từ unified app (ADM-04)
+- **Resend đã bỏ hoàn toàn** — không transactional emails (ADM-04 deferred/out of v1)
 
 **Không trong phase này:** security hardening API (Phase 3), schema consolidation sang `@relique/shared` (Phase 4), admin UX redesign (Phase 5), payment flows (v2), camera-based QR scanner UI (defer — chỉ parse code từ input/URL v1).
 
@@ -45,11 +45,12 @@ Thay thế mock/localStorage backends cho **verify**, **consign**, và **contact
 - **D-17:** Giới hạn: **tối đa 10 ảnh**, **10MB/ảnh** — image types jpeg/png/webp
 - **D-18:** Link ảnh qua **`attachments`** table (`entity_type: consigned_item`, `entity_id`) — pattern CRM hiện có
 
-### Contact & Email (Claude's Discretion — không thảo luận, defaults từ REQUIREMENTS)
+### Contact (no email — locked 2026-06-14)
 - **D-19:** Contact form → tạo **`messages`** record + **auto-create `leads`** (pattern giống consign) — CNTC-01
-- **D-20:** Operator notification + user confirmation email qua **Resend** — reuse pattern `/api/email/send` — CNTC-02, CNTC-03, CNSG-03, ADM-04
-- **D-21:** Operator recipient: **env var** (e.g. `OPERATOR_EMAIL` hoặc `RESEND_OPERATOR_TO`) — không hardcode
-- **D-22:** Contact form UX: thay `alert()` fake bằng **inline success state** trên page (giữ layout hiện tại, không redesign)
+- **D-20:** **KHÔNG gửi email** — Resend removed; operator thấy lead/message trong admin CRM — CNTC-02/03 satisfied via CRM persistence only
+- **D-21:** Consign submit **KHÔNG gửi confirmation email** — on-screen `/consign/success` only — CNSG-03 via UI
+- **D-22:** Contact form UX: **inline success state** trên page (giữ layout hiện tại, không redesign)
+- **D-24:** Xóa mọi dead code Resend/`sendTransactional`/email env vars nếu còn sót trong `src/`
 
 ### Public Code (Minimal Touch — kế thừa Phase 1 D-05)
 - **D-23:** Phase 2 **minimal** thay đổi public UI — chỉ wire backend thật + thêm photo upload field consign; không redesign verify/contact/consign pages

@@ -51,7 +51,7 @@ Supabase schema hiện có **35 migration files** (001–035), nhiều overlap b
 | `notification_preferences` | 022 | Prefs API, alert run | **GIỮ** |
 | `dashboard_reports` | 025 | Dashboard reports API | **GIỮ** |
 | `error_logs` | 029 | error-log API, serverErrorLog | **GIỮ** |
-| `email_logs` | 017, 034 | **Không có query trong `src/`** | **AUDIT** — wire Resend logging hoặc drop table |
+| `email_logs` | 017, 034 | **Không có query trong `src/`**; Resend removed | **DROP** — migration 036 drop table + policies |
 
 ---
 
@@ -109,7 +109,7 @@ Supabase schema hiện có **35 migration files** (001–035), nhiều overlap b
 
 ### B. Prune dead schema (migration mới, không sửa history)
 - [ ] Drop `admin_upsert_profile` nếu confirm unused (migration 036)
-- [ ] Quyết định `email_logs`: implement logging trong Resend helper HOẶC drop table + migration
+- [ ] Drop `email_logs` table + policies + types (036) — Resend removed, locked decision
 - [ ] Review `crm_recent_searches` — có feature UI không? prune nếu unused
 - [ ] Review alert_rules complexity (021, 026) — fields nào UI/API thực sự dùng?
 

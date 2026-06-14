@@ -112,12 +112,13 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & App Merge | 5/5 | Complete   | 2026-06-14 |
-| 2. Supabase Data Layer & Public Flows | 5/5 | Code complete — UAT pending | 2026-06-14 |
+| 2. Supabase Data Layer & Public Flows | 0/4 | Planned — UAT + no-email cleanup | - |
 | 3. Security Hardening | 1/1 | Code complete — UAT pending | 2026-06-14 |
 | 4. Stack Consolidation | 0/TBD | Not started | - |
 | 5. Admin UX Redesign | 0/TBD | Not started | - |
 | 6. Flat Root App & npm Simplify | 1/1 | Complete | 2026-06-14 |
 | 7. Supabase Migrations Optimize | 0/3 | Planned — apply 035 pending | - |
+| 8. Supabase Database Audit & Prune | 0/5 | Planned | - |
 
 ### Phase 7: Supabase Migrations Optimize
 **Goal**: `supabase/migrations/` gọn, nhất quán, production-ready — fresh deploy nhanh, schema khớp types, RLS/index tối ưu
@@ -177,5 +178,5 @@ Plans:
 
 ---
 *Roadmap created: 2026-06-14*
-*Last updated: 2026-06-14 — Phase 8 added: Supabase database audit & prune*
+*Last updated: 2026-06-14 — Phases 2/7/8 replanned (no Resend, drop email_logs)*
 *Granularity: 8 phases*
