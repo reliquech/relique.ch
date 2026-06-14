@@ -7,7 +7,7 @@ stopped_at: Phase 3+7 executed — resume Phase 4 stack or Phase 2 UAT
 last_updated: "2026-06-14T22:00:00.000Z"
 last_activity: 2026-06-14 -- autonomous: Phase 3 security + Phase 7 migrations
 progress:
-  total_phases: 7
+  total_phases: 8
   completed_phases: 4
   total_plans: 12
   completed_plans: 12
@@ -32,6 +32,7 @@ Progress: [██████░░░░] 57% (4/7 phases code-complete)
 
 - **2026-06-14**: Phase 3 security executed — register 403, anon public reads, role guards, SEC-04 visibility.
 - **2026-06-14**: Phase 7 migrations — MIGRATIONS.md, MIGRATION_MANIFEST.md, `035_optimize_public_browse_indexes.sql`.
+- **2026-06-14**: Phase 8 added — Supabase database audit & prune (inventory, dead schema removal, baseline squash).
 
 ## Performance Metrics
 

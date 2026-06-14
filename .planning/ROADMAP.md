@@ -19,6 +19,7 @@ Brownfield monorepo chuyển từ hai app Next.js tách rời + mock public flow
 - [ ] **Phase 5: Admin UX Redesign** — CRM/dashboard/marketplace UI overhaul + admin ops fixes
 - [x] **Phase 6: Flat Root App & npm Simplify** — Flatten `apps/web` → root `src/`, bỏ Turbo/pnpm workspace, npm đơn giản (completed 2026-06-14)
 - [ ] **Phase 7: Supabase Migrations Optimize** — Tối ưu `supabase/migrations`: manifest, 035 indexes, docs (code complete — apply 035 pending)
+- [ ] **Phase 8: Supabase Database Audit & Prune** — Inventory tables/functions, gỡ schema không dùng, baseline squash, RLS/index audit
 
 ## Phase Details
 
@@ -153,7 +154,24 @@ Plans:
 **Plans**: 1 plan (autonomous execute)
 **Status**: ✅ Complete 2026-06-14
 
+### Phase 8: Supabase Database Audit & Prune
+**Goal**: Supabase schema gọn theo usage thực tế — biết rõ giữ/gỡ gì, functions cần thiết, baseline cho fresh install, RLS/index khớp app
+**Depends on**: Phase 7
+**Requirements**: DB-01–DB-08 (định nghĩa khi plan)
+**Context**: ✅ `08-CONTEXT.md` — inventory tables/RPC/buckets + checklist audit
+**Success Criteria** (what must be TRUE):
+  1. `SUPABASE_USAGE.md` — mọi table/function/bucket có verdict KEEP/PRUNE/WIRE với evidence từ `src/`
+  2. Dead schema pruned qua migration mới (036+): ít nhất `admin_upsert_profile`; `email_logs` có quyết định rõ (wire Resend hoặc drop)
+  3. `000_baseline.sql` cho fresh install — không cần apply 35 files incremental
+  4. RLS audit matrix — policies align SEC-04 public read paths
+  5. `src/lib/supabase/types.ts` regenerated sau prune — build pass
+  6. Dashboard 7 RPCs + public verify/consign/contact smoke pass sau optimize
+**Plans**: TBD
+
+Plans:
+- [ ] TBD (run `/gsd-discuss-phase 8` rồi `/gsd-plan-phase 8`)
+
 ---
 *Roadmap created: 2026-06-14*
-*Last updated: 2026-06-14 — Phase 7 added: Supabase migrations optimize*
-*Granularity: 7 phases*
+*Last updated: 2026-06-14 — Phase 8 added: Supabase database audit & prune*
+*Granularity: 8 phases*

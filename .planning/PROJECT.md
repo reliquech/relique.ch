@@ -67,9 +67,9 @@ Người dùng có thể **tin tưởng** Relique: verify sản phẩm thật, c
 
 ## Constraints
 
-- **Architecture**: Single Next.js app tại repo root (`src/`) với `/admin` route group
+- **Architecture**: Single Next.js app (`apps/web`) với `/admin` route group — không giữ `apps/admin` riêng
 - **Data**: Supabase là single source of truth — không localStorage persistence cho production data
-- **Packages**: Domain + UI inlined tại `src/lib/domain`, `src/lib/ui` (không còn pnpm workspace)
+- **Packages**: Giữ `@relique/shared` và `@relique/ui` workspace packages
 - **UI**: Không sửa trực tiếp `components/ui/**` — wrapper pattern theo shadcn-guard rule
 - **Quality gate**: Lint + typecheck + build only cho v1 — không Vitest/Playwright/CI
 - **Auth**: Supabase cookie sessions, middleware guard `/admin/*`, `requireUser`/`requireRole` trên API routes
