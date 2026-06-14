@@ -147,6 +147,14 @@
 - None — No Stripe webhooks, Supabase webhooks, or third-party callback endpoints detected
 - Alert rules executed via manual/authenticated POST to `/api/alert-rules/run` (not scheduled cron)
 
+**Payments (out of scope v1 — 2026-06-14):**
+- **No payment processor integrated** — No Stripe, PayPal, or checkout SDK in codebase
+- No `stripe` npm dependency in `apps/web/package.json` or `apps/admin/package.json`
+- No `/api/checkout`, `/api/webhooks/stripe`, or `orders` table in Supabase migrations
+- Marketplace is **browse-only** — listings display price but no buy/checkout flow implemented
+- Static copy only: `apps/web/src/data/terms-policies.data.ts` §6 "Fees and Payments" (legal text, not functional)
+- **v2 deferred:** Stripe Checkout per `.planning/REQUIREMENTS.md` PAY-01–04
+
 **Outgoing:**
 - Resend email API — `POST https://api.resend.com/emails`
 - OpenAI Images API — `POST https://api.openai.com/v1/images`
@@ -169,3 +177,4 @@
 ---
 
 *Integration audit: 2026-06-14*
+*Updated: 2026-06-14 — payments documented as out-of-scope v1 (no code to remove)*

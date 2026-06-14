@@ -6,7 +6,7 @@ Relique là nền tảng xác thực và marketplace cho đồ kỷ vật thể 
 
 ## Core Value
 
-Người dùng có thể **tin tưởng và giao dịch** trên Relique: verify sản phẩm thật, consign/submit thật, liên hệ được, và thanh toán marketplace hoạt động — tất cả trên một codebase, một deploy.
+Người dùng có thể **tin tưởng** Relique: verify sản phẩm thật, consign/submit thật, liên hệ được, browse marketplace authenticated inventory — tất cả trên một codebase, một deploy. Thanh toán marketplace defer v2.
 
 ## Requirements
 
@@ -31,7 +31,6 @@ Người dùng có thể **tin tưởng và giao dịch** trên Relique: verify 
 - [ ] Verify thật — QR/product ID lookup qua backend, không mock
 - [ ] Consign thật — Form consign → Supabase `consigned_items`, admin xử lý
 - [ ] Contact form — Gửi email thật qua Resend
-- [ ] Payments — Thanh toán marketplace (Stripe hoặc tương đương)
 - [ ] Bảo mật — Vá endpoint register không auth, harden API routes
 - [ ] Consolidate stack — Xóa `relique-marketplace/` prototype, deprecated schemas, legacy admin localStorage services, duplicate shadcn copies
 - [ ] Admin UX redesign — CRM/dashboard/marketplace management UI overhaul
@@ -45,6 +44,7 @@ Người dùng có thể **tin tưởng và giao dịch** trên Relique: verify 
 - `relique-marketplace/` Vite prototype — Sẽ archive/xóa sau khi gộp app
 - Mobile native apps — Web-only
 - Multi-language/i18n — English-only cho v1
+- Marketplace payments (Stripe Checkout) — User decision 2026-06-14; browse-only v1, defer v2
 
 ## Context
 
@@ -82,7 +82,8 @@ Người dùng có thể **tin tưởng và giao dịch** trên Relique: verify 
 | Foundation-first execution order | Data layer và security phải ổn trước khi redesign/features | — Pending |
 | Admin-only UX redesign cho v1 | Public site functional fixes only; admin là nơi operators spend time | — Pending |
 | Consolidate stack (không modernize tests v1) | User ưu tiên dọn legacy hơn thêm test infra ngay | — Pending |
-| Full product v1 — không mock | Verify, consign, contact, payments đều production-ready | — Pending |
+| Full product v1 — không mock | Verify, consign, contact production-ready; payments defer v2 | — Pending |
+| Bỏ payments khỏi v1 | Browse-only marketplace; giảm scope, tránh Stripe infra sớm | — Pending |
 | Minimal validation (lint/typecheck/build) | User chọn defer test framework sang v2 | — Pending |
 
 ## Evolution
@@ -103,4 +104,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-14 after initialization*
+*Last updated: 2026-06-14 — payments removed from v1 scope*

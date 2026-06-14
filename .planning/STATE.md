@@ -20,12 +20,12 @@ progress:
 
 See: .planning/PROJECT.md (updated 2026-06-14)
 
-**Core value:** Người dùng có thể tin tưởng và giao dịch trên Relique — verify thật, consign/submit thật, liên hệ được, thanh toán hoạt động — trên một codebase, một deploy.
+**Core value:** Người dùng có thể tin tưởng Relique — verify thật, consign/submit thật, liên hệ được — browse-only marketplace v1 (payments v2).
 **Current focus:** Phase 1 — Foundation & App Merge
 
 ## Current Position
 
-Phase: 1 of 6 (Foundation & App Merge)
+Phase: 1 of 5 (Foundation & App Merge)
 Plan: 0 of TBD in current phase
 Status: Ready to plan
 Last activity: 2026-06-14 — Roadmap created with 6 phases, 45 requirements mapped
@@ -60,7 +60,8 @@ Progress: [░░░░░░░░░░] 0%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- Foundation-first execution: merge → data layer → security → payments → consolidation → admin UX
+- Foundation-first execution: merge → data layer → security → consolidation → admin UX
+- Payments removed from v1 (2026-06-14) — browse-only marketplace; Stripe defer v2
 - Single app survivor: `apps/web` with `/admin` route group
 - Admin-only UX redesign v1; public site functional fixes only
 

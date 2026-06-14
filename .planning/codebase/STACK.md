@@ -72,6 +72,11 @@
 - `sharp` ^0.34.5 — Next.js image optimization (web devDependency)
 - `@resvg/resvg-js` ^2.6.2 — SVG rasterization for OG image generation (web devDependency, referenced in `apps/web/src/lib/og/`)
 
+**Payments — Not in codebase (out of scope v1):**
+- No `stripe` package, no checkout routes, no order tables — marketplace browse-only
+- Milestone scope: payments deferred to v2 (`.planning/REQUIREMENTS.md` PAY-01–04)
+- Only static legal copy in `apps/web/src/data/terms-policies.data.ts`
+
 ## Configuration
 
 **Environment:**
@@ -111,3 +116,4 @@
 ---
 
 *Stack analysis: 2026-06-14*
+*Updated: 2026-06-14 — payments noted out-of-scope v1*

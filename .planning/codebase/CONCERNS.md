@@ -260,4 +260,14 @@
 
 ---
 
+## Scope Notes (2026-06-14)
+
+**Payments removed from v1 milestone:**
+- No Stripe/checkout code exists in repo — nothing to delete
+- Marketplace browse-only until v2 (PAY-01–04 deferred)
+- Terms copy in `apps/web/src/data/terms-policies.data.ts` may reference fees/payments — review for accuracy when going browse-only
+
+---
+
 *Concerns audit: 2026-06-14*
+*Updated: 2026-06-14 — payments out-of-scope v1*

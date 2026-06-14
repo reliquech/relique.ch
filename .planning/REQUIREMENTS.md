@@ -1,7 +1,7 @@
 # Requirements: Relique.co Unified Platform
 
 **Defined:** 2026-06-14
-**Core Value:** Người dùng có thể tin tưởng và giao dịch trên Relique — verify thật, consign/submit thật, liên hệ được, thanh toán hoạt động — trên một codebase, một deploy.
+**Core Value:** Người dùng có thể tin tưởng Relique — verify thật, consign/submit thật, liên hệ được — trên một codebase, một deploy. Marketplace browse-only v1 (không checkout).
 
 ## v1 Requirements
 
@@ -9,7 +9,7 @@
 
 - [ ] **FND-01**: `apps/admin` được gộp vào `apps/web` — một Next.js app, một deploy
 - [ ] **FND-02**: Admin routes nằm tại route group `/admin` với layout riêng (sidebar, auth shell)
-- [ ] **FND-03**: Middleware bảo vệ `/admin/*` — unauthenticated redirect tới `/login`
+- [ ] **FND-03**: Middleware bảo vệ `/admin/*` — unauthenticated redirect tới `/admin/login`
 - [ ] **FND-04**: Tất cả admin API routes (`/api/*`) migrate sang unified app
 - [ ] **FND-05**: Supabase migrations folder consolidate vào unified app (`supabase/migrations/`)
 - [ ] **FND-06**: Root scripts/turbo config cập nhật — xóa `dev:admin`, `apps/admin` references
@@ -44,13 +44,6 @@
 - [ ] **CNTC-02**: Operator nhận email notification khi có contact inquiry mới
 - [ ] **CNTC-03**: User nhận confirmation sau contact submit
 
-### Commerce — Payments
-
-- [ ] **PAY-01**: User checkout marketplace item qua Stripe Checkout (hosted)
-- [ ] **PAY-02**: Stripe webhook cập nhật order state sau payment thành công
-- [ ] **PAY-03**: Item chuyển `sold`/`unavailable` sau purchase — không còn purchasable
-- [ ] **PAY-04**: Buyer nhận order confirmation email sau payment
-
 ### Security
 
 - [ ] **SEC-01**: Register endpoint yêu cầu auth hoặc bị disable — không public signup
@@ -62,8 +55,8 @@
 
 - [ ] **ADM-01**: Admin listing edit hoạt động — fix no-op edit trên ItemsPage
 - [ ] **ADM-02**: Admin submission queue actions hoạt động (status transitions)
-- [ ] **ADM-03**: Audit logging trên publish/approve/payment mutations
-- [ ] **ADM-04**: Transactional email triggers cho consign/contact/purchase từ unified app
+- [ ] **ADM-03**: Audit logging trên publish/approve mutations
+- [ ] **ADM-04**: Transactional email triggers cho consign/contact từ unified app
 
 ### Consolidation
 
@@ -81,6 +74,14 @@
 - [ ] **UX-04**: Admin responsive layout — usable trên tablet
 
 ## v2 Requirements
+
+### Commerce — Payments
+
+- **PAY-01**: User checkout marketplace item qua Stripe Checkout (hosted)
+- **PAY-02**: Stripe webhook cập nhật order state sau payment thành công
+- **PAY-03**: Item chuyển `sold`/`unavailable` sau purchase — không còn purchasable
+- **PAY-04**: Buyer nhận order confirmation email sau payment
+- **ADM-05**: Transactional email trigger cho purchase confirmation
 
 ### Testing & Quality
 
@@ -105,14 +106,15 @@
 
 | Feature | Reason |
 |---------|--------|
+| **Marketplace payments / Stripe Checkout v1** | User decision 2026-06-14 — browse-only catalog v1; defer PAY-01–04 to v2 |
 | Public site UX redesign | Admin-only redesign priority cho v1; public chỉ functional fixes |
 | Full test framework + CI | Defer v2; v1 chỉ lint + typecheck + build |
 | Separate `apps/admin` app | Đang bị thay thế bởi unified app |
 | `relique-marketplace/` prototype | Archive/xóa sau merge |
 | Blockchain / NFT / VDT provenance | Không phù hợp operator-owned model v1 |
-| Live auctions / bidding | Buy-now only cho v1 |
+| Live auctions / bidding | Defer v2 |
 | Multi-vendor seller portal | Operator-owned inventory model |
-| P2P escrow / Stripe Connect | Overkill cho single-seller; simple Checkout v1 |
+| P2P escrow / Stripe Connect | Defer v2 |
 | Physical vaulting & fulfillment | Manual fulfillment v1 |
 | Public user registration | Admin-provisioned users only |
 | Native mobile apps | Web-only, responsive |
@@ -145,35 +147,31 @@
 | CNTC-01 | Phase 2 | Pending |
 | CNTC-02 | Phase 2 | Pending |
 | CNTC-03 | Phase 2 | Pending |
+| ADM-04 | Phase 2 | Pending |
 | SEC-01 | Phase 3 | Pending |
 | SEC-02 | Phase 3 | Pending |
 | SEC-03 | Phase 3 | Pending |
 | SEC-04 | Phase 3 | Pending |
-| PAY-01 | Phase 4 | Pending |
-| PAY-02 | Phase 4 | Pending |
-| PAY-03 | Phase 4 | Pending |
-| PAY-04 | Phase 4 | Pending |
-| ADM-04 | Phase 4 | Pending |
-| CONS-01 | Phase 5 | Pending |
-| CONS-02 | Phase 5 | Pending |
-| CONS-03 | Phase 5 | Pending |
-| CONS-04 | Phase 5 | Pending |
-| CONS-05 | Phase 5 | Pending |
-| DATA-05 | Phase 5 | Pending |
-| DATA-06 | Phase 5 | Pending |
-| UX-01 | Phase 6 | Pending |
-| UX-02 | Phase 6 | Pending |
-| UX-03 | Phase 6 | Pending |
-| UX-04 | Phase 6 | Pending |
-| ADM-01 | Phase 6 | Pending |
-| ADM-02 | Phase 6 | Pending |
-| ADM-03 | Phase 6 | Pending |
+| CONS-01 | Phase 4 | Pending |
+| CONS-02 | Phase 4 | Pending |
+| CONS-03 | Phase 4 | Pending |
+| CONS-04 | Phase 4 | Pending |
+| CONS-05 | Phase 4 | Pending |
+| DATA-05 | Phase 4 | Pending |
+| DATA-06 | Phase 4 | Pending |
+| UX-01 | Phase 5 | Pending |
+| UX-02 | Phase 5 | Pending |
+| UX-03 | Phase 5 | Pending |
+| UX-04 | Phase 5 | Pending |
+| ADM-01 | Phase 5 | Pending |
+| ADM-02 | Phase 5 | Pending |
+| ADM-03 | Phase 5 | Pending |
 
 **Coverage:**
-- v1 requirements: 45 total
-- Mapped to phases: 45
+- v1 requirements: 41 total
+- Mapped to phases: 41
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-06-14*
-*Last updated: 2026-06-14 after roadmap creation*
+*Last updated: 2026-06-14 — payments removed from v1 (deferred to v2)*
