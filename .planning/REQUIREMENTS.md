@@ -58,6 +58,17 @@
 - [ ] **ADM-03**: Audit logging trên publish/approve mutations
 - [ ] **ADM-04**: Transactional email triggers cho consign/contact từ unified app
 
+### Database — Schema Audit & Prune (Phase 8)
+
+- [x] **DB-01**: Supabase usage inventory — `SUPABASE_USAGE.md` with KEEP/PRUNE verdicts and `src/` evidence
+- [ ] **DB-02**: Migration 036 applied on remote — drop `email_logs` + `admin_upsert_profile` *(blocked: `supabase link` required)*
+- [x] **DB-03**: `000_baseline.sql` for fresh installs (squashed post-prune state)
+- [x] **DB-04**: RLS audit matrix — `RLS_AUDIT.md` aligned with SEC-04
+- [x] **DB-05**: Index audit — `INDEX_AUDIT.md` confirms 035 hot-path coverage
+- [x] **DB-06**: Types without `email_logs` — manual prune; CLI regen pending link
+- [x] **DB-07**: `npm run check-types` + `npm run build` pass; `smoke:supabase` script
+- [x] **DB-08**: Dual-path migration docs — `MIGRATIONS.md`, manifest, operator scripts
+
 ### Consolidation
 
 - [ ] **CONS-01**: Xóa `relique-marketplace/` Vite prototype
@@ -166,10 +177,18 @@
 | ADM-01 | Phase 5 | Pending |
 | ADM-02 | Phase 5 | Pending |
 | ADM-03 | Phase 5 | Pending |
+| DB-01 | Phase 8 | Complete |
+| DB-02 | Phase 8 | Blocked (remote apply) |
+| DB-03 | Phase 8 | Complete |
+| DB-04 | Phase 8 | Complete |
+| DB-05 | Phase 8 | Complete |
+| DB-06 | Phase 8 | Partial (manual types) |
+| DB-07 | Phase 8 | Complete |
+| DB-08 | Phase 8 | Complete |
 
 **Coverage:**
-- v1 requirements: 41 total
-- Mapped to phases: 41
+- v1 requirements: 49 total
+- Mapped to phases: 49
 - Unmapped: 0 ✓
 
 ---
