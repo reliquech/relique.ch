@@ -157,7 +157,7 @@ Plans:
 ### Phase 8: Supabase Database Audit & Prune
 **Goal**: Supabase schema gọn theo usage thực tế — biết rõ giữ/gỡ gì, functions cần thiết, baseline cho fresh install, RLS/index khớp app
 **Depends on**: Phase 7
-**Requirements**: DB-01–DB-08 (định nghĩa khi plan)
+**Requirements**: DB-01, DB-02, DB-03, DB-04, DB-05, DB-06, DB-07, DB-08
 **Context**: ✅ `08-CONTEXT.md` — inventory tables/RPC/buckets + checklist audit
 **Success Criteria** (what must be TRUE):
   1. `SUPABASE_USAGE.md` — mọi table/function/bucket có verdict KEEP/PRUNE/WIRE với evidence từ `src/`
@@ -166,10 +166,14 @@ Plans:
   4. RLS audit matrix — policies align SEC-04 public read paths
   5. `src/lib/supabase/types.ts` regenerated sau prune — build pass
   6. Dashboard 7 RPCs + public verify/consign/contact smoke pass sau optimize
-**Plans**: TBD
+**Plans**: 5 plans (4 waves)
 
 Plans:
-- [ ] TBD (run `/gsd-discuss-phase 8` rồi `/gsd-plan-phase 8`)
+- [ ] 08-01-PLAN.md — Usage inventory: audit script + SUPABASE_USAGE.md (DB-01)
+- [ ] 08-02-PLAN.md — Prune migration 036 + [BLOCKING] supabase db push (DB-02)
+- [ ] 08-03-PLAN.md — RLS audit matrix + index audit docs (DB-04, DB-05)
+- [ ] 08-04-PLAN.md — 000_baseline.sql fresh install + legacy archive (DB-03, DB-08)
+- [ ] 08-05-PLAN.md — Types regen, smoke script, docs, human verify (DB-06, DB-07, DB-08)
 
 ---
 *Roadmap created: 2026-06-14*
