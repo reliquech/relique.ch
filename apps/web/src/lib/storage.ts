@@ -7,6 +7,11 @@ export interface Session {
   createdAt: string;
 }
 
+export interface MockSession {
+  displayName: string;
+  createdAt: number;
+}
+
 export interface VerifyHistoryEntry {
   productId: string;
   result: "qualified" | "inconclusive" | "disqualified";
@@ -15,6 +20,7 @@ export interface VerifyHistoryEntry {
 
 const STORAGE_KEYS = {
   SESSION: "relique.v1.session",
+  SESSION_MOCK: "relique.v1.session.mock",
   THEME: "relique.v1.theme",
   MARKETPLACE_LISTINGS: "relique.v1.marketplace.listings",
   MARKETPLACE_FAVORITES: "relique.v1.marketplace.favorites",
@@ -23,6 +29,13 @@ const STORAGE_KEYS = {
   CONSIGN_SUBMISSIONS: "relique.v1.consign.submissions",
   CONTENT_POSTS: "relique.v1.content.posts",
   CONTENT_EVENTS: "relique.v1.content.events",
+  ADMIN_VIEWS_COLUMNS: "relique.v1.admin.views.submissions.columns",
+  ADMIN_VIEWS_SAVED: "relique.v1.admin.views.submissions.saved",
+  ADMIN_RECENT_SEARCHES: "relique.v1.admin.recentSearches.submissions",
+  ADMIN_SAVED_FILTERS: "relique.v1.admin.savedFilters.submissions",
+  ADMIN_NOTIFICATIONS: "relique.v1.admin.notifications",
+  ADMIN_ALERT_RULES: "relique.v1.admin.alertRules",
+  ADMIN_ACTIVITY_LOG: "relique.v1.admin.activityLog",
 } as const;
 
 // Legacy keys for migration
@@ -240,6 +253,77 @@ export const storage = {
       },
       set: <T>(events: T[]): void => {
         setItem(STORAGE_KEYS.CONTENT_EVENTS, events);
+      },
+    },
+  },
+  sessionMock: {
+    get: (): MockSession | null => {
+      return getItem<MockSession | null>(STORAGE_KEYS.SESSION_MOCK, null);
+    },
+    set: (session: MockSession): void => {
+      setItem(STORAGE_KEYS.SESSION_MOCK, session);
+    },
+    remove: (): void => {
+      removeItem(STORAGE_KEYS.SESSION_MOCK);
+    },
+  },
+  admin: {
+    views: {
+      columns: {
+        get: (): Record<string, boolean> => {
+          return getItem<Record<string, boolean>>(STORAGE_KEYS.ADMIN_VIEWS_COLUMNS, {});
+        },
+        set: (columns: Record<string, boolean>): void => {
+          setItem(STORAGE_KEYS.ADMIN_VIEWS_COLUMNS, columns);
+        },
+      },
+      saved: {
+        get: (): Array<{ id: string; name: string; filters?: unknown; sort?: unknown; columnVisibility?: Record<string, boolean>; pageSize?: number; createdAt: number }> => {
+          return getItem(STORAGE_KEYS.ADMIN_VIEWS_SAVED, []);
+        },
+        set: (views: Array<{ id: string; name: string; filters?: unknown; sort?: unknown; columnVisibility?: Record<string, boolean>; pageSize?: number; createdAt: number }>): void => {
+          setItem(STORAGE_KEYS.ADMIN_VIEWS_SAVED, views);
+        },
+      },
+    },
+    recentSearches: {
+      get: (): string[] => {
+        return getItem<string[]>(STORAGE_KEYS.ADMIN_RECENT_SEARCHES, []);
+      },
+      set: (searches: string[]): void => {
+        setItem(STORAGE_KEYS.ADMIN_RECENT_SEARCHES, searches);
+      },
+    },
+    savedFilters: {
+      get: (): Array<{ id: string; name: string; query?: string; filters?: unknown; createdAt: number }> => {
+        return getItem(STORAGE_KEYS.ADMIN_SAVED_FILTERS, []);
+      },
+      set: (filters: Array<{ id: string; name: string; query?: string; filters?: unknown; createdAt: number }>): void => {
+        setItem(STORAGE_KEYS.ADMIN_SAVED_FILTERS, filters);
+      },
+    },
+    notifications: {
+      get: (): Array<{ id: string; type: string; message: string; read: boolean; timestamp: number }> => {
+        return getItem(STORAGE_KEYS.ADMIN_NOTIFICATIONS, []);
+      },
+      set: (notifications: Array<{ id: string; type: string; message: string; read: boolean; timestamp: number }>): void => {
+        setItem(STORAGE_KEYS.ADMIN_NOTIFICATIONS, notifications);
+      },
+    },
+    alertRules: {
+      get: (): Array<{ id: string; name: string; condition: unknown; action: unknown; enabled: boolean }> => {
+        return getItem(STORAGE_KEYS.ADMIN_ALERT_RULES, []);
+      },
+      set: (rules: Array<{ id: string; name: string; condition: unknown; action: unknown; enabled: boolean }>): void => {
+        setItem(STORAGE_KEYS.ADMIN_ALERT_RULES, rules);
+      },
+    },
+    activityLog: {
+      get: (): Array<{ id: string; type: string; message: string; timestamp: number; metadata?: unknown }> => {
+        return getItem(STORAGE_KEYS.ADMIN_ACTIVITY_LOG, []);
+      },
+      set: (log: Array<{ id: string; type: string; message: string; timestamp: number; metadata?: unknown }>): void => {
+        setItem(STORAGE_KEYS.ADMIN_ACTIVITY_LOG, log);
       },
     },
   },
