@@ -42,6 +42,18 @@ Incremental chain for Relique.co unified platform. **Do not reorder** files alre
 | 034 | `034_email_logs_nullable_user_id.sql` | `email_logs.user_id` nullable |
 | 035 | `035_optimize_public_browse_indexes.sql` | Public browse + CRM queue composite indexes |
 
+## Prune (036)
+
+| File | Purpose |
+|------|---------|
+| 036 | `036_prune_dead_schema.sql` — Drop `email_logs` + `admin_upsert_profile` (Phase 8 prune) |
+
+**Apply order (brownfield):** apply **035** first if pending, then **036**. Chain length after 036: **36 files** (001–036).
+
+**Superseded by 036 on applied DBs:**
+- `017` + `034` (`email_logs` table removed)
+- `030` `admin_upsert_profile` removed; trigger helpers `handle_updated_at` / `handle_new_user` from 030 remain
+
 ## Overlap notes (Phase 7)
 
 - **RLS:** `005` + `009` — `009` patches performance; keep both on applied DBs; do not squash
