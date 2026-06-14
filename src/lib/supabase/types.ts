@@ -441,47 +441,6 @@ export interface Database {
           created_at?: string;
         };
       };
-      email_logs: {
-        Row: {
-          id: string;
-          user_id: string;
-          entity_type: string;
-          entity_id: string;
-          to_email: string;
-          subject: string;
-          body: string | null;
-          provider: string;
-          provider_message_id: string | null;
-          status: string;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          entity_type: string;
-          entity_id: string;
-          to_email: string;
-          subject: string;
-          body?: string | null;
-          provider?: string;
-          provider_message_id?: string | null;
-          status?: string;
-          created_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string;
-          entity_type?: string;
-          entity_id?: string;
-          to_email?: string;
-          subject?: string;
-          body?: string | null;
-          provider?: string;
-          provider_message_id?: string | null;
-          status?: string;
-          created_at?: string;
-        };
-      };
       tasks: {
         Row: {
           id: string;

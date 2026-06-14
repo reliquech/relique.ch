@@ -13,7 +13,8 @@
     "phase2:no-email-gate": "node scripts/phase2-no-email-gate.mjs",
     "phase2:data-layer-gate": "node scripts/phase2-data-layer-gate.mjs",
     "phase2:smoke": "node scripts/phase2-public-smoke.mjs",
-    "phase2:gate": "npm run phase2:no-email-gate && npm run phase2:data-layer-gate && npm run check-types && npm run build"
+    "phase2:gate": "npm run phase2:no-email-gate && npm run phase2:data-layer-gate && npm run check-types && npm run build",
+    "smoke:supabase": "node scripts/smoke-supabase.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
