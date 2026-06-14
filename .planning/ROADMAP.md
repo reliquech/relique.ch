@@ -12,7 +12,7 @@ Brownfield monorepo chuyển từ hai app Next.js tách rời + mock public flow
 - Integer phases (1–5): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Foundation & App Merge** — Gộp `apps/admin` vào `apps/web`, route group `/admin`, unified API và migrations
+- [x] **Phase 1: Foundation & App Merge** — Gộp `apps/admin` vào `apps/web`, route group `/admin`, unified API và migrations (completed 2026-06-14)
 - [ ] **Phase 2: Supabase Data Layer & Public Flows** — Verify, consign, contact thật; transactional emails; xóa localStorage adapters
 - [ ] **Phase 3: Security Hardening** — Vá register endpoint, audit API routes, enforce RLS và role checks
 - [ ] **Phase 4: Stack Consolidation** — Xóa legacy apps/prototype, schema dedup, type safety
@@ -33,11 +33,11 @@ Brownfield monorepo chuyển từ hai app Next.js tách rời + mock public flow
 **Plans**: 5 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Layout split: `(site)` route group, slim root layout, merge CSS tokens
-- [ ] 01-02-PLAN.md — Auth infrastructure: port Supabase layer, middleware, `/admin/login`
-- [ ] 01-03-PLAN.md — API migration: ~57 admin routes + marketplace dual-GET merge
-- [ ] 01-04-PLAN.md — Admin UI: `src/admin/` modules, `components/admin/` shell, 21 portal pages
-- [ ] 01-05-PLAN.md — Config consolidation: migrations [BLOCKING], root scripts, phase gate
+- [x] 01-01-PLAN.md — Layout split: `(site)` route group, slim root layout, merge CSS tokens
+- [x] 01-02-PLAN.md — Auth infrastructure: port Supabase layer, middleware, `/admin/login`
+- [x] 01-03-PLAN.md — API migration: ~57 admin routes + marketplace dual-GET merge
+- [x] 01-04-PLAN.md — Admin UI: `src/admin/` modules, `components/admin/` shell, 21 portal pages
+- [x] 01-05-PLAN.md — Config consolidation: migrations [BLOCKING], root scripts, phase gate
 
 **UI hint**: yes
 
@@ -101,7 +101,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & App Merge | 0/5 | Not started | - |
+| 1. Foundation & App Merge | 5/5 | Complete   | 2026-06-14 |
 | 2. Supabase Data Layer & Public Flows | 0/TBD | Not started | - |
 | 3. Security Hardening | 0/TBD | Not started | - |
 | 4. Stack Consolidation | 0/TBD | Not started | - |
