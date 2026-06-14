@@ -73,6 +73,10 @@ Incremental chain for Relique.co unified platform. **Do not reorder** files alre
 | crm_funnel_by_source | 025 | Funnel by source |
 | admin_upsert_profile | 030 | Admin profile upsert |
 
+## Phase 8 inventory
+
+Authoritative table/RPC/bucket usage map with KEEP/PRUNE verdicts: [`SUPABASE_USAGE.md`](./SUPABASE_USAGE.md) (regenerate via `node scripts/audit-supabase-usage.mjs`).
+
 ## Fresh install baseline (D-04)
 
 Squashing 001–035 into a single `000_baseline.sql` is **deferred to Phase 8**. New projects apply the full incremental chain `001` → `035` until baseline is published. Do **not** create `000_baseline.sql` in Phase 7.
