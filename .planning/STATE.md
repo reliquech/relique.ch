@@ -7,11 +7,11 @@ stopped_at: Phase 6 complete — resume Phase 3 security or Phase 2 UAT
 last_updated: "2026-06-14T20:00:00.000Z"
 last_activity: 2026-06-14 -- Phase 6 restructure executed (autonomous)
 progress:
-  total_phases: 6
+  total_phases: 7
   completed_phases: 2
   total_plans: 10
   completed_plans: 10
-  percent: 33
+  percent: 29
 ---
 
 # Project State
@@ -21,19 +21,20 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-14)
 
 **Core value:** Người dùng có thể tin tưởng Relique — verify thật, consign/submit thật, liên hệ được — browse-only marketplace v1 (payments v2).
-**Current focus:** Phase 3 Security — hoặc Phase 2 UAT (migrations)
+**Current focus:** Phase 7 planning — Supabase migrations optimize (`supabase/migrations/`)
 
 ## Current Position
 
-Phase: 6 — COMPLETE (restructure)
-Next: Phase 3 (Security) — `/gsd-autonomous --from 3`
-Status: Flat root npm app; `npm run dev` at repo root
-Last activity: 2026-06-14 -- Phase 6 autonomous execute
+Phase: 7 — PLANNED (not started)
+Next: `/gsd-discuss-phase 7` hoặc `/gsd-plan-phase 7`
+Status: 34 migration files at `supabase/migrations/` (001–034); MIGRATIONS.md stale (refs apps/web)
+Last activity: 2026-06-14 -- Phase 7 added to roadmap
 
-Progress: [████░░░░░░] 33% (Phases 1+6 complete; Phase 2 code done UAT pending)
+Progress: [████░░░░░░] 29% (2/7 phases complete)
 
 ## Roadmap Evolution
 
+- **2026-06-14**: Phase 7 added — optimize `supabase/migrations`: squash baseline, dedup overlapping DDL, RLS/index audit, regen types. Slug: `07-supabase-migrations-optimize`.
 - **2026-06-14**: Phase 6 executed — single Next.js app at root (`src/`, `supabase/`, `public/`), npm toolchain, legacy monorepo removed.
 
 ## Performance Metrics

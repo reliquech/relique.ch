@@ -9,7 +9,7 @@ Brownfield monorepo chuyển từ hai app Next.js tách rời + mock public flow
 ## Phases
 
 **Phase Numbering:**
-- Integer phases (1–6): Planned milestone work
+- Integer phases (1–7): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Foundation & App Merge** — Gộp `apps/admin` vào `apps/web`, route group `/admin`, unified API và migrations (completed 2026-06-14)
@@ -18,6 +18,7 @@ Brownfield monorepo chuyển từ hai app Next.js tách rời + mock public flow
 - [ ] **Phase 4: Stack Consolidation** — Schema dedup, type safety (post-restructure)
 - [ ] **Phase 5: Admin UX Redesign** — CRM/dashboard/marketplace UI overhaul + admin ops fixes
 - [x] **Phase 6: Flat Root App & npm Simplify** — Flatten `apps/web` → root `src/`, bỏ Turbo/pnpm workspace, npm đơn giản (completed 2026-06-14)
+- [ ] **Phase 7: Supabase Migrations Optimize** — Tối ưu `supabase/migrations`: squash baseline, dedup, RLS/index audit, regen types
 
 ## Phase Details
 
@@ -106,7 +107,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -116,28 +117,43 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 4. Stack Consolidation | 0/TBD | Not started | - |
 | 5. Admin UX Redesign | 0/TBD | Not started | - |
 | 6. Flat Root App & npm Simplify | 1/1 | Complete | 2026-06-14 |
+| 7. Supabase Migrations Optimize | 0/TBD | Not started | - |
+
+### Phase 7: Supabase Migrations Optimize
+**Goal**: `supabase/migrations/` gọn, nhất quán, production-ready — fresh deploy nhanh, schema khớp types, RLS/index tối ưu
+**Depends on**: Phase 6 (migrations tại root `supabase/`)
+**Requirements**: MIG-01–MIG-08 (định nghĩa khi plan)
+**Success Criteria** (what must be TRUE):
+  1. `supabase/MIGRATIONS.md` + docs trỏ `supabase/migrations/` tại root — không còn `apps/web/` paths
+  2. Migration inventory rõ ràng: baseline/squash strategy cho **new projects** (001 baseline hoặc archived `migrations/legacy/`)
+  3. Không còn duplicate/overlapping DDL (RLS fix 005 vs 009, RPC extend 014 vs 020 vs 025 — merged hoặc documented)
+  4. RLS policies audit — mỗi table có policy rõ; public read paths align Phase 3 SEC-04
+  5. Indexes review — hot paths (marketplace_items published filter, leads, consigned_items) có index phù hợp
+  6. `src/lib/supabase/types.ts` regenerated từ schema cuối — giảm `as never` casts trên API routes
+  7. `supabase db push` / manual apply path documented cho 034 files; fresh env bootstrap ≤ N migration files
+  8. Storage buckets + RPC functions documented trong single migration manifest
+**Plans**: TBD
+**Notes**: 34 incremental files (001–034) từ brownfield merge; optimize ≠ break applied production DB — strategy: baseline for new + keep chain for existing
+
+Plans:
+- [ ] TBD (run `/gsd-discuss-phase 7` rồi `/gsd-plan-phase 7`)
 
 ### Phase 6: Flat Root App & npm Simplify
 **Goal**: Một Next.js app tại repo root — `src/` + `supabase/` + `public/`, không còn `apps/` hay Turborepo; toolchain đơn giản bằng npm; dependencies lên bản mới nhất tương thích
-**Depends on**: Phase 5 (có thể discuss reorder nếu muốn restructure trước UX polish)
-**Context**: ✅ `06-CONTEXT.md` gathered 2026-06-14 — **có thể reorder chạy sau Phase 2**
-**Requirements**: REST-01–REST-08 (xem REQUIREMENTS.md khi plan)
+**Depends on**: Phase 5 (reordered — executed sau Phase 2)
+**Context**: ✅ `06-CONTEXT.md` gathered 2026-06-14
+**Requirements**: REST-01–REST-08
 **Success Criteria** (what must be TRUE):
-  1. `apps/web/src/**` đã chuyển thành `src/**` tại repo root — `@/` alias trỏ `./src`
-  2. `apps/web/supabase/` → `supabase/` tại root; migrations và config vẫn hoạt động
-  3. `apps/web/public/` → `public/` tại root
-  4. Không còn `apps/`, `pnpm-workspace.yaml`, `turbo.json` — single `package.json` root
-  5. `npm install` + `npm run dev` + `npm run build` pass tại root (thay `pnpm`/`turbo`)
-  6. `packages/shared` và `packages/ui` inlined hoặc merged vào `src/` — không còn workspace packages (trừ khi discuss giữ internal folder)
-  7. `apps/admin/`, `relique-marketplace/` xóa khỏi repo
-  8. Core deps (Next.js, React, Supabase, Zod) upgraded lên latest stable trong phạm vi breaking-change review
-**Plans**: TBD
-**Notes**: Absorbs CONS-01/02 từ Phase 4; Phase 4 còn lại schema dedup + type safety sau restructure
-
-Plans:
-- [ ] TBD (run `/gsd-discuss-phase 6` rồi `/gsd-plan-phase 6`)
+  1. `src/**` tại repo root — `@/` alias trỏ `./src`
+  2. `supabase/` + `public/` tại root
+  3. Không còn `apps/`, `pnpm-workspace.yaml`, `turbo.json`
+  4. `npm install` + `npm run dev` + `npm run build` pass tại root
+  5. `packages/shared` + `packages/ui` inlined vào `src/lib/`
+  6. Legacy dirs xóa (`apps/admin/`, `relique-marketplace/`)
+**Plans**: 1 plan (autonomous execute)
+**Status**: ✅ Complete 2026-06-14
 
 ---
 *Roadmap created: 2026-06-14*
-*Last updated: 2026-06-14 — Phase 6 added: flat root app, npm simplify, drop Turbo/pnpm*
-*Granularity: 6 phases*
+*Last updated: 2026-06-14 — Phase 7 added: Supabase migrations optimize*
+*Granularity: 7 phases*
