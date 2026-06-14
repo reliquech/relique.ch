@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 7 executed — 035 remote apply pending
-last_updated: "2026-06-14T14:34:04.642Z"
+stopped_at: Completed Phase 8 all plans
+last_updated: "2026-06-14T14:38:14.871Z"
 last_activity: 2026-06-14 -- Phase 8 planning complete
 progress:
   total_phases: 8
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 12
-  completed_plans: 7
-  percent: 58
+  completed_plans: 12
+  percent: 100
 ---
 
 # Project State
@@ -56,6 +56,7 @@ Progress: [██████░░░░] 57% (4/7 phases code-complete)
 
 *Updated after each plan completion*
 | Phase 07-supabase-migrations-optimize Pall | 21min | 8 tasks | 7 files |
+| Phase 08 P05 | 72 | 5 tasks | 20 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,7 @@ Recent decisions affecting current work:
 - Admin-only UX redesign v1; public site functional fixes only
 - [Phase 07]: Migration docs canonical at supabase/migrations/; brownfield additive chain 001-035 preserved
 - [Phase 07]: 035 remote apply requires supabase link — manual db push or SQL Editor documented in 07-VERIFICATION.md
+- [Phase 08]: DROP email_logs + admin_upsert_profile via 036; dual-path migrations (baseline vs legacy)
 
 ### Pending Todos
 
@@ -87,6 +89,6 @@ From `.planning/codebase/CONCERNS.md`:
 
 ## Session Continuity
 
-Last session: 2026-06-14T14:33:56.841Z
-Stopped at: Phase 7 executed — 035 remote apply pending
+Last session: 2026-06-14T14:38:14.868Z
+Stopped at: Completed Phase 8 all plans
 Resume file: None

@@ -170,11 +170,11 @@ Plans:
 **Plans**: 5 plans (4 waves)
 
 Plans:
-- [ ] 08-01-PLAN.md — Usage inventory: audit script + SUPABASE_USAGE.md (DB-01)
-- [ ] 08-02-PLAN.md — Prune migration 036 + [BLOCKING] supabase db push (DB-02)
-- [ ] 08-03-PLAN.md — RLS audit matrix + index audit docs (DB-04, DB-05)
-- [ ] 08-04-PLAN.md — 000_baseline.sql fresh install + legacy archive (DB-03, DB-08)
-- [ ] 08-05-PLAN.md — Types regen, smoke script, docs, human verify (DB-06, DB-07, DB-08)
+- [x] 08-01-PLAN.md — Usage inventory: audit script + SUPABASE_USAGE.md (DB-01)
+- [x] 08-02-PLAN.md — Prune migration 036 + [BLOCKING] supabase db push (DB-02)
+- [x] 08-03-PLAN.md — RLS audit matrix + index audit docs (DB-04, DB-05)
+- [x] 08-04-PLAN.md — 000_baseline.sql fresh install + legacy archive (DB-03, DB-08)
+- [x] 08-05-PLAN.md — Types regen, smoke script, docs, human verify (DB-06, DB-07, DB-08)
 
 ---
 *Roadmap created: 2026-06-14*
