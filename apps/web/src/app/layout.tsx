@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { Work_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Header } from "@/components/shell/Header";
-import { Footer } from "@/components/shell/Footer";
 import { Toaster } from "@/components/ui/sonner";
-import { CompareProvider, CompareDrawer } from "@/components/interactive/CompareDrawer";
-import { CurrencyProvider } from "@/contexts/CurrencyContext";
-import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const workSans = Work_Sans({
   subsets: ["latin"],
@@ -118,20 +112,8 @@ export default function RootLayout({
         <link rel="canonical" href={process.env.NEXT_PUBLIC_SITE_URL || "https://relique.ch"} />
       </head>
       <body className={`${workSans.variable} ${zapfRenaissance.variable} font-work-sans antialiased`}>
-        <CompareProvider>
-          <CurrencyProvider>
-            <div className="flex min-h-screen flex-col">
-              <Suspense fallback={null}>
-                <Header />
-              </Suspense>
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </div>
-            <CompareDrawer />
-            <Toaster />
-            <SpeedInsights />
-          </CurrencyProvider>
-        </CompareProvider>
+        {children}
+        <Toaster />
       </body>
     </html>
   );

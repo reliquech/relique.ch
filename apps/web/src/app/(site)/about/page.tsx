@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { StrategicPartnerSection } from "../(home)/components/StrategicPartnerSection";
-import { TeamSection } from "../(home)/components/TeamSection";
+import { StrategicPartnerSection } from "../../(home)/components/StrategicPartnerSection";
+import { TeamSection } from "../../(home)/components/TeamSection";
 
 /** Chỉnh độ sáng ảnh Who We Are (0 = tối hết, 1 = gốc). Ví dụ: 0.85, 0.9 */
 const WHO_WE_ARE_IMG_BRIGHTNESS = 0.85;
