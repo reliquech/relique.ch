@@ -30,7 +30,15 @@ Brownfield monorepo chuyển từ hai app Next.js tách rời + mock public flow
   3. `pnpm dev` tại repo root khởi động một app duy nhất — public marketplace và admin CRM đều hoạt động
   4. Admin CRM pages (leads, marketplace, deals) load data qua `/api/*` trên unified app
   5. Supabase migrations folder và turbo/root scripts trỏ về unified app — không còn `dev:admin`
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Layout split: `(site)` route group, slim root layout, merge CSS tokens
+- [ ] 01-02-PLAN.md — Auth infrastructure: port Supabase layer, middleware, `/admin/login`
+- [ ] 01-03-PLAN.md — API migration: ~57 admin routes + marketplace dual-GET merge
+- [ ] 01-04-PLAN.md — Admin UI: `src/admin/` modules, `components/admin/` shell, 21 portal pages
+- [ ] 01-05-PLAN.md — Config consolidation: migrations [BLOCKING], root scripts, phase gate
+
 **UI hint**: yes
 
 ### Phase 2: Supabase Data Layer & Public Flows
@@ -93,7 +101,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & App Merge | 0/TBD | Not started | - |
+| 1. Foundation & App Merge | 0/5 | Not started | - |
 | 2. Supabase Data Layer & Public Flows | 0/TBD | Not started | - |
 | 3. Security Hardening | 0/TBD | Not started | - |
 | 4. Stack Consolidation | 0/TBD | Not started | - |
