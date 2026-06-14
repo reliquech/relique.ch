@@ -3,6 +3,7 @@ import { Work_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { CommandPalette } from "@/components/command/CommandPalette";
 
 const workSans = Work_Sans({
   subsets: ["latin"],
@@ -113,6 +114,7 @@ export default function RootLayout({
       </head>
       <body className={`${workSans.variable} ${zapfRenaissance.variable} font-work-sans antialiased`}>
         {children}
+        <CommandPalette />
         <Toaster />
       </body>
     </html>
