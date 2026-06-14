@@ -9,14 +9,15 @@ Brownfield monorepo chuyển từ hai app Next.js tách rời + mock public flow
 ## Phases
 
 **Phase Numbering:**
-- Integer phases (1–5): Planned milestone work
+- Integer phases (1–6): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Foundation & App Merge** — Gộp `apps/admin` vào `apps/web`, route group `/admin`, unified API và migrations (completed 2026-06-14)
 - [ ] **Phase 2: Supabase Data Layer & Public Flows** — Verify, consign, contact thật; transactional emails; xóa localStorage adapters (code complete — UAT pending)
 - [ ] **Phase 3: Security Hardening** — Vá register endpoint, audit API routes, enforce RLS và role checks
-- [ ] **Phase 4: Stack Consolidation** — Xóa legacy apps/prototype, schema dedup, type safety
+- [ ] **Phase 4: Stack Consolidation** — Xóa legacy apps/prototype, schema dedup, type safety (một phần absorb vào Phase 6)
 - [ ] **Phase 5: Admin UX Redesign** — CRM/dashboard/marketplace UI overhaul + admin ops fixes
+- [ ] **Phase 6: Flat Root App & npm Simplify** — Flatten `apps/web` → root `src/`, bỏ Turbo/pnpm workspace, npm đơn giản, upgrade packages mới nhất
 
 ## Phase Details
 
@@ -105,17 +106,38 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & App Merge | 5/5 | Complete   | 2026-06-14 |
-| 2. Supabase Data Layer & Public Flows | 0/TBD | Not started | - |
+| 2. Supabase Data Layer & Public Flows | 5/5 | Code complete — UAT pending | 2026-06-14 |
 | 3. Security Hardening | 0/TBD | Not started | - |
 | 4. Stack Consolidation | 0/TBD | Not started | - |
 | 5. Admin UX Redesign | 0/TBD | Not started | - |
+| 6. Flat Root App & npm Simplify | 0/TBD | Not started | - |
+
+### Phase 6: Flat Root App & npm Simplify
+**Goal**: Một Next.js app tại repo root — `src/` + `supabase/` + `public/`, không còn `apps/` hay Turborepo; toolchain đơn giản bằng npm; dependencies lên bản mới nhất tương thích
+**Depends on**: Phase 5 (có thể discuss reorder nếu muốn restructure trước UX polish)
+**Context**: ✅ `06-CONTEXT.md` gathered 2026-06-14 — **có thể reorder chạy sau Phase 2**
+**Requirements**: REST-01–REST-08 (xem REQUIREMENTS.md khi plan)
+**Success Criteria** (what must be TRUE):
+  1. `apps/web/src/**` đã chuyển thành `src/**` tại repo root — `@/` alias trỏ `./src`
+  2. `apps/web/supabase/` → `supabase/` tại root; migrations và config vẫn hoạt động
+  3. `apps/web/public/` → `public/` tại root
+  4. Không còn `apps/`, `pnpm-workspace.yaml`, `turbo.json` — single `package.json` root
+  5. `npm install` + `npm run dev` + `npm run build` pass tại root (thay `pnpm`/`turbo`)
+  6. `packages/shared` và `packages/ui` inlined hoặc merged vào `src/` — không còn workspace packages (trừ khi discuss giữ internal folder)
+  7. `apps/admin/`, `relique-marketplace/` xóa khỏi repo
+  8. Core deps (Next.js, React, Supabase, Zod) upgraded lên latest stable trong phạm vi breaking-change review
+**Plans**: TBD
+**Notes**: Absorbs CONS-01/02 từ Phase 4; Phase 4 còn lại schema dedup + type safety sau restructure
+
+Plans:
+- [ ] TBD (run `/gsd-discuss-phase 6` rồi `/gsd-plan-phase 6`)
 
 ---
 *Roadmap created: 2026-06-14*
-*Last updated: 2026-06-14 — removed Phase 4 Payments (Stripe); 5 phases total*
-*Granularity: standard (5 phases)*
+*Last updated: 2026-06-14 — Phase 6 added: flat root app, npm simplify, drop Turbo/pnpm*
+*Granularity: 6 phases*

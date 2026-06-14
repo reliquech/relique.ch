@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 2 planned — ready for execution
-last_updated: "2026-06-14T04:01:09.774Z"
-last_activity: 2026-06-14 -- Phase 1 execution started
+stopped_at: Phase 3–6 context gathered — ready for planning
+last_updated: "2026-06-14T18:00:00.000Z"
+last_activity: 2026-06-14 -- discuss-phase 3-6 complete (auto)
 progress:
-  total_phases: 5
+  total_phases: 6
   completed_phases: 1
   total_plans: 10
-  completed_plans: 5
-  percent: 50
+  completed_plans: 10
+  percent: 17
 ---
 
 # Project State
@@ -21,16 +21,21 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-14)
 
 **Core value:** Người dùng có thể tin tưởng Relique — verify thật, consign/submit thật, liên hệ được — browse-only marketplace v1 (payments v2).
-**Current focus:** Phase 1 — Foundation & App Merge
+**Current focus:** Phase 6 planning — restructure ưu tiên (user request); hoặc Phase 3 security
 
 ## Current Position
 
-Phase: 1 (Foundation & App Merge) — EXECUTING
-Plan: 1 of 5
-Status: Executing Phase 1
-Last activity: 2026-06-14 -- Phase 1 execution started
+Phase: 3–6 — CONTEXT gathered (auto-discuss 2026-06-14)
+Plan: 0 of TBD per phase
+Status: Ready for `/gsd-plan-phase`
+Last activity: 2026-06-14 -- discuss-phase 3,4,5,6 complete
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 17% (1/6 phases complete; Phase 2 code done, UAT pending)
+
+## Roadmap Evolution
+
+- **2026-06-14**: Phase 6 added — flatten `apps/web` to root `src/`, drop Turbo/pnpm workspace, simplify to npm, upgrade latest packages. Slug: `06-flat-root-npm-restructure`. Overlaps Phase 4 CONS-01/02 (delete legacy apps/prototype).
+- **2026-06-14**: CONTEXT gathered for Phases 3–6 (auto-discuss). Phase 6 may reorder to run after Phase 2.
 
 ## Performance Metrics
 
@@ -62,7 +67,7 @@ Recent decisions affecting current work:
 
 - Foundation-first execution: merge → data layer → security → consolidation → admin UX
 - Payments removed from v1 (2026-06-14) — browse-only marketplace; Stripe defer v2
-- Single app survivor: `apps/web` with `/admin` route group
+- Single app survivor: `apps/web` with `/admin` route group → **target Phase 6:** root `src/` single npm app
 - Admin-only UX redesign v1; public site functional fixes only
 
 ### Pending Todos
