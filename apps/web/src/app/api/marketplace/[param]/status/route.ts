@@ -7,15 +7,16 @@ const StatusUpdateSchema = z.object({
   status: z.enum(["draft", "published", "archived"]),
 });
 
-// PATCH /api/marketplace/[id]/status - Update status
+// PATCH /api/marketplace/[param]/status - Update status
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ param: string }> }
 ) {
   try {
     const { user, response } = await requireUser();
     if (!user) return response;
-    const { id } = await params;
+
+    const { param: id } = await params;
     const supabase = createServiceRoleClient();
     const body = await request.json();
 
@@ -36,7 +37,7 @@ export async function PATCH(
     }
 
     const nextState = {
-      ...(existingItem as any).state,
+      ...(existingItem as { state?: Record<string, unknown> }).state,
       lifecycle: validated.status,
     };
 
@@ -60,7 +61,7 @@ export async function PATCH(
         entity_type: "marketplace_item",
         entity_id: id,
         metadata: {
-          old_status: (existingItem as any).state?.lifecycle,
+          old_status: (existingItem as { state?: { lifecycle?: string } }).state?.lifecycle,
           new_status: validated.status,
         },
       });
