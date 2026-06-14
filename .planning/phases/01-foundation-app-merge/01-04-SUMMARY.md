@@ -131,18 +131,23 @@ Run `pnpm dev:web` (port 1300). Requires `apps/web/.env.local` with Supabase key
 **4. [Rule 3 - Blocking] useSearchParams Suspense boundary for portal layout**
 - **Found during:** Task 2 (`pnpm --filter web build`)
 - **Issue:** Next.js 16 prerender fails on admin routes using PortalSidebar
-- **Fix:** Wrapped `PortalSidebar` in `Suspense` in `AdminPortalLayout`
+- **Fix:** Wrapped `PortalSidebar` in `Suspense`; added `export const dynamic = "force-dynamic"` on portal layout
 - **Verification:** `pnpm --filter web build` passes (77 routes)
 - **Committed in:** `de909cb`
 
+**5. [Rule 2 - Missing Critical] Admin background asset**
+- **Found during:** Task 2 (layout references `/admin background.jpeg`)
+- **Issue:** Background image existed in `apps/admin/public/` but not copied to web
+- **Fix:** Copied to `apps/web/public/admin background.jpeg`
+- **Committed in:** (this session fix commit)
+
 ---
 
-**Total deviations:** 4 auto-fixed (3 blocking, 1 bug)
+**Total deviations:** 5 auto-fixed (3 blocking, 1 bug, 1 missing critical)
 **Impact on plan:** Required for typecheck/build correctness. No scope creep.
 
 ## Known Gaps
 
-- `/admin background.jpeg` referenced in layout but not in repo (pre-existing; broken background until asset added)
 - Dashboard QuickStats/ContinueActions still use legacy localStorage services for verify/consign counts (API-backed CRM pages unaffected)
 - Human UAT not yet operator-approved (checkpoint documented above)
 
