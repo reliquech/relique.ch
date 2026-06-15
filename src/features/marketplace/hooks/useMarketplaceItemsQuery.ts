@@ -78,6 +78,10 @@ interface RefetchOptions {
   force?: boolean;
 }
 
+/**
+ * List query with stale-while-revalidate cache.
+ * Hydrates `data` from cache when available; `loading` is false while `refreshing` tracks background fetches.
+ */
 export function useMarketplaceItemsQuery(state: MarketplaceItemsUrlState) {
   const queryKey = getMarketplaceItemsQueryKey(state);
   const initialCache = readMarketplaceItemsCache(queryKey);
