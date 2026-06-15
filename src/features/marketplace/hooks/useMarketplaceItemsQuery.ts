@@ -74,6 +74,7 @@ export function invalidateMarketplaceItemsCache(key?: string): void {
   marketplaceItemsCache.clear();
 }
 
+/** `force` bypasses cache hydration and always requests fresh list data. */
 interface RefetchOptions {
   force?: boolean;
 }
@@ -129,6 +130,7 @@ export function useMarketplaceItemsQuery(state: MarketplaceItemsUrlState) {
       });
 
       if (!controller.signal.aborted && activeKeyRef.current === key) {
+        // Ignore stale responses when query key changed mid-flight (T15-03).
         writeMarketplaceItemsCache(key, response);
         setData(response);
         setIsStale(false);
