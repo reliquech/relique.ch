@@ -26,7 +26,7 @@ Brownfield monorepo chuyển từ hai app Next.js tách rời + mock public flow
 - [x] **Phase 12: Marketplace Items admin page** — Toolbar, filters, table, bulk actions, URL sync (`/admin/items` only) (completed 2026-06-15)
 - [x] **Phase 13: Marketplace Items table-grid toggle, full-page editor, UX polish** — View toggle, create/edit workflow, counts, states, a11y (completed 2026-06-15; human UAT pending; P2 media bind follow-up)
 - [x] **Phase 14: Public marketplace published-only** — Tách public/admin API, homepage real data, publish+visibility (completed 2026-06-15)
-- [ ] **Phase 15: Marketplace items instant view toggle & list cache** — Table/grid switch không refetch; stale-while-revalidate cache cho `/admin/items`
+- [x] **Phase 15: Marketplace items instant view toggle & list cache** — Table/grid switch không refetch; stale-while-revalidate cache cho `/admin/items` (completed 2026-06-15)
 - [ ] **Phase 16: Marketplace editor image upload UX** — Bỏ clip-path skew, cover 16:9, grid vuông, lightbox, drag reorder
 
 ## Phase Details
@@ -325,10 +325,10 @@ Plans:
 **Goal:** [To be planned]
 **Requirements**: TBD
 **Depends on:** Phase 14
-**Plans:** 0 plans
+**Plans:** 4/4 plans complete
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 15 to break down)
+- [x] TBD (run /gsd-plan-phase 15 to break down) (completed 2026-06-15)
 
 ### Phase 16: Marketplace editor image upload UX — remove clip-path skew, 16:9 cover, square grid, lightbox, drag reorder
 
