@@ -238,6 +238,7 @@ export default function ItemsPage() {
           onSortChange={(sort, order) => setState({ sort, order }, { resetPage: true })}
           onClearAll={clearFilters}
           refreshing={refreshing}
+          isStale={isStale}
         />
 
         <MarketplaceItemsFilters
