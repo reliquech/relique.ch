@@ -101,7 +101,10 @@ export function useMarketplaceFormImages(setValue: UseFormSetValue<MarketplaceFo
       const urls = items
         .filter((item) => item.status === "uploaded" && item.url)
         .map((item) => item.url!) as string[];
-      setValue("images", urls.length > 0 ? urls : null);
+      setValue("images", urls.length > 0 ? urls : null, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
     },
     [setValue]
   );

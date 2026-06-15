@@ -28,6 +28,7 @@ export function ImageLightbox({
 }: ImageLightboxProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
 
   const hasMultiple = images.length > 1;
   const safeIndex = images.length > 0 ? Math.min(Math.max(activeIndex, 0), images.length - 1) : 0;
@@ -45,6 +46,8 @@ export function ImageLightbox({
 
   useEffect(() => {
     if (!isOpen) return;
+    openerRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const previousOverflow = document.body.style.overflow;
     document.body.classList.add("overflow-hidden");
     document.body.style.overflow = "hidden";
@@ -53,6 +56,11 @@ export function ImageLightbox({
     return () => {
       document.body.classList.remove("overflow-hidden");
       document.body.style.overflow = previousOverflow;
+      const opener = openerRef.current;
+      openerRef.current = null;
+      if (opener?.isConnected) {
+        opener.focus();
+      }
     };
   }, [isOpen]);
 
