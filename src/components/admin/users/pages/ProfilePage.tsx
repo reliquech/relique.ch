@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { User, Save } from "lucide-react";
 import { toast } from "sonner";
-import { createClient } from "@/lib/supabase/client";
 import { useProfile } from "@/features/users/hooks/useProfile";
 import type { NotificationPreferences } from "@/lib/types/admin";
 import { notificationPreferencesService } from "@/features/notifications/services/notificationPreferencesService";
@@ -53,18 +52,18 @@ export default function ProfilePage() {
 
     try {
       setSaving(true);
-      const supabase = createClient();
-      const { error: updateError } = await supabase
-        .from("profiles")
-        // @ts-expect-error - Supabase inferred update type can be never when Table name is narrow
-        .update({
+      const response = await fetch("/api/auth/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           display_name: displayName.trim(),
           phone: phone.trim() || null,
-        })
-        .eq("id", profile.id);
+        }),
+      });
 
-      if (updateError) {
-        toast.error(updateError.message);
+      if (!response.ok) {
+        const data = (await response.json().catch(() => ({}))) as { error?: string };
+        toast.error(data.error ?? "Failed to update profile");
         return;
       }
 
