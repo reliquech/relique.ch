@@ -33,8 +33,8 @@ export function RelatedAssetsSection({ currentListing, limit = 4 }: RelatedAsset
 
   return (
     <section className="pt-24 border-t border-white/5">
-      <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-white/30 mb-12">
-        IV. Related Assets
+      <h2 className="text-[10px] font-black uppercase tracking-[0.45em] text-white/45 mb-12">
+        Related listings
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
         {related.map((item) => (

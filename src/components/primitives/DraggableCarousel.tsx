@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, type MotionValue } from "framer-motion";
+import { motion, type MotionValue, type PanInfo } from "framer-motion";
 
 interface DraggableCarouselProps {
   children: React.ReactNode;
@@ -9,6 +9,7 @@ interface DraggableCarouselProps {
   isDragging: boolean;
   onDragStart: () => void;
   onDragEnd: () => void;
+  onDrag?: (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void;
   modifyTarget?: (target: number) => number;
   className?: string;
 }
@@ -24,6 +25,7 @@ export function DraggableCarousel({
   x,
   onDragStart,
   onDragEnd,
+  onDrag,
   modifyTarget,
   className = "",
 }: DraggableCarouselProps) {
@@ -36,6 +38,7 @@ export function DraggableCarousel({
       style={{ x }}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
+      onDrag={onDrag}
       className={`flex gap-8 pb-12 cursor-grab active:cursor-grabbing touch-pan-y w-full ${className}`}
     >
       {children}
