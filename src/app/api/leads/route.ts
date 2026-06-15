@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/supabase/requireUser";
 import { requireRole } from "@/lib/supabase/requireRole";
+import { countInterestsByLeadIds } from "@/lib/marketplace/acquireInterestsServer";
 import { z } from "zod";
 
 const LeadSchema = z.object({
@@ -63,8 +64,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    const leadRows = (data ?? []) as Array<{ id: string }>;
+    const interestCounts = await countInterestsByLeadIds(
+      supabase,
+      leadRows.map((row) => row.id)
+    );
+
+    const items = leadRows.map((row) => ({
+      ...row,
+      marketplace_interest_count: interestCounts[row.id] ?? 0,
+    }));
+
     return NextResponse.json({
-      items: data || [],
+      items,
       total: count || 0,
       page,
       pageSize,

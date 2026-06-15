@@ -14,6 +14,7 @@ export const STORAGE_KEYS = {
   MARKETPLACE_LISTINGS: "relique.v1.marketplace.listings",
   MARKETPLACE_FAVORITES: "relique.v1.marketplace.favorites",
   MARKETPLACE_SAVED_SEARCHES: "relique.v1.marketplace.savedSearches",
+  MARKETPLACE_ACQUIRE_EMAIL: "relique.v1.marketplace.acquireEmail",
   
   // Consign domain
   CONSIGN_DRAFTS: "relique.v1.consign.drafts",

@@ -184,6 +184,7 @@ export interface Lead {
   converted_customer_id?: string | null;
   created_at: string;
   updated_at: string;
+  marketplace_interest_count?: number;
 }
 
 export interface Deal {

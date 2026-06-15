@@ -94,6 +94,35 @@ export interface Database {
           media?: Json | null;
         };
       };
+      marketplace_acquire_interests: {
+        Row: {
+          id: string;
+          lead_id: string;
+          email: string;
+          marketplace_item_id: string;
+          listing_slug: string;
+          listing_title: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          lead_id: string;
+          email: string;
+          marketplace_item_id: string;
+          listing_slug: string;
+          listing_title: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          lead_id?: string;
+          email?: string;
+          marketplace_item_id?: string;
+          listing_slug?: string;
+          listing_title?: string;
+          created_at?: string;
+        };
+      };
       consigned_items: {
         Row: {
           id: string;

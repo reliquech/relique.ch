@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient, createAnonClient, createServiceRoleClient } from "@/lib/supabase/server";
+import { createClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/supabase/requireUser";
 import { z } from "zod";
-import { mapRowToListing } from "../utils";
+import { getPublicListingBySlug } from "@/lib/marketplace/getPublicListingBySlug";
 import {
   normalizeMarketplaceUpdate,
   buildMarketplaceInsertPayload,
@@ -49,27 +49,11 @@ async function adminGetById(id: string) {
 }
 
 async function publicGetBySlug(slug: string) {
-  const supabase = createAnonClient();
-  const { data: itemData, error } = await supabase
-    .from("marketplace_items")
-    .select("*")
-    .eq("slug", slug)
-    .eq("state_lifecycle", "published")
-    .eq("state_visibility", "public")
-    .single();
-
-  if (error) {
-    if (error.code === "PGRST116") {
-      return NextResponse.json({ error: "Item not found" }, { status: 404 });
-    }
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  if (!itemData) {
+  const listing = await getPublicListingBySlug(slug);
+  if (!listing) {
     return NextResponse.json({ error: "Item not found" }, { status: 404 });
   }
-
-  return NextResponse.json(mapRowToListing(itemData));
+  return NextResponse.json(listing);
 }
 
 // GET /api/marketplace/[param] — public by slug OR authenticated by UUID id

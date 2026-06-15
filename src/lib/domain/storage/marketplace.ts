@@ -53,3 +53,19 @@ export function addSavedSearch(search: SavedSearch): void {
   setSavedSearches([...searches, search]);
 }
 
+export function getAcquireEmail(): string | null {
+  const email = getJson<string | null>(STORAGE_KEYS.MARKETPLACE_ACQUIRE_EMAIL, null);
+  if (!email) return null;
+  const trimmed = email.trim();
+  return trimmed || null;
+}
+
+export function setAcquireEmail(email: string): void {
+  setJson(STORAGE_KEYS.MARKETPLACE_ACQUIRE_EMAIL, email.trim().toLowerCase());
+}
+
+export function clearAcquireEmail(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(STORAGE_KEYS.MARKETPLACE_ACQUIRE_EMAIL);
+}
+

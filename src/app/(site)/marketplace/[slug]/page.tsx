@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { marketplaceService } from "@/lib/services/marketplaceService";
+import { getPublicListingBySlug } from "@/lib/marketplace/getPublicListingBySlug";
 import { MarketplaceDetailView } from "@/components/app/MarketplaceDetailView";
 import { getListingHeroImage } from "@/lib/utils/marketplace";
 
@@ -10,7 +10,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const listing = await marketplaceService.getBySlug(slug);
+  const listing = await getPublicListingBySlug(slug);
 
   if (!listing) {
     return { title: "Listing Not Found" };
@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function MarketplaceDetailPage({ params }: Props) {
   const { slug } = await params;
-  const listing = await marketplaceService.getBySlug(slug);
+  const listing = await getPublicListingBySlug(slug);
 
   if (!listing) notFound();
 

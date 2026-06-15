@@ -19,6 +19,7 @@ import { crmSearchesService } from "@/features/crm/services/crmSearchesService";
 import { useLeadsColumns } from "./useLeadsColumns";
 import { LeadsPageFilters } from "./LeadsPageFilters";
 import { LeadsFormDialog } from "./LeadsFormDialog";
+import { LeadMarketplaceInterestsDialog } from "./LeadMarketplaceInterestsDialog";
 import type { LeadFormData } from "@/components/admin/crm/components/LeadForm";
 
 export default function LeadsPage() {
@@ -37,6 +38,7 @@ export default function LeadsPage() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [formOpen, setFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [interestsLead, setInterestsLead] = useState<Lead | null>(null);
   const [convertLead, setConvertLead] = useState<Lead | null>(null);
   const [convertDialogOpen, setConvertDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -123,7 +125,9 @@ export default function LeadsPage() {
       toast.success("Leads deleted");
       fetchList();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to delete leads");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete leads",
+      );
     } finally {
       setBulkDeleteIds([]);
     }
@@ -133,19 +137,27 @@ export default function LeadsPage() {
     if (!selectedIds.length) return;
     try {
       const res = await leadsService.bulkUpdate(selectedIds, { status });
-      toast.success(`Updated ${(res as { updated?: number }).updated ?? selectedIds.length} lead(s)`);
+      toast.success(
+        `Updated ${(res as { updated?: number }).updated ?? selectedIds.length} lead(s)`,
+      );
       setSelectedIds([]);
       fetchList();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to update leads");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to update leads",
+      );
     }
   };
 
   const handleAssignToMe = async () => {
     if (!selectedIds.length || !userId) return;
     try {
-      const res = await leadsService.bulkUpdate(selectedIds, { owner_id: userId });
-      toast.success(`Assigned ${(res as { updated?: number }).updated ?? selectedIds.length} lead(s) to you`);
+      const res = await leadsService.bulkUpdate(selectedIds, {
+        owner_id: userId,
+      });
+      toast.success(
+        `Assigned ${(res as { updated?: number }).updated ?? selectedIds.length} lead(s) to you`,
+      );
       setSelectedIds([]);
       fetchList();
     } catch (err) {
@@ -161,17 +173,22 @@ export default function LeadsPage() {
   };
 
   const allSelected = items.length > 0 && selectedIds.length === items.length;
-  const someSelected = selectedIds.length > 0 && selectedIds.length < items.length;
+  const someSelected =
+    selectedIds.length > 0 && selectedIds.length < items.length;
   const columns = useLeadsColumns({
     items,
     selectedIds,
     allSelected,
     someSelected,
-    onToggleAll: (checked) => setSelectedIds(checked ? items.map((item) => item.id) : []),
+    onToggleAll: (checked) =>
+      setSelectedIds(checked ? items.map((item) => item.id) : []),
     onToggleOne: toggleSelect,
+    onViewInterests: setInterestsLead,
   });
 
-  const defaultValues = editingId ? items.find((l) => l.id === editingId) : undefined;
+  const defaultValues = editingId
+    ? items.find((l) => l.id === editingId)
+    : undefined;
 
   return (
     <>
@@ -200,10 +217,16 @@ export default function LeadsPage() {
         />
         <CrmViewBar
           entityType="leads"
-          getState={() => ({ query: searchQuery, filters: { status: statusFilter }, pageSize })}
+          getState={() => ({
+            query: searchQuery,
+            filters: { status: statusFilter },
+            pageSize,
+          })}
           applyState={(state) => {
             setSearchQuery(String(state.query ?? ""));
-            const nextStatus = (state.filters as Record<string, unknown> | undefined)?.status;
+            const nextStatus = (
+              state.filters as Record<string, unknown> | undefined
+            )?.status;
             setStatusFilter(nextStatus ? String(nextStatus) : "");
           }}
           onSearchSelect={setSearchQuery}
@@ -236,18 +259,50 @@ export default function LeadsPage() {
                 }>
               }
               data={items as unknown as Record<string, unknown>[]}
-              onEdit={canEdit ? (id) => { setEditingId(id); setFormOpen(true); } : undefined}
+              onEdit={
+                canEdit
+                  ? (id) => {
+                      setEditingId(id);
+                      setFormOpen(true);
+                    }
+                  : undefined
+              }
               onDelete={canEdit ? setDeleteConfirmId : undefined}
-              onConvert={canEdit ? (row) => { setConvertLead(row as unknown as Lead); setConvertDialogOpen(true); } : undefined}
-              isConvertDisabled={(row) => Boolean((row as unknown as Lead).converted_customer_id)}
+              onConvert={
+                canEdit
+                  ? (row) => {
+                      setConvertLead(row as unknown as Lead);
+                      setConvertDialogOpen(true);
+                    }
+                  : undefined
+              }
+              isConvertDisabled={(row) =>
+                Boolean((row as unknown as Lead).converted_customer_id)
+              }
               mobileTitleAccessor="full_name"
               mobileSubtitleAccessor="email"
             />
             {totalPages > 1 && (
               <div className="flex justify-center gap-2">
-                <button type="button" disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="px-3 py-1 rounded bg-white/5 disabled:opacity-50 text-sm">Previous</button>
-                <span className="px-3 py-1 text-sm text-gray-400">Page {page} of {totalPages}</span>
-                <button type="button" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)} className="px-3 py-1 rounded bg-white/5 disabled:opacity-50 text-sm">Next</button>
+                <button
+                  type="button"
+                  disabled={page <= 1}
+                  onClick={() => setPage((p) => p - 1)}
+                  className="px-3 py-1 rounded bg-white/5 disabled:opacity-50 text-sm"
+                >
+                  Previous
+                </button>
+                <span className="px-3 py-1 text-sm text-gray-400">
+                  Page {page} of {totalPages}
+                </span>
+                <button
+                  type="button"
+                  disabled={page >= totalPages}
+                  onClick={() => setPage((p) => p + 1)}
+                  className="px-3 py-1 rounded bg-white/5 disabled:opacity-50 text-sm"
+                >
+                  Next
+                </button>
               </div>
             )}
           </>
@@ -263,9 +318,29 @@ export default function LeadsPage() {
         onSubmit={handleFormSubmit}
         onCancel={() => setFormOpen(false)}
       />
-      <DeleteConfirmModal isOpen={!!deleteConfirmId} onClose={() => setDeleteConfirmId(null)} onConfirm={handleConfirmDelete} />
-      <DeleteConfirmModal isOpen={bulkDeleteIds.length > 0} onClose={() => setBulkDeleteIds([])} onConfirm={handleConfirmBulkDelete} />
-      <LeadConvertDialog lead={convertLead} open={convertDialogOpen} onOpenChange={setConvertDialogOpen} onSuccess={fetchList} />
+      <DeleteConfirmModal
+        isOpen={!!deleteConfirmId}
+        onClose={() => setDeleteConfirmId(null)}
+        onConfirm={handleConfirmDelete}
+      />
+      <DeleteConfirmModal
+        isOpen={bulkDeleteIds.length > 0}
+        onClose={() => setBulkDeleteIds([])}
+        onConfirm={handleConfirmBulkDelete}
+      />
+      <LeadConvertDialog
+        lead={convertLead}
+        open={convertDialogOpen}
+        onOpenChange={setConvertDialogOpen}
+        onSuccess={fetchList}
+      />
+      <LeadMarketplaceInterestsDialog
+        lead={interestsLead}
+        open={Boolean(interestsLead)}
+        onOpenChange={(nextOpen) => {
+          if (!nextOpen) setInterestsLead(null);
+        }}
+      />
     </>
   );
 }
