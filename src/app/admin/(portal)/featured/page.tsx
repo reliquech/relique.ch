@@ -1,1 +1,1 @@
-export { default } from "@/admin/marketplace/pages/FeaturedPage";
+export { default } from "@/components/admin/marketplace/pages/FeaturedPage";

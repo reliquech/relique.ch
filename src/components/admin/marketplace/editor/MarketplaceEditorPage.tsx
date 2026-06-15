@@ -1,10 +1,13 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { MarketplaceForm } from "@/components/admin/marketplace/MarketplaceForm";
-import type { MarketplaceFormData } from "@/features/marketplace/schema";
+import { useForm, FormProvider } from "react-hook-form";
+import type { Resolver } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MarketplaceFormSchema, type MarketplaceFormData } from "@/features/marketplace/schema";
 import { useMarketplaceAutosave } from "@/features/marketplace/hooks/useMarketplaceAutosave";
 import { useOnlineStatus } from "@/features/marketplace/hooks/useOnlineStatus";
 import { useUnsavedChangesGuard } from "@/features/marketplace/hooks/useUnsavedChangesGuard";
@@ -46,28 +49,34 @@ export function MarketplaceEditorPage({
   const [submitStatus, setSubmitStatus] = useState<MarketplaceFormData["status"]>("draft");
   const [uploading, setUploading] = useState(false);
   const [draftId, setDraftId] = useState(itemId);
-  const formValues = useMemo<MarketplaceFormData>(
-    () => ({
-      title: readTitle(initialItem),
-      description: "",
-      price_usd: 0,
-      category: "",
+
+  const methods = useForm<MarketplaceFormData>({
+    resolver: zodResolver(MarketplaceFormSchema) as Resolver<MarketplaceFormData>,
+    defaultValues: {
       image: "",
-      images: [],
+      images: null,
       status: "draft",
-    }),
-    [initialItem]
-  );
+      authenticated: false,
+      is_featured: false,
+      seo_title: "",
+      seo_description: "",
+    },
+  });
+
+  const { watch, formState: { isDirty }, reset } = methods;
+  const currentValues = watch();
+
   const autosave = useMarketplaceAutosave({
     itemId: draftId,
-    values: formValues,
-    dirty: false,
+    values: currentValues,
+    dirty: isDirty,
     online,
-    enabled: false,
+    enabled: canEdit && isDirty,
     uploading,
     onDraftCreated: setDraftId,
   });
-  const confirmNavigation = useUnsavedChangesGuard(false);
+
+  const confirmNavigation = useUnsavedChangesGuard(isDirty);
   const publishAfterConfirmRef = useRef(false);
 
   const goToItems = () => {
@@ -99,6 +108,7 @@ export function MarketplaceEditorPage({
         const result = await createMarketplaceDraft(payload, status);
         setDraftId(result.id);
       }
+      reset(payload);
       toast.success(status === "published" ? "Marketplace item published" : "Marketplace item saved");
       if (status === "published") router.push("/admin/items");
     } catch (error) {
@@ -112,65 +122,67 @@ export function MarketplaceEditorPage({
   };
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 animate-in fade-in duration-300">
-      <div className="flex flex-col gap-2 border-b border-border pb-5">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
-          Marketplace editor
-        </p>
-        <h1 className="text-3xl font-bold text-white">
-          {mode === "create" ? "Create marketplace item" : "Edit marketplace item"}
-        </h1>
-        <p className="text-sm text-gray-400">
-          Overview, Story, Pricing, Authentication, Media, and Operations.
-        </p>
-      </div>
+    <FormProvider {...methods}>
+      <div className="mx-auto max-w-7xl space-y-6 animate-in fade-in duration-300">
+        <div className="flex flex-col gap-2 border-b border-border pb-5">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+            Marketplace editor
+          </p>
+          <h1 className="text-3xl font-bold text-white">
+            {mode === "create" ? "Create marketplace item" : "Edit marketplace item"}
+          </h1>
+          <p className="text-sm text-gray-400">
+            Overview, Story, Pricing, Authentication, Media, and Operations.
+          </p>
+        </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
-        <div className="space-y-6">
-          <div data-marketplace-editor-form="true">
-            <MarketplaceForm
-              onSubmit={handleSubmit}
-              onCancel={goToItems}
-              isSubmitting={isSubmitting}
-              initialData={initialItem}
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
+          <div className="space-y-6">
+            <div data-marketplace-editor-form="true">
+              <MarketplaceForm
+                onSubmit={handleSubmit}
+                onCancel={goToItems}
+                isSubmitting={isSubmitting}
+                initialData={initialItem}
+              />
+            </div>
+            <MarketplaceMediaWorkflow
+              images={[]}
+              primaryImage=""
+              onImagesChange={() => {}}
+              onPrimaryImageChange={() => {}}
+              onAltTextChange={() => {}}
+              onUploadingChange={setUploading}
             />
           </div>
-          <MarketplaceMediaWorkflow
-            images={[]}
-            primaryImage=""
-            onImagesChange={() => {}}
-            onPrimaryImageChange={() => {}}
-            onAltTextChange={() => {}}
-            onUploadingChange={setUploading}
+          <MarketplaceEditorStatusRail
+            autosaveState={autosave.state}
+            lastSavedAt={autosave.lastSavedAt}
+            online={online}
+            isUploading={uploading}
+            isSubmitting={isSubmitting}
+            canPublish={canEdit}
+            onSaveDraft={() => {
+              setSubmitStatus("draft");
+              requestSubmit();
+            }}
+            onPublish={() => setPublishOpen(true)}
+            onCancel={goToItems}
           />
         </div>
-        <MarketplaceEditorStatusRail
-          autosaveState={autosave.state}
-          lastSavedAt={autosave.lastSavedAt}
-          online={online}
-          isUploading={uploading}
-          isSubmitting={isSubmitting}
-          canPublish={canEdit}
-          onSaveDraft={() => {
-            setSubmitStatus("draft");
+
+        <MarketplacePublishConfirmDialog
+          open={publishOpen}
+          onOpenChange={setPublishOpen}
+          title={readTitle(initialItem)}
+          status={submitStatus}
+          isPublishing={isSubmitting}
+          onConfirm={() => {
+            publishAfterConfirmRef.current = true;
             requestSubmit();
           }}
-          onPublish={() => setPublishOpen(true)}
-          onCancel={goToItems}
         />
       </div>
-
-      <MarketplacePublishConfirmDialog
-        open={publishOpen}
-        onOpenChange={setPublishOpen}
-        title={readTitle(initialItem)}
-        status={submitStatus}
-        isPublishing={isSubmitting}
-        onConfirm={() => {
-          publishAfterConfirmRef.current = true;
-          requestSubmit();
-        }}
-      />
-    </div>
+    </FormProvider>
   );
 }

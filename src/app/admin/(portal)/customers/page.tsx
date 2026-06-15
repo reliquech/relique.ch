@@ -1,1 +1,1 @@
-export { default } from "@/admin/crm/pages/CustomersPage";
+export { default } from "@/components/admin/crm/pages/CustomersPage";

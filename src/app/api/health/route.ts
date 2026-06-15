@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+import { formatSupabaseError } from "@/lib/supabase/formatSupabaseError";
+import { sanitizeErrorMessage } from "@/lib/api/errorMessage";
 
 export async function GET() {
   try {
@@ -18,7 +20,7 @@ export async function GET() {
     const { error } = await supabase.from("audit_logs").select("id").limit(1);
     if (error) {
       return NextResponse.json(
-        { ok: false, error: error.message },
+        { ok: false, error: formatSupabaseError(error) },
         { status: 500 }
       );
     }
@@ -26,7 +28,12 @@ export async function GET() {
     return NextResponse.json({ ok: true, db: "ok" });
   } catch (error) {
     return NextResponse.json(
-      { ok: false, error: error instanceof Error ? error.message : "Unknown error" },
+      {
+        ok: false,
+        error: sanitizeErrorMessage(
+          error instanceof Error ? error.message : "Unknown error"
+        ),
+      },
       { status: 500 }
     );
   }

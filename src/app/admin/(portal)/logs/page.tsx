@@ -1,1 +1,1 @@
-export { default } from "@/admin/dashboard/pages/LogsPage";
+export { default } from "@/components/admin/dashboard/pages/LogsPage";

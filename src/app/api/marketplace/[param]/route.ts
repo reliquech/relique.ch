@@ -80,8 +80,9 @@ export async function GET(
   try {
     const { param } = await params;
     const sessionUser = await getSessionUser();
+    const isPublicScope = request.nextUrl.searchParams.get("scope") === "public";
 
-    if (sessionUser && isUuid(param)) {
+    if (sessionUser && isUuid(param) && !isPublicScope) {
       return adminGetById(param);
     }
 

@@ -11,36 +11,74 @@ interface UseDragCarouselReturn {
   scrollProgress: MotionValue<string>;
   onDragStart: () => void;
   onDragEnd: () => void;
+  modifyTarget: (target: number) => number;
 }
 
 /**
  * Custom hook for drag carousel functionality
- * Handles constraints calculation, drag state, and scroll progress
+ * Handles constraints calculation, drag state, snap points, and scroll progress
  */
-export function useDragCarousel(): UseDragCarouselReturn {
+export function useDragCarousel(items: unknown[]): UseDragCarouselReturn {
   const containerRef = useRef<HTMLDivElement>(null);
   const [constraints, setConstraints] = useState({ left: 0, right: 0 });
+  const [snapPoints, setSnapPoints] = useState<number[]>([]);
   const [isDragging, setIsDragging] = useState(false);
 
   const x = useMotionValue(0);
 
+  // Clean up stale translateX values on data refresh or unmount
   useEffect(() => {
+    x.set(0);
+  }, [items, x]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !containerRef.current) return;
+    const container = containerRef.current;
+    const dragElement = container.firstElementChild as HTMLElement;
+    if (!dragElement) return;
+
     const updateConstraints = () => {
-      if (containerRef.current) {
-        const contentWidth = containerRef.current.scrollWidth;
-        const viewWidth = containerRef.current.offsetWidth;
-        const padding = window.innerWidth > 768 ? (window.innerWidth - 1280) / 2 : 24;
-        setConstraints({
-          left: -(contentWidth - viewWidth + padding),
-          right: padding > 0 ? padding : 0,
-        });
+      const contentWidth = dragElement.scrollWidth;
+      const viewWidth = container.offsetWidth;
+      const maxDrag = contentWidth - viewWidth;
+      const leftConstraint = maxDrag > 0 ? -maxDrag : 0;
+
+      setConstraints({
+        left: leftConstraint,
+        right: 0,
+      });
+
+      // Calculate snap points from children offsetLeft coordinates
+      const children = Array.from(dragElement.children) as HTMLElement[];
+      const points = children.map(child => -child.offsetLeft);
+
+      // Clamp points within boundaries
+      const validPoints = points.filter(p => p > leftConstraint && p <= 0);
+      if (leftConstraint < 0) {
+        validPoints.push(leftConstraint);
       }
+
+      // Sort snap points descending (closest to 0 first)
+      validPoints.sort((a, b) => b - a);
+      setSnapPoints(validPoints);
     };
 
+    // Initial run
     updateConstraints();
-    window.addEventListener("resize", updateConstraints);
-    return () => window.removeEventListener("resize", updateConstraints);
-  }, []);
+
+    // Use ResizeObserver for accurate sizing updates (handles image load, resize, layout shift)
+    const observer = new ResizeObserver(() => {
+      updateConstraints();
+      x.set(0); // Clean up stale translateX values on resize
+    });
+
+    observer.observe(container);
+    observer.observe(dragElement);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [items, x]);
 
   const scrollProgress = useTransform(
     x,
@@ -51,6 +89,13 @@ export function useDragCarousel(): UseDragCarouselReturn {
   const onDragStart = () => setIsDragging(true);
   const onDragEnd = () => setIsDragging(false);
 
+  const modifyTarget = (target: number) => {
+    if (snapPoints.length === 0) return target;
+    return snapPoints.reduce((prev, curr) => {
+      return Math.abs(curr - target) < Math.abs(prev - target) ? curr : prev;
+    }, snapPoints[0] || 0);
+  };
+
   return {
     containerRef,
     constraints,
@@ -59,5 +104,6 @@ export function useDragCarousel(): UseDragCarouselReturn {
     scrollProgress,
     onDragStart,
     onDragEnd,
+    modifyTarget,
   };
 }

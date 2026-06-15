@@ -1,1 +1,1 @@
-export { default } from "@/admin/submissions/pages/VerifyPage";
+export { default } from "@/components/admin/submissions/pages/VerifyPage";

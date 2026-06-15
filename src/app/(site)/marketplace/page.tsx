@@ -14,7 +14,7 @@ import { LoadingState } from "@/components/shared/LoadingState";
  */
 function MarketplacePageContent() {
   return (
-    <div className="min-h-screen bg-bgDark text-white font-sans selection:bg-primaryBlue selection:text-white py-24">
+    <div className="min-h-screen bg-bgDark text-white font-sans selection:bg-primaryBlue selection:text-white pt-32 md:pt-48 pb-24">
       <MarketplaceGrid />
     </div>
   );

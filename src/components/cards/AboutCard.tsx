@@ -20,7 +20,7 @@ export function AboutCard({ card, index, onClick }: AboutCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.15, duration: 0.8, ease: "easeOut" }}
-      whileHover={{ y: -8 }}
+      whileHover={{ y: -8, transition: { duration: 0.2, delay: 0, ease: "easeOut" } }}
       onClick={() => onClick(card.href)}
       className={`${card.size} p-6 sm:p-8 md:p-10 border border-borderDark ${card.bg} group cursor-pointer relative overflow-hidden flex flex-col justify-center min-h-[240px] sm:min-h-[260px] md:min-h-[280px] transition-all hover:border-highlightIce/30 shadow-xl`}
     >

@@ -18,6 +18,7 @@ export enum MarketplaceStatus {
 
 export interface MarketplaceItem {
   id: string;
+  slug?: string;
   title: string;
   athlete: string;
   category: string;
@@ -185,22 +186,11 @@ export interface Lead {
   updated_at: string;
 }
 
-export interface PipelineStage {
-  id: string;
-  name: string;
-  position: number;
-  color?: string | null;
-  is_default: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
 export interface Deal {
   id: string;
   title: string;
   customer_id?: string | null;
   lead_id?: string | null;
-  pipeline_stage_id?: string | null;
   value?: number | null;
   currency: string;
   probability?: number;
@@ -258,32 +248,6 @@ export interface Attachment {
   title?: string | null;
   note?: string | null;
   created_at: string;
-}
-
-export interface CustomField {
-  id: string;
-  entity_type: "customer" | "lead" | "deal" | "message";
-  name: string;
-  key: string;
-  field_type: "text" | "number" | "date" | "select" | "multiselect" | "boolean" | "textarea" | "url";
-  options?: string[] | null;
-  required: boolean;
-  position: number;
-  group?: string | null;
-  visibility_rules?: Record<string, unknown> | null;
-  created_by?: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface CustomFieldValue {
-  id: string;
-  field_id: string;
-  entity_type: "customer" | "lead" | "deal" | "message";
-  entity_id: string;
-  value_json: unknown;
-  created_at: string;
-  updated_at: string;
 }
 
 /** Paginated list response from CRM list endpoints */

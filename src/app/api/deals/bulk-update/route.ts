@@ -8,7 +8,6 @@ const BulkUpdateSchema = z.object({
   ids: z.array(z.string().uuid()).min(1).max(500),
   patch: z.object({
     status: z.enum(["open", "won", "lost"]).optional(),
-    pipeline_stage_id: z.string().uuid().nullable().optional(),
     closed_at: z.string().nullable().optional(),
     owner_id: z.string().uuid().nullable().optional(),
   }),

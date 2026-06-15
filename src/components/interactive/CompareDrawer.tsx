@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, createContext, useContext, Fragment } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { RemoteImage } from "@/components/shared/RemoteImage";
 import {
   Sheet,
   SheetContent,
@@ -212,11 +212,12 @@ export function CompareDrawer() {
                     </Button>
                     <CardContent className="p-4">
                       <div className="relative aspect-square mb-3">
-                        <Image
+                        <RemoteImage
                           src={getListingHeroImage(item)}
                           alt={getListingTitle(item)}
                           fill
                           className="object-cover"
+                          sizes="200px"
                         />
                       </div>
                       <Link

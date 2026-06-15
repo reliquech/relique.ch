@@ -1,0 +1,241 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-15T00:00:00.000Z",
+  "title": "Design System: Relique",
+  "extensions": {
+    "colorMeta": {
+      "navy-deep": {
+        "role": "primary",
+        "displayName": "Vault Navy",
+        "canonical": "oklch(28% 0.08 260)",
+        "tonalRamp": ["#030810", "#061018", "#0a1828", "#0F2854", "#1a3d6e", "#2a5288", "#3d6ba3", "#5a8fc4", "#8bb4dc", "#c5d9ef"]
+      },
+      "primary-blue": {
+        "role": "primary",
+        "displayName": "Primary Blue",
+        "canonical": "oklch(42% 0.12 250)",
+        "tonalRamp": ["#071428", "#0c2040", "#122c58", "#1C4D8D", "#2a5fa3", "#3a72b8", "#498BC4", "#6aa8d4", "#9cc8e8", "#d0e8f8"]
+      },
+      "accent-blue": {
+        "role": "secondary",
+        "displayName": "Broadcast Accent",
+        "canonical": "oklch(58% 0.10 240)",
+        "tonalRamp": ["#0e2438", "#163550", "#1f4668", "#285880", "#3570a0", "#498BC4", "#6aa3d0", "#8fbde0", "#b8d8ef", "#e0f2fa"]
+      },
+      "highlight-ice": {
+        "role": "tertiary",
+        "displayName": "Ice Highlight",
+        "canonical": "oklch(92% 0.05 220)",
+        "tonalRamp": ["#1a3040", "#2a4558", "#3d5a70", "#5a7a90", "#7a9cb0", "#9bbdd0", "#BDE8F5", "#d0f0fa", "#e5f7fc", "#f5fcfe"]
+      },
+      "bg-dark": {
+        "role": "neutral",
+        "displayName": "Void Black",
+        "canonical": "oklch(7% 0 0)",
+        "tonalRamp": ["#000000", "#050505", "#0A0A0A", "#121212", "#1a1a1a", "#242424", "#333333", "#4d4d4d", "#808080", "#b3b3b3"]
+      },
+      "admin-bg": {
+        "role": "neutral",
+        "displayName": "Admin Mist",
+        "canonical": "oklch(96% 0.01 250)",
+        "tonalRamp": ["#8c909f", "#a8acb8", "#c2c6d6", "#d8dce8", "#e0e4ec", "#e8ebf2", "#f0f2f7", "#f4f6fa", "#f8f9fc", "#ffffff"]
+      },
+      "stitch-on-surface": {
+        "role": "neutral",
+        "displayName": "Ink on Surface",
+        "canonical": "oklch(15% 0.03 250)",
+        "tonalRamp": ["#020408", "#070e19", "#0c141f", "#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero headlines and editorial moments only. Zapf Renaissance."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Public section titles. Work Sans bold."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card titles, admin page headers, form sections."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Prose, tables, forms. Work Sans 500 default. Max 65–75ch in long-form."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Public uppercase metadata and CTA text only. Not admin section eyebrows."
+      }
+    },
+    "shadows": [
+      {
+        "name": "cta-spotlight",
+        "value": "0 20px 40px rgba(28, 77, 141, 0.3)",
+        "purpose": "Public primary CTA at rest — trust spotlight, not card elevation."
+      },
+      {
+        "name": "cta-hover-glow",
+        "value": "0 0 30px rgba(28, 77, 141, 0.3)",
+        "purpose": "Public primary CTA hover state."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Hero entrance and public micro-interactions."
+      },
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Admin state transitions, color hovers."
+      },
+      {
+        "name": "duration-fast",
+        "value": "200ms",
+        "purpose": "Default transition-base utility."
+      },
+      {
+        "name": "duration-slow",
+        "value": "300ms",
+        "purpose": "transition-slow utility."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Public Primary CTA",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Hero and public trust actions — authenticate, verify, consign.",
+      "html": "<button class=\"ds-btn-public-primary\">Authenticate Now</button>",
+      "css": ".ds-btn-public-primary { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 16px 48px; background: #1C4D8D; color: #FFFFFF; font-family: 'Work Sans', sans-serif; font-size: 10px; font-weight: 900; letter-spacing: 0.2em; text-transform: uppercase; border: none; border-radius: 0; box-shadow: 0 20px 40px rgba(28, 77, 141, 0.3); transition: background 200ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; } .ds-btn-public-primary:hover { background: #498BC4; box-shadow: 0 0 30px rgba(28, 77, 141, 0.3); } .ds-btn-public-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px #0A0A0A, 0 0 0 4px #1C4D8D; } .ds-btn-public-primary:active { transform: scale(0.98); }"
+    },
+    {
+      "name": "Public Primary CTA Hover",
+      "kind": "button",
+      "refersTo": "button-primary-hover",
+      "description": "Hover state reference for public primary CTA.",
+      "html": "<button class=\"ds-btn-public-primary-hover\">Authenticate Now</button>",
+      "css": ".ds-btn-public-primary-hover { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 16px 48px; background: #498BC4; color: #FFFFFF; font-family: 'Work Sans', sans-serif; font-size: 10px; font-weight: 900; letter-spacing: 0.2em; text-transform: uppercase; border: none; border-radius: 0; box-shadow: 0 0 30px rgba(28, 77, 141, 0.3); cursor: pointer; }"
+    },
+    {
+      "name": "Admin Primary Button",
+      "kind": "button",
+      "refersTo": "button-admin-default",
+      "description": "Default admin action — save, invite, submit.",
+      "html": "<button class=\"ds-btn-admin-primary\">Save Changes</button>",
+      "css": ".ds-btn-admin-primary { display: inline-flex; align-items: center; justify-content: center; height: 40px; padding: 8px 16px; background: hsl(221, 83%, 53%); color: hsl(210, 40%, 98%); font-family: 'Work Sans', sans-serif; font-size: 14px; font-weight: 500; border: none; border-radius: 0; transition: background 200ms cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; } .ds-btn-admin-primary:hover { background: hsl(221, 83%, 48%); } .ds-btn-admin-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px hsl(221, 83%, 53%); } .ds-btn-admin-primary:disabled { opacity: 0.5; pointer-events: none; }"
+    },
+    {
+      "name": "Admin Outline Button",
+      "kind": "button",
+      "refersTo": "button-admin-outline",
+      "description": "Secondary admin actions — cancel, filter, view options.",
+      "html": "<button class=\"ds-btn-admin-outline\">Cancel</button>",
+      "css": ".ds-btn-admin-outline { display: inline-flex; align-items: center; justify-content: center; height: 36px; padding: 8px 12px; background: #ffffff; color: #0f172a; font-family: 'Work Sans', sans-serif; font-size: 14px; font-weight: 500; border: 1px solid hsl(214, 32%, 91%); border-radius: 0; transition: background 200ms cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; } .ds-btn-admin-outline:hover { background: hsl(210, 40%, 96%); } .ds-btn-admin-outline:focus-visible { outline: none; box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px hsl(221, 83%, 53%); }"
+    },
+    {
+      "name": "Admin Text Input",
+      "kind": "input",
+      "refersTo": "input-admin",
+      "description": "Standard admin form field on white surface.",
+      "html": "<input class=\"ds-input-admin\" type=\"text\" placeholder=\"Search listings…\" />",
+      "css": ".ds-input-admin { display: block; width: 100%; height: 40px; padding: 8px 12px; background: #ffffff; color: #0f172a; font-family: 'Work Sans', sans-serif; font-size: 14px; font-weight: 500; border: 1px solid hsl(214, 32%, 91%); border-radius: 0; transition: border-color 200ms, box-shadow 200ms; } .ds-input-admin::placeholder { color: #475569; } .ds-input-admin:hover { border-color: #94a3b8; } .ds-input-admin:focus { outline: none; border-color: hsl(221, 83%, 53%); box-shadow: 0 0 0 2px rgba(28, 77, 141, 0.2); } .ds-input-admin:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Admin Sidebar Nav Item",
+      "kind": "nav",
+      "refersTo": "button-admin-outline",
+      "description": "Portal sidebar navigation link — active state uses Primary Blue.",
+      "html": "<nav class=\"ds-nav-admin\"><a class=\"ds-nav-admin-item ds-nav-admin-item--active\" href=\"#\">Leads</a><a class=\"ds-nav-admin-item\" href=\"#\">Deals</a></nav>",
+      "css": ".ds-nav-admin { display: flex; flex-direction: column; gap: 4px; padding: 8px; background: #ffffff; border-right: 1px solid #cbd5e1; font-family: 'Work Sans', sans-serif; } .ds-nav-admin-item { display: block; padding: 8px 12px; font-size: 14px; font-weight: 500; color: #475569; text-decoration: none; border-radius: 0; transition: background 200ms, color 200ms; } .ds-nav-admin-item:hover { background: #f0f2f7; color: #0f172a; } .ds-nav-admin-item--active { background: #1C4D8D; color: #ffffff; } .ds-nav-admin-item:focus-visible { outline: none; box-shadow: inset 0 0 0 2px #498BC4; }"
+    },
+    {
+      "name": "Admin Data Card",
+      "kind": "card",
+      "refersTo": "button-admin-outline",
+      "description": "CRM/metrics card on Stitch tonal surface.",
+      "html": "<div class=\"ds-card-admin\"><p class=\"ds-card-admin-label\">Open Leads</p><p class=\"ds-card-admin-value\">24</p></div>",
+      "css": ".ds-card-admin { padding: 16px 20px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 0; } .ds-card-admin-label { margin: 0 0 4px; font-family: 'Work Sans', sans-serif; font-size: 12px; font-weight: 500; color: #475569; } .ds-card-admin-value { margin: 0; font-family: 'Work Sans', sans-serif; font-size: 28px; font-weight: 700; color: #0f172a; letter-spacing: -0.02em; }"
+    },
+    {
+      "name": "Verification Status Chip",
+      "kind": "chip",
+      "refersTo": "button-admin-outline",
+      "description": "Authentication status — always text + color, never icon-only.",
+      "html": "<span class=\"ds-chip-verified\">Authenticated</span><span class=\"ds-chip-pending\">Pending Review</span>",
+      "css": ".ds-chip-verified { display: inline-flex; align-items: center; padding: 4px 10px; font-family: 'Work Sans', sans-serif; font-size: 12px; font-weight: 600; color: #065f46; background: #d1fae5; border: 1px solid #10B981; border-radius: 0; } .ds-chip-pending { display: inline-flex; align-items: center; padding: 4px 10px; font-family: 'Work Sans', sans-serif; font-size: 12px; font-weight: 600; color: #92400e; background: #fef3c7; border: 1px solid #F59E0B; border-radius: 0; margin-left: 8px; }"
+    },
+    {
+      "name": "Public Metadata Label",
+      "kind": "custom",
+      "refersTo": "button-primary",
+      "description": "Uppercase tracked eyebrow — use once per section max on public pages.",
+      "html": "<span class=\"ds-metadata\">Relique Official Portal</span>",
+      "css": ".ds-metadata { display: inline-block; font-family: 'Work Sans', sans-serif; font-size: 10px; font-weight: 900; letter-spacing: 0.4em; text-transform: uppercase; color: #BDE8F5; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Locker Room Vault",
+    "overview": "Relique's visual system treats authenticated memorabilia like artifacts in a premium vault — dark, confident surfaces; sharp geometry; blue as the thread of trust. Public surfaces carry broadcast energy (uppercase CTAs, ice-blue accents, serif hero type); admin surfaces stay utilitarian and scannable (Stitch tonal containers, Work Sans at medium weight, data-first layouts). Depth comes from tonal layering, not decoration.\n\nThe system explicitly rejects crypto/Web3 neon, marketplace clutter, and generic SaaS landing tropes from PRODUCT.md. Trust is shown through provenance, status, and expert process — never through hype gradients or bargain-bin density.",
+    "keyCharacteristics": [
+      "Dual register: brand (dark public site) vs product (light admin CRM), one navy/blue identity",
+      "0px radius on brand CTAs and global --radius; admin inherits shadcn structure with sharp token base",
+      "Zapf Renaissance for display hero; Work Sans 500 as default body weight",
+      "Tonal elevation via Stitch surface-container-* steps — shadows are rare and purposeful",
+      "Uppercase tracked metadata (0.3em+) on public interactive labels only",
+      "WCAG 2.1 AA contrast floor on all body text and focus rings"
+    ],
+    "rules": [
+      {
+        "name": "The One Blue Voice Rule",
+        "body": "Primary Blue appears on every interactive trust action (authenticate, verify, consign, save). Accent Blue is hover/secondary only — never the default CTA fill.",
+        "section": "colors"
+      },
+      {
+        "name": "The Dark Public Rule",
+        "body": "Public marketing and transactional browse surfaces default to Void Black / Locker Charcoal. Admin never uses the public dark canvas for primary workflow screens.",
+        "section": "colors"
+      },
+      {
+        "name": "The Serif Ceiling Rule",
+        "body": "Zapf Renaissance is for display hero and editorial moments only. Admin UI, tables, and forms use Work Sans exclusively.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tracking Floor Rule",
+        "body": "Display hero letter-spacing never tighter than -0.04em. Metadata uppercase tracking never below 0.15em on mobile.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Surfaces are flat at rest. Shadows appear only as a response to primary CTA state on the public register — never as default card chrome in admin.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use Primary Blue (#1C4D8D) for every primary trust action (authenticate, verify, consign, save listing).",
+      "Do keep admin tables and forms on Stitch tonal surfaces with clear on-surface / on-surface-variant text hierarchy.",
+      "Do use Zapf Renaissance only for hero/display; Work Sans for everything operational.",
+      "Do maintain 4.5:1 body text contrast — bump muted grays toward ink when in doubt.",
+      "Do respect prefers-reduced-motion: replace framer-motion hero entrance with instant or crossfade."
+    ],
+    "donts": [
+      "Don't use crypto/Web3 aesthetics — neon accents, glassmorphism, speculative hype language.",
+      "Don't create marketplace clutter — eBay/Craigslist density, noisy filter walls, bargain-bin visual chaos.",
+      "Don't deploy generic SaaS landing patterns — purple gradients, hero metrics, identical card grids, eyebrow kickers on every section.",
+      "Don't use border-left greater than 1px as a colored accent stripe on cards or alerts.",
+      "Don't apply uppercase tracked metadata labels to every admin section header — that's public-register grammar.",
+      "Don't use gradient text (background-clip: text) for emphasis — solid Primary Blue or white only."
+    ]
+  }
+}

@@ -8,7 +8,6 @@ const DealSchema = z.object({
   title: z.string().min(1),
   customer_id: z.string().uuid().optional().nullable(),
   lead_id: z.string().uuid().optional().nullable(),
-  pipeline_stage_id: z.string().uuid().optional().nullable(),
   value: z.number().optional().nullable(),
   currency: z.string().optional().default("USD"),
   probability: z.number().int().min(0).max(100).optional().default(0),
@@ -28,7 +27,6 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
 
     const status = searchParams.get("status");
-    const stageId = searchParams.get("pipeline_stage_id");
     const customerId = searchParams.get("customer_id");
     const leadId = searchParams.get("lead_id");
     const ownerId = searchParams.get("owner_id");
@@ -45,10 +43,6 @@ export async function GET(request: NextRequest) {
 
     if (status) {
       query = query.eq("status", status);
-    }
-
-    if (stageId) {
-      query = query.eq("pipeline_stage_id", stageId);
     }
 
     if (customerId) {

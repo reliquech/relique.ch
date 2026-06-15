@@ -20,7 +20,7 @@ import { AdditionalInformationSection } from "@/components/form-sections/Additio
 import { TermsSection } from "@/components/form-sections/TermsSection";
 import { consignSchema, type ConsignFormData } from "@/lib/validations/consignSchema";
 import { consignService } from "@/lib/services/consignService";
-import { useDebounce } from "@/lib/hooks/useDebounce";
+import { useDebounce } from "@/hooks/useDebounce";
 import { toast } from "sonner";
 import { Save } from "lucide-react";
 

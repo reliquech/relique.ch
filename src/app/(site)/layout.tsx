@@ -13,7 +13,7 @@ export default function SiteLayout({
   return (
     <CompareProvider>
       <CurrencyProvider>
-        <div className="flex min-h-screen flex-col">
+        <div className="dark flex min-h-screen flex-col bg-background text-foreground">
           <Suspense fallback={null}>
             <Header />
           </Suspense>

@@ -13,7 +13,7 @@ interface ScrollProgressBarProps {
  */
 export function ScrollProgressBar({ scrollProgress, className = "" }: ScrollProgressBarProps) {
   return (
-    <div className={`container mx-auto px-6 mt-4 flex items-center gap-4 ${className}`}>
+    <div className={`w-full mt-4 flex items-center gap-4 ${className}`}>
       <div className="h-[1px] flex-grow bg-white/10 relative overflow-hidden">
         <motion.div 
           className="absolute top-0 left-0 h-full bg-primaryBlue w-1/4" 

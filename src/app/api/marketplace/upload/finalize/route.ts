@@ -5,7 +5,11 @@ import {
   MARKETPLACE_PERM_PREFIX,
   MARKETPLACE_UPLOAD_BUCKET,
 } from "@/features/marketplace/constants";
-import { isMarketplaceTempPath, parseTempUploadPath } from "@/features/marketplace/utils/uploadPaths";
+import {
+  isLegacyTempUploadPath,
+  isMarketplaceTempPath,
+  parseTempUploadPath,
+} from "@/features/marketplace/utils/uploadPaths";
 
 type FinalizePayload = {
   paths?: string[];
@@ -33,7 +37,15 @@ export async function POST(request: NextRequest) {
       uniquePaths.map(async (path) => {
         const info = parseTempUploadPath(path);
         if (!info) {
-          throw new Error("Invalid temporary path");
+          throw new Error("Invalid upload path");
+        }
+
+        // Staging uploads already live under marketplace/items/{session}/ — return as-is.
+        if (!isLegacyTempUploadPath(path)) {
+          const {
+            data: { publicUrl },
+          } = bucket.getPublicUrl(path);
+          return { from: path, to: path, url: publicUrl };
         }
 
         const destination = `${MARKETPLACE_PERM_PREFIX}/${info.sessionId}/${info.timestamp}-${info.random}.${info.ext}`;

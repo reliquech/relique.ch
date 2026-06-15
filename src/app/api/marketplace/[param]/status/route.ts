@@ -36,10 +36,15 @@ export async function PATCH(
       return NextResponse.json({ error: "Item not found" }, { status: 404 });
     }
 
-    const nextState = {
+    const nextState: Record<string, unknown> = {
       ...(existingItem as { state?: Record<string, unknown> }).state,
       lifecycle: validated.status,
     };
+    if (validated.status === "published") {
+      nextState.visibility = "public";
+    } else if (validated.status === "archived") {
+      nextState.visibility = "private";
+    }
 
     const { data, error } = await supabase
       .from("marketplace_items")

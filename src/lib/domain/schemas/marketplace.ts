@@ -33,6 +33,8 @@ export const ListingSchema = z.object({
   price: ListingPriceSchema,
   category: z.enum(["premium", "sport", "collector", "story"]),
   tags: z.array(z.string()).default([]),
+  seo_title: z.string().optional().nullable(),
+  seo_description: z.string().optional().nullable(),
 });
 
 const OptionSchema = z.object({

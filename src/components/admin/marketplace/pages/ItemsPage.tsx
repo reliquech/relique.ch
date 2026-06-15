@@ -32,7 +32,8 @@ export default function ItemsPage() {
   const online = useOnlineStatus();
 
   const { state, setState, clearFilters } = useMarketplaceItemsUrl();
-  const { data, loading, error, refetch } = useMarketplaceItemsQuery(state);
+  const { data, loading, refreshing, isStale, error, refetch, invalidateCache } =
+    useMarketplaceItemsQuery(state);
   const { view, setView, mounted: viewMounted } = useMarketplaceItemsView();
   const activeView = viewMounted ? view : "table";
 
@@ -125,7 +126,8 @@ export default function ItemsPage() {
         toast.success(`Updated ${res.updated} item(s)`);
       }
       setSelectedIds([]);
-      refetch();
+      invalidateCache();
+      void refetch({ force: true });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Action failed");
     }
@@ -135,8 +137,11 @@ export default function ItemsPage() {
     if (!confirmKind || pendingIds.length === 0) return;
     if (confirmKind === "delete" || confirmKind === "bulk-delete") {
       setIsDeleting(true);
-      await runBulk("delete", pendingIds);
-      setIsDeleting(false);
+      try {
+        await runBulk("delete", pendingIds);
+      } finally {
+        setIsDeleting(false);
+      }
     } else if (confirmKind === "archive" || confirmKind === "bulk-archive") {
       await runBulk("archive", pendingIds);
     }
@@ -145,7 +150,7 @@ export default function ItemsPage() {
   };
 
   const rowActions = {
-    onEdit: (item: MarketplaceItem) => router.push(`/admin/marketplace/edit/${item.id}`),
+    onEdit: (item: MarketplaceItem) => router.push(`/admin/items/${item.id}/edit`),
     onPreview: (item: MarketplaceItem) => {
       if (item.slug) window.open(`/marketplace/${item.slug}`, "_blank", "noopener,noreferrer");
     },
@@ -154,7 +159,8 @@ export default function ItemsPage() {
       try {
         await marketplaceAPIService.duplicate(item.id);
         toast.success("Item duplicated as draft");
-        refetch();
+        invalidateCache();
+        void refetch({ force: true });
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Duplicate failed");
       }
@@ -164,7 +170,8 @@ export default function ItemsPage() {
       try {
         await marketplaceAPIService.updateStatus(item.id, "published" as MarketplaceItem["status"]);
         toast.success("Item published");
-        refetch();
+        invalidateCache();
+        void refetch({ force: true });
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Publish failed");
       }
@@ -174,7 +181,8 @@ export default function ItemsPage() {
       try {
         await marketplaceAPIService.updateStatus(item.id, "draft" as MarketplaceItem["status"]);
         toast.success("Item unpublished");
-        refetch();
+        invalidateCache();
+        void refetch({ force: true });
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Unpublish failed");
       }
@@ -189,7 +197,8 @@ export default function ItemsPage() {
       try {
         await marketplaceAPIService.updateStatus(item.id, "draft" as MarketplaceItem["status"]);
         toast.success("Item restored to draft");
-        refetch();
+        invalidateCache();
+        void refetch({ force: true });
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Restore failed");
       }
@@ -228,6 +237,7 @@ export default function ItemsPage() {
           onToggleFilters={() => setFiltersOpen((v) => !v)}
           onSortChange={(sort, order) => setState({ sort, order }, { resetPage: true })}
           onClearAll={clearFilters}
+          refreshing={refreshing}
         />
 
         <MarketplaceItemsFilters
@@ -269,7 +279,7 @@ export default function ItemsPage() {
             </div>
             <button
               type="button"
-              onClick={refetch}
+              onClick={() => void refetch({ force: true })}
               className="bg-white/5 border border-border px-4 py-2 rounded-lg text-sm text-white min-h-[40px]"
             >
               Retry
@@ -285,7 +295,7 @@ export default function ItemsPage() {
             </p>
             <button
               type="button"
-              onClick={() => router.push("/admin/marketplace/new")}
+              onClick={() => router.push("/admin/items/new")}
               className="mt-6 bg-primary px-4 py-2 rounded-lg text-sm font-bold text-white min-h-[40px]"
             >
               Add Item
@@ -317,7 +327,7 @@ export default function ItemsPage() {
                     checked ? Array.from(new Set([...prev, id])) : prev.filter((x) => x !== id)
                   )
                 }
-                onRowClick={(id) => router.push(`/admin/marketplace/edit/${id}`)}
+                onRowClick={(id) => router.push(`/admin/items/${id}/edit`)}
                 onRowAction={rowActions}
               />
             ) : (
@@ -335,7 +345,7 @@ export default function ItemsPage() {
                     checked ? Array.from(new Set([...prev, id])) : prev.filter((x) => x !== id)
                   )
                 }
-                onRowClick={(id) => router.push(`/admin/marketplace/edit/${id}`)}
+                onRowClick={(id) => router.push(`/admin/items/${id}/edit`)}
                 onRowAction={rowActions}
               />
             )}

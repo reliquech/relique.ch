@@ -3,7 +3,6 @@ import { Work_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import { CommandPalette } from "@/components/command/CommandPalette";
 
 const workSans = Work_Sans({
   subsets: ["latin"],
@@ -111,10 +110,26 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="canonical" href={process.env.NEXT_PUBLIC_SITE_URL || "https://relique.ch"} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme');
+                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (theme === 'dark' || (!theme && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
       <body className={`${workSans.variable} ${zapfRenaissance.variable} font-work-sans antialiased`}>
         {children}
-        <CommandPalette />
         <Toaster />
       </body>
     </html>

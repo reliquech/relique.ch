@@ -1,1 +1,1 @@
-export { default } from "@/admin/submissions/pages/SubmissionsPage";
+export { default } from "@/components/admin/submissions/pages/SubmissionsPage";

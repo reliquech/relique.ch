@@ -38,6 +38,8 @@ const LegacyMarketplaceItemSchema = z.object({
   featured_order: z.number().optional().nullable(),
   commission_rate: z.number().optional().nullable(),
   created_by: z.string().optional().nullable(),
+  seo_title: z.string().optional().nullable(),
+  seo_description: z.string().optional().nullable(),
 });
 
 const MarketplaceCreateSchema = MarketplaceListingSchema.extend({
@@ -134,14 +136,28 @@ function mapLegacyCategory(category?: string | null): "premium" | "sport" | "col
   return "collector";
 }
 
+function parseRowJson(value: unknown): Record<string, any> {
+  if (!value) return {};
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value) as unknown;
+      return parsed && typeof parsed === "object" ? (parsed as Record<string, any>) : {};
+    } catch {
+      return {};
+    }
+  }
+  return typeof value === "object" ? (value as Record<string, any>) : {};
+}
+
 function mergeFeatured(
-  existing: { is: boolean; order: number | null },
+  existing?: { is: boolean; order: number | null } | null,
   updates?: Partial<{ is: boolean; order: number | null }>
 ) {
-  if (!updates) return existing;
+  const base = existing ?? { is: false, order: null };
+  if (!updates) return base;
   return {
-    is: updates.is ?? existing.is,
-    order: updates.order ?? existing.order,
+    is: updates.is !== undefined ? updates.is : base.is,
+    order: updates.order !== undefined ? updates.order : base.order,
   };
 }
 
@@ -198,6 +214,8 @@ export function normalizeMarketplaceCreate(body: unknown, userId: string) {
       },
       category: listingCategory,
       tags: slug ? [slug] : [],
+      seo_title: legacy.seo_title ?? null,
+      seo_description: legacy.seo_description ?? null,
     },
     jersey: DEFAULT_JERSEY,
     signing: {
@@ -227,57 +245,74 @@ export function normalizeMarketplaceUpdate(
   existing: Record<string, any>,
   userId: string
 ) {
-  const existingRefs = existing.refs ?? DEFAULT_REFS;
-  const existingMedia = existing.media ?? DEFAULT_MEDIA;
+  const existingState = parseRowJson(existing.state);
+  const existingListing = parseRowJson(existing.listing);
+  const existingJersey = parseRowJson(existing.jersey);
+  const existingSigning = parseRowJson(existing.signing);
+  const existingCondition = parseRowJson(existing.condition);
+  const existingAuth = parseRowJson(existing.auth);
+  const existingRefs = parseRowJson(existing.refs) ?? DEFAULT_REFS;
+  const existingMedia = parseRowJson(existing.media) ?? DEFAULT_MEDIA;
+  const row: Record<string, any> = {
+    ...existing,
+    state: existingState,
+    listing: existingListing,
+    jersey: existingJersey,
+    signing: existingSigning,
+    condition: existingCondition,
+    auth: existingAuth,
+    refs: existingRefs,
+    media: existingMedia,
+  };
 
-  const parsed = MarketplaceUpdateSchema.safeParse(body);
+  const parsed = MarketplaceUpdateSchema.strict().safeParse(body);
   if (parsed.success) {
     const updates = parsed.data;
     const now = new Date().toISOString();
 
     const state = updates.state
       ? {
-          ...existing.state,
+          ...row.state,
           ...updates.state,
-          featured: mergeFeatured(existing.state.featured, updates.state.featured),
+          featured: mergeFeatured(row.state.featured, updates.state.featured),
           updated_at: now,
-          created_by: existing.state.created_by ?? userId,
+          created_by: row.state.created_by ?? userId,
         }
-      : { ...existing.state, updated_at: now, created_by: existing.state.created_by ?? userId };
+      : { ...row.state, updated_at: now, created_by: row.state.created_by ?? userId };
 
     const listing = updates.listing
       ? {
-          ...existing.listing,
+          ...row.listing,
           ...updates.listing,
-          price: { ...existing.listing.price, ...updates.listing.price },
+          price: { ...row.listing.price, ...updates.listing.price },
         }
-      : existing.listing;
+      : row.listing;
 
     const jersey = updates.jersey
       ? {
-          ...existing.jersey,
+          ...row.jersey,
           ...updates.jersey,
-          brand: { ...existing.jersey.brand, ...updates.jersey?.brand },
-          size: { ...existing.jersey.size, ...updates.jersey?.size },
+          brand: { ...row.jersey.brand, ...updates.jersey?.brand },
+          size: { ...row.jersey.size, ...updates.jersey?.size },
         }
-      : existing.jersey;
+      : row.jersey;
 
     const signing = updates.signing
       ? {
-          ...existing.signing,
+          ...row.signing,
           ...updates.signing,
-          ink: { ...existing.signing.ink, ...updates.signing?.ink },
-          placement: { ...existing.signing.placement, ...updates.signing?.placement },
+          ink: { ...row.signing.ink, ...updates.signing?.ink },
+          placement: { ...row.signing.placement, ...updates.signing?.placement },
         }
-      : existing.signing;
+      : row.signing;
 
-    const condition = updates.condition ? { ...existing.condition, ...updates.condition } : existing.condition;
-    const auth = updates.auth ? { ...existing.auth, ...updates.auth } : existing.auth;
+    const condition = updates.condition ? { ...row.condition, ...updates.condition } : row.condition;
+    const auth = updates.auth ? { ...row.auth, ...updates.auth } : row.auth;
     const refs = updates.refs ? { ...existingRefs, ...updates.refs } : existingRefs;
     const media = updates.media ? { ...existingMedia, ...updates.media } : existingMedia;
 
     return MarketplaceListingSchema.parse({
-      ...existing,
+      ...row,
       ...updates,
       state,
       listing,
@@ -287,57 +322,59 @@ export function normalizeMarketplaceUpdate(
       auth,
       refs,
       media,
-      entity_type: updates.entity_type ?? existing.entity_type ?? DEFAULT_ENTITY_TYPE,
+      entity_type: updates.entity_type ?? (row as any).entity_type ?? DEFAULT_ENTITY_TYPE,
     });
   }
 
   const legacy = LegacyMarketplaceItemSchema.parse(body);
   const now = new Date().toISOString();
-  const title = legacy.title ?? existing.listing?.title ?? "Untitled";
-  const slug = legacy.slug ?? existing.slug ?? slugify(title);
-  const signers = legacy.signed_by ? parseCommaList(legacy.signed_by) : existing.signing?.signers ?? [];
-  const listingCategory = legacy.category ? mapLegacyCategory(legacy.category) : existing.listing?.category ?? "collector";
+  const title = legacy.title ?? row.listing?.title ?? "Untitled";
+  const slug = legacy.slug ?? (row as any).slug ?? slugify(title);
+  const signers = legacy.signed_by ? parseCommaList(legacy.signed_by) : row.signing?.signers ?? [];
+  const listingCategory = legacy.category ? mapLegacyCategory(legacy.category) : row.listing?.category ?? "collector";
 
   return MarketplaceListingSchema.parse({
-    ...existing,
+    ...row,
     refs: existingRefs,
     slug,
     state: {
-      ...existing.state,
-      lifecycle: legacy.status ? mapLegacyStatus(legacy.status) : existing.state.lifecycle,
-      featured: mergeFeatured(existing.state.featured, {
+      ...row.state,
+      lifecycle: legacy.status ? mapLegacyStatus(legacy.status) : row.state.lifecycle,
+      featured: mergeFeatured(row.state.featured, {
         is: legacy.is_featured,
         order: legacy.featured_order ?? undefined,
       }),
       updated_at: now,
-      created_by: existing.state.created_by ?? userId,
+      created_by: row.state.created_by ?? userId,
     },
     listing: {
-      ...existing.listing,
+      ...row.listing,
       title,
-      subtitle: legacy.full_description ?? existing.listing.subtitle ?? null,
-      short: legacy.description ?? existing.listing.short ?? "",
+      subtitle: legacy.full_description ?? row.listing.subtitle ?? null,
+      short: legacy.description ?? row.listing.short ?? "",
       price: {
-        ...existing.listing.price,
-        amount: legacy.price_usd ?? existing.listing.price.amount ?? 0,
-        currency: legacy.currency ?? existing.listing.price.currency ?? "USD",
+        ...row.listing.price,
+        amount: legacy.price_usd ?? row.listing.price.amount ?? 0,
+        currency: legacy.currency ?? row.listing.price.currency ?? "USD",
       },
       category: listingCategory,
+      seo_title: legacy.seo_title ?? row.listing.seo_title ?? null,
+      seo_description: legacy.seo_description ?? row.listing.seo_description ?? null,
     },
     signing: {
-      ...existing.signing,
+      ...row.signing,
       signers,
       count: signers.length,
     },
     condition: {
-      ...existing.condition,
-      notes: legacy.condition ?? existing.condition.notes ?? null,
+      ...row.condition,
+      notes: legacy.condition ?? row.condition.notes ?? null,
     },
     auth: {
-      ...existing.auth,
-      status: legacy.authenticated ? "verified" : existing.auth.status,
-      provider_id: legacy.coa_issuer ?? existing.auth.provider_id ?? null,
-      coa_refs: legacy.certificate ? [legacy.certificate] : existing.auth.coa_refs ?? [],
+      ...row.auth,
+      status: legacy.authenticated ? "verified" : row.auth.status,
+      provider_id: legacy.coa_issuer ?? row.auth.provider_id ?? null,
+      coa_refs: legacy.certificate ? [legacy.certificate] : row.auth.coa_refs ?? [],
     },
     media: {
       ...existingMedia,

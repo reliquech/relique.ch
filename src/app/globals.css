@@ -4,27 +4,26 @@
 
 @layer base {
   :root {
-    /* Dark-only tokens (single-tone surfaces + navy/gold accent) */
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 214 50% 30%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 43 74% 49%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    /* Gold ring on dark */
-    --ring: 43 74% 49%;
+    /* Light Mode Tokens */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83% 53.3%;
     --radius: 0px;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
@@ -45,21 +44,80 @@
     --relique-text-primary: #FFFFFF;
     --relique-text-secondary: #B3B3B3;
 
-    /* Admin theme tokens (unified app — admin routes) */
-    --bg-0: var(--relique-bg-0);
-    --surface: var(--relique-bg-1);
+    /* Admin theme tokens - Light values by default */
+    --bg-0: #f4f6fa;
+    --surface: #ffffff;
     --success: #10B981;
     --warning: #F59E0B;
+    --sidebar-background: #ffffff;
+    --sidebar-foreground: #0f172a;
+    --sidebar-border: #cbd5e1;
+    --sidebar-accent: var(--relique-primary-blue);
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-ring: var(--relique-accent-blue);
+
+    /* Stitch design system tokens - Light values by default */
+    --stitch-background: #f4f6fa;
+    --stitch-surface: #ffffff;
+    --stitch-surface-container: #f0f2f7;
+    --stitch-surface-container-low: #f8f9fc;
+    --stitch-surface-container-high: #e8ebf2;
+    --stitch-surface-container-highest: #e0e4ec;
+    --stitch-on-surface: #0f172a;
+    --stitch-on-surface-variant: #475569;
+    --stitch-outline: #94a3b8;
+    --stitch-outline-variant: #cbd5e1;
+    --stitch-primary: #1c4d8d;
+    --stitch-on-primary: #ffffff;
+    --stitch-primary-container: #d8e2ff;
+  }
+
+  .dark {
+    /* Dark Mode Override Tokens */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 214 50% 30%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 43 74% 49%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 43 74% 49%;
+
+    /* Admin theme tokens - Dark values */
+    --bg-0: var(--relique-bg-0);
+    --surface: var(--relique-bg-1);
     --sidebar-background: var(--relique-bg-1);
     --sidebar-foreground: var(--relique-text-primary);
     --sidebar-border: var(--relique-border);
     --sidebar-accent: var(--relique-primary-blue);
     --sidebar-accent-foreground: var(--relique-text-primary);
     --sidebar-ring: var(--relique-accent-blue);
-  }
 
-  .dark {
-    /* Backward compatible: keep same values as :root */
+    /* Stitch design system tokens - Dark values */
+    --stitch-background: #070e19;
+    --stitch-surface: #0c141f;
+    --stitch-surface-container: #19202b;
+    --stitch-surface-container-low: #151c27;
+    --stitch-surface-container-high: #232a36;
+    --stitch-surface-container-highest: #2e3541;
+    --stitch-on-surface: #dce2f3;
+    --stitch-on-surface-variant: #c2c6d6;
+    --stitch-outline: #8c909f;
+    --stitch-outline-variant: #424754;
+    --stitch-primary: #adc6ff;
+    --stitch-on-primary: #002e6a;
+    --stitch-primary-container: #4d8eff;
   }
 }
 
@@ -72,6 +130,8 @@
     font-family: var(--font-work-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     font-weight: 500;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  .dark body, body.dark, html.dark body {
     color-scheme: dark;
   }
 }
@@ -375,4 +435,17 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--relique-accent-blue);
+}
+
+/* Next.js dev overlay host — keep anchored to viewport when page scrolls */
+nextjs-portal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2147483646;
+  pointer-events: none;
+}
+
+nextjs-portal > * {
+  pointer-events: auto;
 }

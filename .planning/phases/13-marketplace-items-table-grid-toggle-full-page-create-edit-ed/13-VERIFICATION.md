@@ -2,9 +2,12 @@
 phase: 13
 status: human_needed
 verified: 2026-06-15
+review: 13-REVIEW.md
 ---
 
 # Phase 13 Verification
+
+**Status:** ✅ Execution complete — automated gates PASS; browser UAT pending (`13-HUMAN-UAT.md`). Known P2 follow-up: media workflow integration (`13-REVIEW.md`).
 
 ## Automated Checks
 
@@ -22,8 +25,13 @@ verified: 2026-06-15
 | ITEMS-13-01 | Implemented; needs browser UAT for mobile default and persistence. |
 | ITEMS-13-02 | Implemented; needs browser UAT for card click/menu/checkbox propagation. |
 | ITEMS-13-03 | Implemented; needs browser UAT for editor save/publish and navigation behavior. |
-| ITEMS-13-04 | Implemented as UI workflow; needs browser UAT for drag/drop and media state behavior. |
+| ITEMS-13-04 | Implemented as UI workflow; P2 — bind to form submit path (`13-REVIEW.md`); browser UAT for controls. |
 | ITEMS-13-05 | Implemented; full repo lint blocked by unrelated pre-existing lint debt. |
+
+## Commits
+
+- `dcb667e` — feat(13): marketplace items grid and editor UX
+- `2f6e33f` — docs(13): record execution review
 
 ## Human Verification Required
 
@@ -37,3 +45,8 @@ verified: 2026-06-15
 - Confirm publish requires confirmation and returns to `/admin/items`.
 - Confirm media drag/drop, progress, retry, reorder, alt text, primary image, and remove controls.
 
+## Follow-up (non-blocking)
+
+| ID | Severity | Item |
+|----|----------|------|
+| P2 | medium | Wire `MarketplaceMediaWorkflow` as canonical submitted media source (see `13-REVIEW.md`) |

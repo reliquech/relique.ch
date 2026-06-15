@@ -1,3 +1,3 @@
 export const dynamic = "force-dynamic";
 
-export { default } from "@/admin/users/pages/LoginPage";
+export { default } from "@/components/admin/users/pages/LoginPage";

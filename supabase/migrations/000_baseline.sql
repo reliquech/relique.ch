@@ -59,6 +59,19 @@ create trigger on_auth_user_created
   execute function public.handle_new_user();
 
 -- ========== 002_create_marketplace_items.sql ==========
+-- Immutable JSONB → timestamptz for GENERATED columns (bare text::timestamptz is STABLE).
+create or replace function public.jsonb_text_to_timestamptz_immutable(j jsonb, key text)
+returns timestamptz
+language sql
+immutable
+parallel safe
+as $$
+  select case
+    when j is null or j->>key is null or btrim(j->>key) = '' then null
+    else (j->>key)::timestamp without time zone at time zone 'UTC'
+  end;
+$$;
+
 -- =============================================================================
 -- Marketplace Items (Signed Jersey schema)
 -- Base schema aligned to marketplace listing payloads.
@@ -84,9 +97,9 @@ create table public.marketplace_items (
   state_visibility text generated always as (state->>'visibility') stored,
   featured_is boolean generated always as ((state->'featured'->>'is')::boolean) stored,
   featured_order integer generated always as ((state->'featured'->>'order')::int) stored,
-  publish_at timestamp with time zone generated always as ((state->>'publish_at')::timestamptz) stored,
-  created_at timestamp with time zone generated always as ((state->>'created_at')::timestamptz) stored,
-  updated_at timestamp with time zone generated always as ((state->>'updated_at')::timestamptz) stored,
+  publish_at timestamp with time zone generated always as (public.jsonb_text_to_timestamptz_immutable(state, 'publish_at')) stored,
+  created_at timestamp with time zone generated always as (public.jsonb_text_to_timestamptz_immutable(state, 'created_at')) stored,
+  updated_at timestamp with time zone generated always as (public.jsonb_text_to_timestamptz_immutable(state, 'updated_at')) stored,
   created_by uuid generated always as ((state->>'created_by')::uuid) stored,
   listing_title text generated always as (listing->>'title') stored,
   listing_category text generated always as (listing->>'category') stored,
@@ -374,7 +387,7 @@ create policy "Select published or own drafts"
 
 -- ========== 010_create_crm_core.sql ==========
 -- =============================================================================
--- CRM Core Tables: customers, leads, deals, pipeline_stages, messages, attachments
+-- CRM Core Tables: customers, leads, deals, messages, attachments
 -- =============================================================================
 
 -- Customers
@@ -410,24 +423,12 @@ create table public.leads (
   updated_at timestamp with time zone default now()
 );
 
--- Pipeline stages
-create table public.pipeline_stages (
-  id uuid default gen_random_uuid() primary key,
-  name text not null,
-  position integer not null default 1,
-  color text,
-  is_default boolean not null default false,
-  created_at timestamp with time zone default now(),
-  updated_at timestamp with time zone default now()
-);
-
 -- Deals
 create table public.deals (
   id uuid default gen_random_uuid() primary key,
   title text not null,
   customer_id uuid references public.customers(id) on delete set null,
   lead_id uuid references public.leads(id) on delete set null,
-  pipeline_stage_id uuid references public.pipeline_stages(id) on delete set null,
   value numeric(12,2),
   currency text not null default 'USD',
   probability integer default 0,
@@ -473,7 +474,6 @@ create table public.attachments (
 -- Enable RLS
 alter table public.customers enable row level security;
 alter table public.leads enable row level security;
-alter table public.pipeline_stages enable row level security;
 alter table public.deals enable row level security;
 alter table public.messages enable row level security;
 alter table public.attachments enable row level security;
@@ -488,10 +488,7 @@ create index leads_status_idx on public.leads(status);
 create index leads_owner_id_idx on public.leads(owner_id);
 create index leads_created_at_idx on public.leads(created_at desc);
 
-create index pipeline_stages_position_idx on public.pipeline_stages(position);
-
 create index deals_status_idx on public.deals(status);
-create index deals_stage_id_idx on public.deals(pipeline_stage_id);
 create index deals_customer_id_idx on public.deals(customer_id);
 create index deals_created_at_idx on public.deals(created_at desc);
 
@@ -509,11 +506,6 @@ create trigger set_customers_updated_at
 
 create trigger set_leads_updated_at
   before update on public.leads
-  for each row
-  execute function public.handle_updated_at();
-
-create trigger set_pipeline_stages_updated_at
-  before update on public.pipeline_stages
   for each row
   execute function public.handle_updated_at();
 
@@ -572,27 +564,7 @@ create policy "Authenticated delete crm attachments"
   to authenticated
   using (bucket_id = 'crm-attachments');
 
--- ========== 012_seed_pipeline_stages.sql ==========
--- =============================================================================
--- Seed default pipeline stages (run only when table is empty)
--- =============================================================================
-
-insert into public.pipeline_stages (name, position, color, is_default)
-select v.name, v.position, v.color, v.is_default
-from (values
-  ('New', 1, '#0055FF', true),
-  ('Qualified', 2, '#00CCFF', false),
-  ('Proposal', 3, '#10B981', false),
-  ('Negotiation', 4, '#F59E0B', false),
-  ('Won', 5, '#10B981', false),
-  ('Lost', 6, '#EF4444', false)
-) as v(name, position, color, is_default)
-where not exists (select 1 from public.pipeline_stages limit 1);
-
--- ========== 013_create_notifications_alert_rules.sql ==========
--- =============================================================================
--- Notifications + Alert Rules (CRM)
--- =============================================================================
+-- ========== 013_create_notifications.sql ==========
 
 -- Notifications
 create table public.notifications (
@@ -626,48 +598,6 @@ create policy "Users can delete own notifications"
 create index notifications_user_id_idx on public.notifications(user_id);
 create index notifications_read_at_idx on public.notifications(read_at);
 create index notifications_created_at_idx on public.notifications(created_at desc);
-
--- Alert rules
-create table public.alert_rules (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid references public.profiles(id) on delete cascade not null,
-  name text not null,
-  condition_type text not null check (condition_type in ('lead_stale', 'deal_stale', 'message_unread')),
-  condition_params jsonb,
-  action_type text not null default 'create_notification',
-  action_params jsonb,
-  enabled boolean default true,
-  last_triggered_at timestamp with time zone,
-  created_at timestamp with time zone default now(),
-  updated_at timestamp with time zone default now()
-);
-
-alter table public.alert_rules enable row level security;
-
-create policy "Users can read own alert rules"
-  on public.alert_rules for select
-  using ((select auth.uid()) = user_id);
-
-create policy "Users can insert own alert rules"
-  on public.alert_rules for insert
-  with check ((select auth.uid()) = user_id);
-
-create policy "Users can update own alert rules"
-  on public.alert_rules for update
-  using ((select auth.uid()) = user_id);
-
-create policy "Users can delete own alert rules"
-  on public.alert_rules for delete
-  using ((select auth.uid()) = user_id);
-
-create index alert_rules_user_id_idx on public.alert_rules(user_id);
-create index alert_rules_enabled_idx on public.alert_rules(enabled);
-create index alert_rules_last_triggered_at_idx on public.alert_rules(last_triggered_at);
-
-create trigger set_alert_rules_updated_at
-  before update on public.alert_rules
-  for each row
-  execute function public.handle_updated_at();
 
 -- ========== 014_create_crm_reporting_functions.sql ==========
 -- =============================================================================
@@ -778,15 +708,21 @@ alter table public.profiles
   add column if not exists role text not null default 'viewer'
   check (role in ('admin','editor','viewer'));
 
--- Update new user handler to set default role
+-- Update new user handler: first account becomes admin, rest default to viewer
 create or replace function public.handle_new_user()
 returns trigger as $$
+declare
+  assigned_role text := 'viewer';
 begin
+  if not exists (select 1 from public.profiles where role = 'admin') then
+    assigned_role := 'admin';
+  end if;
+
   insert into public.profiles (id, display_name, role)
   values (
     new.id,
     coalesce(new.raw_user_meta_data->>'display_name', new.email),
-    'viewer'
+    assigned_role
   );
   return new;
 end;
@@ -882,105 +818,6 @@ create index crm_recent_searches_user_id_idx on public.crm_recent_searches(user_
 create index crm_recent_searches_entity_idx on public.crm_recent_searches(entity_type);
 create index crm_recent_searches_created_at_idx on public.crm_recent_searches(created_at desc);
 
--- ========== 018_create_tasks.sql ==========
--- =============================================================================
--- Tasks (CRM automation + follow-up)
--- =============================================================================
-
-create table public.tasks (
-  id uuid primary key default gen_random_uuid(),
-  title text not null,
-  description text,
-  status text not null default 'open' check (status in ('open','done')),
-  priority text not null default 'medium' check (priority in ('low','medium','high')),
-  due_at timestamp with time zone,
-  entity_type text check (entity_type in ('lead','deal','message','customer')),
-  entity_id uuid,
-  assigned_to uuid references public.profiles(id) on delete set null,
-  created_by uuid references public.profiles(id) on delete set null,
-  source_rule_id uuid references public.alert_rules(id) on delete set null,
-  created_at timestamp with time zone default now(),
-  updated_at timestamp with time zone default now()
-);
-
-alter table public.tasks enable row level security;
-
-create policy "Users can read own tasks"
-  on public.tasks for select
-  using ((select auth.uid()) = assigned_to);
-
-create policy "Users can insert own tasks"
-  on public.tasks for insert
-  with check ((select auth.uid()) = assigned_to);
-
-create policy "Users can update own tasks"
-  on public.tasks for update
-  using ((select auth.uid()) = assigned_to);
-
-create policy "Users can delete own tasks"
-  on public.tasks for delete
-  using ((select auth.uid()) = assigned_to);
-
-create index tasks_assigned_to_idx on public.tasks(assigned_to);
-create index tasks_status_idx on public.tasks(status);
-create index tasks_due_at_idx on public.tasks(due_at desc);
-create index tasks_entity_idx on public.tasks(entity_type, entity_id);
-
-create trigger set_tasks_updated_at
-  before update on public.tasks
-  for each row
-  execute function public.handle_updated_at();
-
--- ========== 019_create_crm_custom_fields.sql ==========
--- =============================================================================
--- CRM Custom Fields
--- =============================================================================
-
-create table public.crm_custom_fields (
-  id uuid primary key default gen_random_uuid(),
-  entity_type text not null check (entity_type in ('customer','lead','deal','message')),
-  name text not null,
-  key text not null,
-  field_type text not null check (field_type in ('text','number','date','select','multiselect','boolean','textarea','url')),
-  options jsonb,
-  required boolean not null default false,
-  position integer not null default 1,
-  created_by uuid references public.profiles(id) on delete set null,
-  created_at timestamp with time zone default now(),
-  updated_at timestamp with time zone default now()
-);
-
-create unique index crm_custom_fields_entity_key_idx on public.crm_custom_fields(entity_type, key);
-create index crm_custom_fields_entity_idx on public.crm_custom_fields(entity_type);
-create index crm_custom_fields_position_idx on public.crm_custom_fields(position);
-
-alter table public.crm_custom_fields enable row level security;
-
-create trigger set_crm_custom_fields_updated_at
-  before update on public.crm_custom_fields
-  for each row
-  execute function public.handle_updated_at();
-
-create table public.crm_custom_field_values (
-  id uuid primary key default gen_random_uuid(),
-  field_id uuid references public.crm_custom_fields(id) on delete cascade not null,
-  entity_type text not null check (entity_type in ('customer','lead','deal','message')),
-  entity_id uuid not null,
-  value_json jsonb,
-  created_at timestamp with time zone default now(),
-  updated_at timestamp with time zone default now()
-);
-
-create unique index crm_custom_field_values_unique_idx on public.crm_custom_field_values(field_id, entity_id);
-create index crm_custom_field_values_entity_idx on public.crm_custom_field_values(entity_type, entity_id);
-
-alter table public.crm_custom_field_values enable row level security;
-
-create trigger set_crm_custom_field_values_updated_at
-  before update on public.crm_custom_field_values
-  for each row
-  execute function public.handle_updated_at();
-
 -- ========== 020_extend_crm_reporting_functions.sql ==========
 -- =============================================================================
 -- CRM Reporting Extensions (funnel, lead source, deal aging)
@@ -1033,62 +870,44 @@ returns table (
 language sql
 stable
 as $$
-  with deals_cte as (
+  with age_buckets as (
+    select *
+    from (values
+      ('0-7 days', 1),
+      ('8-30 days', 2),
+      ('31-60 days', 3),
+      ('61+ days', 4)
+    ) as t(bucket, sort_order)
+  ),
+  deals_cte as (
     select
-      id,
       value,
-      created_at::date as created_date,
-      (current_date - created_at::date) as age_days
+      case
+        when (current_date - created_at::date) <= 7 then '0-7 days'
+        when (current_date - created_at::date) <= 30 then '8-30 days'
+        when (current_date - created_at::date) <= 60 then '31-60 days'
+        else '61+ days'
+      end as bucket
     from public.deals
     where status = 'open'
       and created_at::date between start_date and end_date
+  ),
+  agg as (
+    select
+      bucket,
+      count(*) as deal_count,
+      coalesce(sum(value), 0) as total_value
+    from deals_cte
+    group by bucket
   )
   select
-    case
-      when age_days <= 7 then '0-7 days'
-      when age_days <= 30 then '8-30 days'
-      when age_days <= 60 then '31-60 days'
-      else '61+ days'
-    end as bucket,
-    count(*) as deal_count,
-    coalesce(sum(value), 0) as total_value
-  from deals_cte
-  group by 1
-  order by
-    case
-      when bucket = '0-7 days' then 1
-      when bucket = '8-30 days' then 2
-      when bucket = '31-60 days' then 3
-      else 4
-    end;
+    b.bucket,
+    coalesce(a.deal_count, 0) as deal_count,
+    coalesce(a.total_value, 0) as total_value
+  from age_buckets b
+  left join agg a on a.bucket = b.bucket
+  order by b.sort_order;
 $$;
-
--- ========== 021_extend_alert_rules_conditions.sql ==========
--- =============================================================================
--- Extend alert rules: conditions array + cooldown per rule + entity type
--- =============================================================================
-
-alter table public.alert_rules
-  add column if not exists entity_type text,
-  add column if not exists conditions jsonb,
-  add column if not exists cooldown_hours integer default 24;
-
-create index if not exists alert_rules_entity_idx on public.alert_rules(entity_type);
-
-update public.alert_rules
-set entity_type = case
-  when condition_type in ('lead_stale') then 'lead'
-  when condition_type in ('deal_stale') then 'deal'
-  when condition_type in ('message_unread') then 'message'
-  else null
-end
-where entity_type is null;
-
-update public.alert_rules
-set conditions = jsonb_build_array(
-  jsonb_build_object('type', condition_type, 'params', condition_params)
-)
-where conditions is null;
 
 -- ========== 022_create_notification_preferences.sql ==========
 -- =============================================================================
@@ -1129,15 +948,6 @@ alter table public.attachments
   add column if not exists title text,
   add column if not exists note text;
 
--- ========== 024_custom_fields_group_visibility.sql ==========
--- Phase 2: Custom Fields - group and visibility_rules for grouping and role/conditional visibility
-alter table public.crm_custom_fields
-  add column if not exists "group" text,
-  add column if not exists visibility_rules jsonb;
-
-comment on column public.crm_custom_fields."group" is 'Optional section/group name for form layout';
-comment on column public.crm_custom_fields.visibility_rules is 'e.g. { "edit_roles": ["admin","editor"], "show_when": { "field_key": "x", "value": "y" } }';
-
 -- ========== 025_dashboard_reports_and_rpc.sql ==========
 -- =============================================================================
 -- Dashboard: saved reports table + crm_stage_velocity, crm_funnel_by_source
@@ -1176,15 +986,13 @@ returns table (
 )
 language sql stable as $$
   select
-    ps.id as stage_id,
-    ps.name as stage_name,
-    count(d.id)::bigint as deal_count,
-    coalesce(avg(extract(day from (least(coalesce(d.closed_at, now()), (end_date + interval '1 day')::timestamp) - d.created_at))), 0)::numeric as avg_days_in_stage
-  from public.pipeline_stages ps
-  left join public.deals d on d.pipeline_stage_id = ps.id
-    and d.created_at::date between start_date and end_date
-  group by ps.id, ps.name, ps.position
-  order by ps.position;
+    null::uuid,
+    d.status,
+    count(*)::bigint,
+    coalesce(avg(extract(day from (least(coalesce(d.closed_at, now()), (end_date + interval '1 day')::timestamp) - d.created_at))), 0)::numeric
+  from public.deals d
+  where d.created_at::date between start_date and end_date
+  group by d.status;
 $$;
 
 create or replace function public.crm_funnel_by_source(start_date date, end_date date)
@@ -1207,17 +1015,6 @@ language sql stable as $$
   group by coalesce(nullif(l.source, ''), 'Unknown')
   order by leads_count desc;
 $$;
-
--- ========== 026_alert_rules_priority_active_hours_actions.sql ==========
--- Phase 4: Automations - priority, active_hours, actions array
-alter table public.alert_rules
-  add column if not exists priority integer default 0,
-  add column if not exists active_hours jsonb,
-  add column if not exists actions jsonb default '[{"type":"create_notification","params":{}}]';
-
-comment on column public.alert_rules.priority is 'Higher number = higher priority (run first)';
-comment on column public.alert_rules.active_hours is 'e.g. {"start":"09:00","end":"18:00"} - only run within this window';
-comment on column public.alert_rules.actions is 'Array of {type, params} e.g. create_notification, create_task';
 
 -- ========== 027_add_owner_id_deals_customers.sql ==========
 -- Add owner_id to deals and customers for ownership filtering and "Assign to me"
@@ -1308,9 +1105,19 @@ END $$;
 -- Create function to auto-create profile on auth.users insert
 create or replace function public.handle_new_user()
 returns trigger as $$
+declare
+  assigned_role text := 'viewer';
 begin
-  insert into public.profiles (id, display_name)
-  values (new.id, coalesce(new.raw_user_meta_data->>'display_name', new.email))
+  if not exists (select 1 from public.profiles where role = 'admin') then
+    assigned_role := 'admin';
+  end if;
+
+  insert into public.profiles (id, display_name, role)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'display_name', new.email),
+    assigned_role
+  )
   on conflict (id) do nothing;
   return new;
 end;

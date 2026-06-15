@@ -372,16 +372,10 @@ import { MarketplaceFormData } from "@/features/marketplace/schema";
 | A2 | Barrel `index.ts` files unused externally | Wave 6 | Medium — verify grep `@/admin/crm"` before delete |
 | A3 | `settings/page.tsx` stays inline (no admin deps) | Wave ordering | Low — already self-contained stub UI |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Rename `marketplace-form/` → `marketplace/form/`?**
-   - What we know: 7 section files under `components/admin/marketplace-form/`
-   - What's unclear: Whether rename churn is worth it vs update imports only
-   - Recommendation: Rename during Wave 4 for single domain folder — planner discretion
-
-2. **Keep `components/shared/CrmViewBar` path as re-export shim?**
-   - What we know: Only 4 CRM pages import it
-   - Recommendation: Move file + update 4 imports; no shim (clean grep)
+1. **Rename `marketplace-form/` → `marketplace/form/`?** — **RESOLVED:** Yes, during Wave 4 (Plan 05). See CONTEXT.md.
+2. **Keep `components/shared/CrmViewBar` path as re-export shim?** — **RESOLVED:** No. Move file + update 4 imports (Plan 06). See CONTEXT.md.
 
 ## Environment Availability
 

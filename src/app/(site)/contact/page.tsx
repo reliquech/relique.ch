@@ -19,7 +19,7 @@ export const metadata: Metadata = {
  */
 export default function ContactPage() {
   return (
-    <div className="py-24 bg-bgDark min-h-screen relative overflow-hidden">
+    <div className="pt-32 md:pt-48 pb-24 bg-bgDark min-h-screen relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primaryBlue/5 to-transparent opacity-30 pointer-events-none" />
       <div className="container mx-auto px-6 max-w-4xl relative z-10">
         <div className="text-center mb-16">

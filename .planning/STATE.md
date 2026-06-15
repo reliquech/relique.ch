@@ -3,31 +3,28 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 13 UI-SPEC approved
-last_updated: "2026-06-15T09:43:56.018Z"
-last_activity: 2026-06-15 -- Phase 12 execution started
+stopped_at: Phase 15 planned; ready for execute-phase
+last_updated: "2026-06-15T10:23:42.618Z"
 progress:
-  total_phases: 13
-  completed_phases: 4
-  total_plans: 35
-  completed_plans: 18
-  percent: 51
+  total_phases: 16
+  completed_phases: 5
+  total_plans: 47
+  completed_plans: 26
+  percent: 55
 ---
 
 # Project State
 
 ## Project Reference
 
-**Current focus:** Phase 12 — marketplace-items-admin-page-toolbar-filters-table-bulk-acti
+**Current focus:** Phase 15 — marketplace-items-instant-view-toggle-and-list-query-cache-n
 
 ## Current Position
 
-Phase: 12 (marketplace-items-admin-page-toolbar-filters-table-bulk-acti) — EXECUTING
-Plan: 1 of 6
-Status: Executing Phase 12
-Last activity: 2026-06-15 -- Phase 12 execution started
-
-Progress: [██████░░░░] 57% (4/7 phases code-complete)
+Phase: 15 (marketplace-items-instant-view-toggle-and-list-query-cache-n) — EXECUTING
+Plan: 1 of 4
+Last completed: Phase 12, 13, 14 (2026-06-15)
+Status: Executing Phase 15
 
 ## Roadmap Evolution
 
@@ -39,7 +36,10 @@ Progress: [██████░░░░] 57% (4/7 phases code-complete)
 - **2026-06-14**: Phase 11 added — JavaScript bundle performance (baseline audit, tree-shakeable imports, dynamic loading, validate bundle sizes; no UI/feature/API changes).
 - **2026-06-14**: Phase 11 planned — 6 plans (baseline → CommandPalette scope → dynamic imports → dep cleanup → gate).
 - **2026-06-15**: Phase 12 added — Marketplace Items admin (`/admin/items`): toolbar, filters, table, bulk actions, URL sync.
-- **2026-06-15**: Phase 13 added — Marketplace Items table/grid toggle, full-page create-edit editor, UX polish (counts, autosave, typed delete, offline states).
+- **2026-06-15**: Phase 12 & 14 verified and closed — `12-UAT.md`, `14-UAT.md`; ROADMAP ticked.
+- **2026-06-15**: Phase 13 executed — `dcb667e`, `2f6e33f`; human UAT pending; P2 media bind in `13-REVIEW.md`.
+- **2026-06-15**: Phase 15 added — Marketplace items instant view toggle and list query cache (no refetch on table/grid switch, stale-while-revalidate).
+- **2026-06-15**: Phase 16 added — Marketplace editor image upload UX (remove clip-path skew, 16:9 cover, square grid, lightbox, drag reorder).
 
 ## Performance Metrics
 
@@ -95,6 +95,6 @@ From `.planning/codebase/CONCERNS.md`:
 
 ## Session Continuity
 
-Last session: 2026-06-15T09:43:56.015Z
-Stopped at: Phase 13 UI-SPEC approved
-Resume file: .planning/phases/13-marketplace-items-table-grid-toggle-full-page-create-edit-ed/13-UI-SPEC.md
+Last session: 2026-06-15T10:22:23.697Z
+Stopped at: Phase 15 planned; ready for execute-phase
+Resume file: .planning/phases/15-marketplace-items-instant-view-toggle-and-list-query-cache-n/15-01-PLAN.md

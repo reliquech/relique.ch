@@ -23,17 +23,10 @@ export async function GET(request: NextRequest) {
     const supabase = createServiceRoleClient();
     const items: ActivityItem[] = [];
 
-    const [auditRes, tasksRes, attachmentsRes, messagesRes] = await Promise.all([
+    const [auditRes, attachmentsRes, messagesRes] = await Promise.all([
       supabase
         .from("audit_logs")
         .select("id, action, actor_id, metadata, created_at")
-        .eq("entity_type", entity_type)
-        .eq("entity_id", entity_id)
-        .order("created_at", { ascending: false })
-        .limit(limit),
-      supabase
-        .from("tasks")
-        .select("id, title, status, due_at, created_at")
         .eq("entity_type", entity_type)
         .eq("entity_id", entity_id)
         .order("created_at", { ascending: false })
@@ -63,7 +56,6 @@ export async function GET(request: NextRequest) {
     ]);
 
     type AuditRow = { id: string; action: string; actor_id: string | null; metadata: unknown; created_at: string };
-    type TaskRow = { id: string; title: string; status: string; due_at: string | null; created_at: string };
     type AttachmentRow = { id: string; file_path: string; title: string | null; created_at: string };
     if (auditRes.data) {
       for (const row of auditRes.data as AuditRow[]) {
@@ -76,16 +68,6 @@ export async function GET(request: NextRequest) {
             actor_id: row.actor_id,
             metadata: (row.metadata as Record<string, unknown> | null) ?? null,
           },
-        });
-      }
-    }
-    if (tasksRes.data) {
-      for (const row of tasksRes.data as TaskRow[]) {
-        items.push({
-          id: `task-${row.id}`,
-          kind: "task",
-          at: row.created_at,
-          task: { title: row.title, status: row.status, due_at: row.due_at },
         });
       }
     }

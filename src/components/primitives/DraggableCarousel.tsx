@@ -9,6 +9,7 @@ interface DraggableCarouselProps {
   isDragging: boolean;
   onDragStart: () => void;
   onDragEnd: () => void;
+  modifyTarget?: (target: number) => number;
   className?: string;
 }
 
@@ -21,9 +22,9 @@ export function DraggableCarousel({
   children,
   constraints,
   x,
-  isDragging,
   onDragStart,
   onDragEnd,
+  modifyTarget,
   className = "",
 }: DraggableCarouselProps) {
   return (
@@ -31,11 +32,11 @@ export function DraggableCarousel({
       drag="x"
       dragConstraints={constraints}
       dragElastic={0.08}
-      dragTransition={{ power: 0.2, timeConstant: 200 }}
+      dragTransition={{ power: 0.2, timeConstant: 200, modifyTarget }}
       style={{ x }}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
-      className={`flex gap-8 px-6 md:px-[calc((100vw-1280px)/2)] pb-12 cursor-grab active:cursor-grabbing touch-pan-y ${className}`}
+      className={`flex gap-8 pb-12 cursor-grab active:cursor-grabbing touch-pan-y w-full ${className}`}
     >
       {children}
     </motion.div>

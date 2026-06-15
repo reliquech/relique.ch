@@ -3,6 +3,19 @@
 -- Base schema aligned to marketplace listing payloads.
 -- =============================================================================
 
+-- Immutable JSONB → timestamptz for GENERATED columns (bare text::timestamptz is STABLE).
+create or replace function public.jsonb_text_to_timestamptz_immutable(j jsonb, key text)
+returns timestamptz
+language sql
+immutable
+parallel safe
+as $$
+  select case
+    when j is null or j->>key is null or btrim(j->>key) = '' then null
+    else (j->>key)::timestamp without time zone at time zone 'UTC'
+  end;
+$$;
+
 create table public.marketplace_items (
   id uuid default gen_random_uuid() primary key,
   entity_type text not null,
@@ -23,9 +36,9 @@ create table public.marketplace_items (
   state_visibility text generated always as (state->>'visibility') stored,
   featured_is boolean generated always as ((state->'featured'->>'is')::boolean) stored,
   featured_order integer generated always as ((state->'featured'->>'order')::int) stored,
-  publish_at timestamp with time zone generated always as ((state->>'publish_at')::timestamptz) stored,
-  created_at timestamp with time zone generated always as ((state->>'created_at')::timestamptz) stored,
-  updated_at timestamp with time zone generated always as ((state->>'updated_at')::timestamptz) stored,
+  publish_at timestamp with time zone generated always as (public.jsonb_text_to_timestamptz_immutable(state, 'publish_at')) stored,
+  created_at timestamp with time zone generated always as (public.jsonb_text_to_timestamptz_immutable(state, 'created_at')) stored,
+  updated_at timestamp with time zone generated always as (public.jsonb_text_to_timestamptz_immutable(state, 'updated_at')) stored,
   created_by uuid generated always as ((state->>'created_by')::uuid) stored,
   listing_title text generated always as (listing->>'title') stored,
   listing_category text generated always as (listing->>'category') stored,

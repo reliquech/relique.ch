@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { RemoteImage } from "@/components/shared/RemoteImage";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeader } from "@/components/layout/SectionHeader";
 import { marketplaceService } from "@/lib/services/marketplaceService";
@@ -62,11 +62,12 @@ export function RelatedItems({ currentListing, limit = 4 }: RelatedItemsProps) {
             <Card key={item.id} className="hover:shadow-lg transition-shadow">
               <Link href={`/marketplace/${item.slug}`}>
                 <div className="relative w-full h-48">
-                  <Image
+                  <RemoteImage
                     src={getListingHeroImage(item)}
                     alt={getListingTitle(item)}
                     fill
                     className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 25vw"
                   />
                 </div>
                 <CardHeader>

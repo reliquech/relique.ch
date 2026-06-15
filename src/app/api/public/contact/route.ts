@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { z } from "zod";
-import {
-  getOperatorEmail,
-  sendTransactionalEmail,
-} from "@/lib/email/sendTransactional";
 
 const ContactSchema = z.object({
   name: z.string().min(2),
@@ -65,25 +61,6 @@ export async function POST(request: NextRequest) {
     }
 
     const messageId = (message as { id: string }).id;
-
-    const operatorEmail = getOperatorEmail();
-    if (operatorEmail) {
-      await sendTransactionalEmail({
-        to: operatorEmail,
-        subject: `New contact inquiry from ${validated.name}`,
-        body: `New contact form submission.\n\nFrom: ${validated.name} <${validated.email}>\n\n${validated.message}\n\nMessage ID: ${messageId}`,
-        entityType: "lead",
-        entityId: leadId,
-      });
-    }
-
-    await sendTransactionalEmail({
-      to: validated.email,
-      subject: "Relique — We received your message",
-      body: `Hi ${validated.name},\n\nThank you for contacting Relique. We received your message and will respond within 24 hours.\n\n— Relique`,
-      entityType: "lead",
-      entityId: leadId,
-    });
 
     return NextResponse.json({ id: messageId }, { status: 201 });
   } catch (error) {

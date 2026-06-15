@@ -85,6 +85,22 @@ const config: Config = {
 			'bg-0': '#0A0A0A',
 			success: '#10B981',
 			warning: '#F59E0B',
+			// Stitch design system tokens
+			stitch: {
+				background: 'var(--stitch-background)',
+				surface: 'var(--stitch-surface)',
+				'surface-container': 'var(--stitch-surface-container)',
+				'surface-container-low': 'var(--stitch-surface-container-low)',
+				'surface-container-high': 'var(--stitch-surface-container-high)',
+				'surface-container-highest': 'var(--stitch-surface-container-highest)',
+				'on-surface': 'var(--stitch-on-surface)',
+				'on-surface-variant': 'var(--stitch-on-surface-variant)',
+				outline: 'var(--stitch-outline)',
+				'outline-variant': 'var(--stitch-outline-variant)',
+				primary: 'var(--stitch-primary)',
+				'on-primary': 'var(--stitch-on-primary)',
+				'primary-container': 'var(--stitch-primary-container)',
+			},
 		},
   		keyframes: {
   			'accordion-down': {
@@ -107,6 +123,9 @@ const config: Config = {
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out'
+  		},
+  		transitionDuration: {
+  			800: '800ms',
   		}
   	}
   },

@@ -1,1 +1,1 @@
-export { default } from "@/admin/crm/pages/MessagesPage";
+export { default } from "@/components/admin/crm/pages/MessagesPage";

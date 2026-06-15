@@ -2,7 +2,6 @@ export type {
   Customer,
   Lead,
   Deal,
-  PipelineStage,
   Message,
   Attachment,
   PaginatedListResponse,

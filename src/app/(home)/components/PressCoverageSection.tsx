@@ -157,8 +157,9 @@ export function PressCoverageSection({
                     src={displayImage}
                     alt={displayTitle}
                     fill
+                    sizes="(max-width: 1024px) 100vw, 55vw"
                     unoptimized={displayImage.startsWith("http")}
-                    className="object-cover opacity-90 transition-transform duration-[8000ms] ease-linear group-hover:scale-110"
+                    className="object-cover opacity-90 transition-transform duration-800 ease-linear group-hover:scale-110"
                   />
                   {/* Gradient Overlay để text dễ đọc hơn nếu cần */}
                   <div className="absolute inset-0 bg-gradient-to-t from-bgDark/60 via-transparent to-transparent opacity-60" />

@@ -49,32 +49,41 @@ returns table (
 language sql
 stable
 as $$
-  with deals_cte as (
+  with age_buckets as (
+    select *
+    from (values
+      ('0-7 days', 1),
+      ('8-30 days', 2),
+      ('31-60 days', 3),
+      ('61+ days', 4)
+    ) as t(bucket, sort_order)
+  ),
+  deals_cte as (
     select
-      id,
       value,
-      created_at::date as created_date,
-      (current_date - created_at::date) as age_days
+      case
+        when (current_date - created_at::date) <= 7 then '0-7 days'
+        when (current_date - created_at::date) <= 30 then '8-30 days'
+        when (current_date - created_at::date) <= 60 then '31-60 days'
+        else '61+ days'
+      end as bucket
     from public.deals
     where status = 'open'
       and created_at::date between start_date and end_date
+  ),
+  agg as (
+    select
+      bucket,
+      count(*) as deal_count,
+      coalesce(sum(value), 0) as total_value
+    from deals_cte
+    group by bucket
   )
   select
-    case
-      when age_days <= 7 then '0-7 days'
-      when age_days <= 30 then '8-30 days'
-      when age_days <= 60 then '31-60 days'
-      else '61+ days'
-    end as bucket,
-    count(*) as deal_count,
-    coalesce(sum(value), 0) as total_value
-  from deals_cte
-  group by 1
-  order by
-    case
-      when bucket = '0-7 days' then 1
-      when bucket = '8-30 days' then 2
-      when bucket = '31-60 days' then 3
-      else 4
-    end;
+    b.bucket,
+    coalesce(a.deal_count, 0) as deal_count,
+    coalesce(a.total_value, 0) as total_value
+  from age_buckets b
+  left join agg a on a.bucket = b.bucket
+  order by b.sort_order;
 $$;

@@ -58,7 +58,7 @@ function VerifyPageContent() {
   };
 
   return (
-    <div className="py-24 bg-bgDark min-h-screen">
+    <div className="pt-32 md:pt-48 pb-24 bg-bgDark min-h-screen">
       <div className="container mx-auto px-6 max-w-5xl">
         <div className="grid lg:grid-cols-2 gap-16">
           <VerifyFormSection

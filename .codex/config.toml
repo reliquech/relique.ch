@@ -1,0 +1,26 @@
+[mcp_servers.gsd-browser]
+command = 'C:\Program Files\nodejs\node.exe'
+args = [
+    'C:\Users\minhmice\AppData\Roaming\npm\node_modules\@opengsd\gsd-pi\node_modules\@opengsd\gsd-browser\bin\gsd-browser',
+    "mcp",
+    "--session",
+    "gsd-relique.co-ee15dbd7",
+    "--identity-scope",
+    "project",
+    "--identity-key",
+    "gsd-relique.co-ee15dbd7",
+    "--identity-project",
+    'C:\Users\minhmice\Documents\projects\relique.co',
+]
+
+[mcp_servers.gsd-workflow]
+command = 'C:\Program Files\nodejs\node.exe'
+args = ['C:\Users\minhmice\AppData\Roaming\npm\node_modules\@opengsd\gsd-pi\packages\mcp-server\dist\cli.js']
+
+[mcp_servers.gsd-workflow.env]
+GSD_CLI_PATH = 'C:\Users\minhmice\AppData\Roaming\npm\node_modules\@opengsd\gsd-pi\dist\loader.js'
+GSD_BIN_PATH = 'C:\Users\minhmice\AppData\Roaming\npm\node_modules\@opengsd\gsd-pi\dist\loader.js'
+GSD_WORKFLOW_EXECUTORS_MODULE = 'C:\Users\minhmice\.gsd\agent\extensions\gsd\tools\workflow-tool-executors.js'
+GSD_WORKFLOW_WRITE_GATE_MODULE = 'C:\Users\minhmice\.gsd\agent\extensions\gsd\bootstrap\write-gate.js'
+GSD_PERSIST_WRITE_GATE_STATE = "1"
+GSD_WORKFLOW_PROJECT_ROOT = 'C:\Users\minhmice\Documents\projects\relique.co'

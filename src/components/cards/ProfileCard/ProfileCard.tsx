@@ -77,12 +77,12 @@ export function ProfileCard({ member, className }: ProfileCardProps) {
           )}
 
           {/* Single CTA */}
-          <motion.button
+          <button
+            type="button"
             onClick={() => setIsDrawerOpen(true)}
             onKeyDown={(e) => handleKeyDown(e, () => setIsDrawerOpen(true))}
-            whileHover={{ gap: 16 }}
             className={cn(
-              "inline-flex items-center gap-3",
+              "group/profile-cta inline-flex items-center gap-3",
               "text-sm font-medium",
               "text-primaryBlue hover:text-highlightIce",
               "transition-colors duration-300",
@@ -90,8 +90,10 @@ export function ProfileCard({ member, className }: ProfileCardProps) {
             )}
           >
             <span>View Profile</span>
-            <span>→</span>
-          </motion.button>
+            <span className="inline-block transition-transform duration-300 ease-in-out group-hover/profile-cta:translate-x-1">
+              →
+            </span>
+          </button>
         </div>
       </motion.div>
 

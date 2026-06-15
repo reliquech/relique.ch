@@ -47,6 +47,7 @@ interface MarketplaceItemsToolbarProps {
   onToggleFilters: () => void;
   onSortChange: (sort: MarketplaceItemsUrlState["sort"], order: MarketplaceItemsUrlState["order"]) => void;
   onClearAll: () => void;
+  refreshing?: boolean;
 }
 
 export function MarketplaceItemsToolbar({
@@ -65,6 +66,7 @@ export function MarketplaceItemsToolbar({
   onToggleFilters,
   onSortChange,
   onClearAll,
+  refreshing = false,
 }: MarketplaceItemsToolbarProps) {
   const router = useRouter();
   const activeSort =
@@ -74,12 +76,20 @@ export function MarketplaceItemsToolbar({
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <h2 className="text-3xl font-bold tracking-tight text-white text-balance">
-          Marketplace Items
-        </h2>
+        <div className="flex items-center gap-3">
+          <h2 className="text-3xl font-bold tracking-tight text-white text-balance">
+            Marketplace Items
+          </h2>
+          {refreshing && (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-white/5 border border-white/10 text-primary animate-pulse">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
+              Syncing
+            </span>
+          )}
+        </div>
         <button
           type="button"
-          onClick={() => router.push("/admin/marketplace/new")}
+          onClick={() => router.push("/admin/items/new")}
           className="bg-primary px-4 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform text-white min-h-[40px]"
         >
           <Plus className="w-4 h-4" aria-hidden />

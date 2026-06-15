@@ -8,7 +8,6 @@ const DealUpdateSchema = z.object({
   title: z.string().min(1).optional(),
   customer_id: z.string().uuid().optional().nullable(),
   lead_id: z.string().uuid().optional().nullable(),
-  pipeline_stage_id: z.string().uuid().optional().nullable(),
   value: z.number().optional().nullable(),
   currency: z.string().optional(),
   probability: z.number().int().min(0).max(100).optional(),

@@ -22,8 +22,10 @@ export function ConsignmentBlock() {
           src="/mock-images/consign.jpg"
           alt="Consignment"
           fill
+          sizes="(max-width: 1024px) 100vw, 50vw"
           className="object-cover"
           priority
+          loading="eager"
         />
       </div>
       <Link href="/consign" className="absolute inset-0 z-10" />
@@ -45,13 +47,12 @@ export function ConsignmentBlock() {
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 sm:mb-6 leading-none">
             Asset <br /> Consignment
           </h2>
-          <motion.div 
-            className="inline-flex items-center gap-3 sm:gap-4 text-white font-black uppercase text-xs sm:text-sm tracking-widest"
-            whileHover={{ gap: 24 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-          >
-            Consign Now <span>→</span>
-          </motion.div>
+          <div className="inline-flex items-center gap-3 sm:gap-4 text-white font-black uppercase text-xs sm:text-sm tracking-widest group/cta">
+            Consign Now{" "}
+            <span className="inline-block transition-transform duration-300 ease-in-out group-hover/cta:translate-x-2">
+              →
+            </span>
+          </div>
         </div>
         <motion.div
           animate={{ rotate: [0, 360] }}

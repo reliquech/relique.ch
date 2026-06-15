@@ -132,7 +132,47 @@
 | i18n | English-only v1 |
 | Social login / OAuth | Email-based contact only |
 
-## Traceability
+### Phase 9 — CRM Module Prune (inserted 2026-06-14)
+
+- [ ] **PRUNE-09-01**: Inventory + grep gate cho 4 modules trước khi xóa
+- [ ] **PRUNE-09-02**: Xóa Tasks — UI, API, dashboard widget, activity feed slice
+- [ ] **PRUNE-09-03**: Xóa Automations — UI, API, AlertScheduler background runner
+- [ ] **PRUNE-09-04**: Xóa Pipeline Stages admin — deals list-only (no kanban/stage picker)
+- [ ] **PRUNE-09-05**: Xóa Custom Fields — forms + API; CRM core forms vẫn submit được
+- [ ] **PRUNE-09-06**: Migration 037 DROP tables + `deals.pipeline_stage_id`; fix `crm_stage_velocity`
+- [ ] **PRUNE-09-07**: `npm run phase9:gate` pass; baseline/types aligned
+
+### Phase 10 — Admin Structure Colocate (inserted 2026-06-15)
+
+- [ ] **RESTR-10-01**: Zero `@/admin/*` imports — `phase10:grep-gate` pass
+- [ ] **RESTR-10-02**: All admin domains migrated to `components/admin/` + `features/`
+- [ ] **RESTR-10-03**: `npm run phase10:gate` pass (grep + typecheck + build)
+- [ ] **RESTR-10-04**: Admin routes smoke — dashboard, leads, items, deals load
+- [ ] **RESTR-10-05**: Migrated admin `.tsx` files ≤300 lines (split oversized during move)
+
+### Phase 11 — JavaScript Bundle Performance (inserted 2026-06-14)
+
+- [ ] **PERF-11-01**: Baseline bundle metrics captured in `11-BASELINE.md` + `11-baseline-chunks.json`
+- [ ] **PERF-11-02**: No UI/feature/API/business-logic changes — behavior-preserving optimizations only
+- [ ] **PERF-11-03**: Client bundle size reduced vs baseline (or documented in `11-VERIFICATION.md`)
+- [ ] **PERF-11-04**: `npm run phase11:gate` pass (bundle compare + typecheck + build)
+
+### Phase 13 — Marketplace Items View Toggle & Editor UX (inserted 2026-06-15)
+
+- [ ] **ITEMS-13-01**: Marketplace Items list supports Table/Grid view toggle, persisted preference, mobile Grid default, and state preservation across view switches
+- [ ] **ITEMS-13-02**: Grid cards show image, title, athlete, price, status, featured state, updated date, selection, and row actions responsively
+- [ ] **ITEMS-13-03**: Create/edit marketplace editor is rebuilt as a full-page six-section workflow with sticky actions, autosave, stale-response guard, and unsaved-change protection
+- [ ] **ITEMS-13-04**: Media workflow supports drag/drop upload, progress, reorder, alt text, primary image, retry, and removal
+- [ ] **ITEMS-13-05**: Marketplace item list/editor polish covers filtered/total counts, typed-delete confirmation, offline/error/permission states, accessibility, and `lint` + `check-types` + `build`
+
+### Phase 15 — Marketplace Items Instant View Toggle & List Cache (inserted 2026-06-15)
+
+- [ ] **CACHE-15-01**: Marketplace Items Table/Grid view switch never changes data query key or triggers list refetch
+- [ ] **CACHE-15-02**: Admin items list uses bounded in-memory stale-while-revalidate cache with TTL and max-entry limits
+- [ ] **CACHE-15-03**: Cached list data renders immediately while background refresh updates without blanking rows
+- [ ] **CACHE-15-04**: Marketplace item mutations invalidate cached list data and force active list refresh
+- [ ] **CACHE-15-05**: Verification records targeted lint, typecheck, build, full lint status, and browser network UAT checklist
+
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
@@ -185,12 +225,38 @@
 | DB-06 | Phase 8 | Partial (manual types) |
 | DB-07 | Phase 8 | Complete |
 | DB-08 | Phase 8 | Complete |
+| PRUNE-09-01 | Phase 9 | Pending |
+| PRUNE-09-02 | Phase 9 | Pending |
+| PRUNE-09-03 | Phase 9 | Pending |
+| PRUNE-09-04 | Phase 9 | Pending |
+| PRUNE-09-05 | Phase 9 | Pending |
+| PRUNE-09-06 | Phase 9 | Pending |
+| PRUNE-09-07 | Phase 9 | Pending |
+| RESTR-10-01 | Phase 10 | Pending |
+| RESTR-10-02 | Phase 10 | Pending |
+| RESTR-10-03 | Phase 10 | Pending |
+| RESTR-10-04 | Phase 10 | Pending |
+| RESTR-10-05 | Phase 10 | Pending |
+| PERF-11-01 | Phase 11 | Pending |
+| PERF-11-02 | Phase 11 | Pending |
+| PERF-11-03 | Phase 11 | Pending |
+| PERF-11-04 | Phase 11 | Pending |
+| ITEMS-13-01 | Phase 13 | Pending |
+| ITEMS-13-02 | Phase 13 | Pending |
+| ITEMS-13-03 | Phase 13 | Pending |
+| ITEMS-13-04 | Phase 13 | Pending |
+| ITEMS-13-05 | Phase 13 | Pending |
+| CACHE-15-01 | Phase 15 | Pending |
+| CACHE-15-02 | Phase 15 | Pending |
+| CACHE-15-03 | Phase 15 | Pending |
+| CACHE-15-04 | Phase 15 | Pending |
+| CACHE-15-05 | Phase 15 | Pending |
 
 **Coverage:**
-- v1 requirements: 49 total
-- Mapped to phases: 49
+- v1 requirements: 70 total
+- Mapped to phases: 70
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-06-14*
-*Last updated: 2026-06-14 — payments removed from v1 (deferred to v2)*
+*Last updated: 2026-06-14 — Phase 11 PERF-11 requirements added*

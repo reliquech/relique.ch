@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { z } from "zod";
-import {
-  getOperatorEmail,
-  sendTransactionalEmail,
-} from "@/lib/email/sendTransactional";
 
 const ALLOWED_MIME = new Set(["image/jpeg", "image/png", "image/webp"]);
 const MAX_PHOTOS = 10;
@@ -88,23 +84,17 @@ export async function POST(request: NextRequest) {
 
     const submissionId = (submission as { id: string }).id;
 
-    const { data: lead, error: leadError } = await supabase
-      .from("leads")
-      .insert({
-        full_name: validated.contact_name,
-        email: validated.contact_email,
-        phone: validated.contact_phone ?? null,
-        source: "consign",
-        status: "new",
-      } as never)
-      .select("id")
-      .single();
+    const { error: leadError } = await supabase.from("leads").insert({
+      full_name: validated.contact_name,
+      email: validated.contact_email,
+      phone: validated.contact_phone ?? null,
+      source: "consign",
+      status: "new",
+    } as never);
 
     if (leadError) {
       console.error("Lead insert failed:", leadError.message);
     }
-
-    const leadId = (lead as { id: string } | null)?.id;
 
     for (const photo of photos) {
       const ext = photo.name.split(".").pop()?.toLowerCase() || "jpg";
@@ -131,23 +121,6 @@ export async function POST(request: NextRequest) {
         content_type: photo.type,
         size_bytes: photo.size,
       } as never);
-    }
-
-    await sendTransactionalEmail({
-      to: validated.contact_email,
-      subject: "Relique — Consignment request received",
-      body: `Hi ${validated.contact_name},\n\nThank you for submitting your consignment request. Our team will review your item and contact you shortly.\n\nReference: ${submissionId}\n\n— Relique`,
-      ...(leadId ? { entityType: "lead" as const, entityId: leadId } : {}),
-    });
-
-    const operatorEmail = getOperatorEmail();
-    if (operatorEmail) {
-      await sendTransactionalEmail({
-        to: operatorEmail,
-        subject: `New consign submission from ${validated.contact_name}`,
-        body: `New consignment submission.\n\nName: ${validated.contact_name}\nEmail: ${validated.contact_email}\nItem: ${validated.item_description}\nID: ${submissionId}`,
-        ...(leadId ? { entityType: "lead" as const, entityId: leadId } : {}),
-      });
     }
 
     return NextResponse.json({ id: submissionId, status: "submitted" }, { status: 201 });

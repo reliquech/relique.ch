@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { RemoteImage } from "@/components/shared/RemoteImage";
 import { Badge } from "@/components/ui/badge";
 import { FavoriteButton } from "@/components/interactive/FavoriteButton";
 import { cn } from "@/lib/utils";
@@ -50,11 +50,12 @@ export function FeaturedItemCard({ item, className }: FeaturedItemCardProps) {
     >
       <Link href={`/marketplace/${item.slug}`} className="flex-1 flex flex-col">
         <div className="relative w-full h-48 sm:h-56 md:h-64 rounded-none overflow-hidden">
-          <Image
+          <RemoteImage
             src={getListingHeroImage(item)}
             alt={getListingTitle(item)}
             fill
             className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           <div className="absolute top-2 right-2" onClick={(e) => e.preventDefault()}>
             <FavoriteButton itemId={item.id} />
