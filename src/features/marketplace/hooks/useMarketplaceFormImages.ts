@@ -106,6 +106,90 @@ export function useMarketplaceFormImages(setValue: UseFormSetValue<MarketplaceFo
     [setValue]
   );
 
+  const uploadCoverItem = useCallback(
+    async (file: File, itemId: string, path: string) => {
+      try {
+        const { url, path: storedPath } = await uploadMarketplaceFile(file, path, sessionId);
+        if (coverImageRef.current?.id !== itemId) {
+          void cleanupPaths([storedPath, path]);
+          return;
+        }
+        setCoverImage((prev) => {
+          if (!prev) return prev;
+          const next: UploadItem = { ...prev, url, path: storedPath, status: "uploaded", error: undefined };
+          coverImageRef.current = next;
+          return next;
+        });
+        if (storedPath !== path) {
+          void cleanupPaths([path]);
+        }
+        registerTempPath(storedPath);
+        setValue("image", url, { shouldValidate: true, shouldDirty: true });
+        toast.success("Cover image uploaded");
+      } catch (error) {
+        setCoverImage((prev) => {
+          if (!prev) return prev;
+          const next: UploadItem = {
+            ...prev,
+            status: "error",
+            error: "Upload failed. Please try again.",
+          };
+          coverImageRef.current = next;
+          return next;
+        });
+        void cleanupPaths([path]);
+        toast.error(error instanceof Error ? error.message : "Failed to upload image");
+      }
+    },
+    [cleanupPaths, registerTempPath, sessionId, setValue]
+  );
+
+  const uploadAdditionalItem = useCallback(
+    async (file: File, itemId: string, path: string) => {
+      try {
+        const { url, path: storedPath } = await uploadMarketplaceFile(file, path, sessionId);
+        if (!additionalImagesRef.current.some((existing) => existing.id === itemId)) {
+          void cleanupPaths([storedPath, path]);
+          return false;
+        }
+        setAdditionalImages((prev) => {
+          const next: UploadItem[] = prev.map((existing) =>
+            existing.id === itemId
+              ? ({ ...existing, url, path: storedPath, status: "uploaded", error: undefined } as UploadItem)
+              : existing
+          );
+          additionalImagesRef.current = next;
+          syncAdditionalUrls(next);
+          return next;
+        });
+        if (storedPath !== path) {
+          void cleanupPaths([path]);
+        }
+        registerTempPath(storedPath);
+        return true;
+      } catch (error) {
+        setAdditionalImages((prev) => {
+          const next: UploadItem[] = prev.map((existing) =>
+            existing.id === itemId
+              ? ({
+                  ...existing,
+                  status: "error",
+                  error: "Upload failed. Please try again.",
+                } as UploadItem)
+              : existing
+          );
+          additionalImagesRef.current = next;
+          syncAdditionalUrls(next);
+          return next;
+        });
+        void cleanupPaths([path]);
+        toast.error(error instanceof Error ? error.message : "Failed to upload image");
+        return false;
+      }
+    },
+    [cleanupPaths, registerTempPath, sessionId, syncAdditionalUrls]
+  );
+
   const handleCoverImageChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
@@ -140,36 +224,9 @@ export function useMarketplaceFormImages(setValue: UseFormSetValue<MarketplaceFo
       setCoverImage(nextCover);
       setValue("image", "");
 
-      try {
-        const { url, path: storedPath } = await uploadMarketplaceFile(file, path, sessionId);
-        if (coverImageRef.current?.id !== path) {
-          void cleanupPaths([storedPath, path]);
-          return;
-        }
-        setCoverImage((prev) => {
-          if (!prev) return prev;
-          const next: UploadItem = { ...prev, url, path: storedPath, status: "uploaded" };
-          coverImageRef.current = next;
-          return next;
-        });
-        if (storedPath !== path) {
-          void cleanupPaths([path]);
-        }
-        registerTempPath(storedPath);
-        setValue("image", url, { shouldValidate: true, shouldDirty: true });
-        toast.success("Cover image uploaded");
-      } catch (error) {
-        setCoverImage((prev) => {
-          if (!prev) return prev;
-          const next: UploadItem = { ...prev, status: "error", error: "Upload failed" };
-          coverImageRef.current = next;
-          return next;
-        });
-        void cleanupPaths([path]);
-        toast.error(error instanceof Error ? error.message : "Failed to upload image");
-      }
+      await uploadCoverItem(file, path, path);
     },
-    [cleanupPaths, coverImage, registerTempPath, sessionId, setValue, validateImageFile]
+    [cleanupPaths, coverImage, registerTempPath, sessionId, setValue, uploadCoverItem, validateImageFile]
   );
 
   const handleAdditionalImagesChange = useCallback(
@@ -209,52 +266,15 @@ export function useMarketplaceFormImages(setValue: UseFormSetValue<MarketplaceFo
       let successCount = 0;
       await Promise.all(
         nextItems.map(async (item) => {
-          try {
-            const { url, path: storedPath } = await uploadMarketplaceFile(
-              item.file!,
-              item.path!,
-              sessionId
-            );
-            if (!additionalImagesRef.current.some((existing) => existing.id === item.id)) {
-              void cleanupPaths([storedPath, item.path!]);
-              return;
-            }
-            setAdditionalImages((prev) => {
-              const next: UploadItem[] = prev.map((existing) =>
-                existing.id === item.id
-                  ? ({ ...existing, url, path: storedPath, status: "uploaded" } as UploadItem)
-                  : existing
-              );
-              additionalImagesRef.current = next;
-              syncAdditionalUrls(next);
-              return next;
-            });
-            if (storedPath !== item.path) {
-              void cleanupPaths([item.path!]);
-            }
-            registerTempPath(storedPath);
-            successCount += 1;
-          } catch (error) {
-            setAdditionalImages((prev) => {
-              const next: UploadItem[] = prev.map((existing) =>
-                existing.id === item.id
-                  ? ({ ...existing, status: "error", error: "Upload failed" } as UploadItem)
-                  : existing
-              );
-              additionalImagesRef.current = next;
-              syncAdditionalUrls(next);
-              return next;
-            });
-            void cleanupPaths([item.path!]);
-            toast.error(error instanceof Error ? error.message : "Failed to upload image");
-          }
+          const ok = await uploadAdditionalItem(item.file!, item.id, item.path!);
+          if (ok) successCount += 1;
         })
       );
       if (successCount > 0) {
         toast.success(`${successCount} image(s) uploaded`);
       }
     },
-    [cleanupPaths, registerTempPath, sessionId, syncAdditionalUrls, validateImageFile]
+    [registerTempPath, sessionId, uploadAdditionalItem, validateImageFile]
   );
 
   const removeCoverImage = useCallback(() => {
@@ -286,6 +306,46 @@ export function useMarketplaceFormImages(setValue: UseFormSetValue<MarketplaceFo
       });
     },
     [cleanupPaths, syncAdditionalUrls]
+  );
+
+  const retryUpload = useCallback(
+    async (id: string) => {
+      const currentCover = coverImageRef.current;
+      if (currentCover?.id === id && currentCover.file && currentCover.status === "error") {
+        const file = currentCover.file;
+        const path = createTempUploadPath(sessionId, file.name);
+        registerTempPath(path);
+        const nextCover: UploadItem = {
+          ...currentCover,
+          id: path,
+          path,
+          status: "uploading",
+          error: undefined,
+        };
+        coverImageRef.current = nextCover;
+        setCoverImage(nextCover);
+        await uploadCoverItem(file, path, path);
+        return;
+      }
+
+      const target = additionalImagesRef.current.find((item) => item.id === id);
+      if (!target?.file || target.status !== "error") return;
+
+      const file = target.file;
+      const path = createTempUploadPath(sessionId, file.name);
+      registerTempPath(path);
+      setAdditionalImages((prev) => {
+        const next: UploadItem[] = prev.map((item) =>
+          item.id === id
+            ? ({ ...item, id: path, path, status: "uploading", error: undefined } as UploadItem)
+            : item
+        );
+        additionalImagesRef.current = next;
+        return next;
+      });
+      await uploadAdditionalItem(file, path, path);
+    },
+    [registerTempPath, sessionId, uploadAdditionalItem, uploadCoverItem]
   );
 
   const isUploading = useMemo(
@@ -356,6 +416,7 @@ export function useMarketplaceFormImages(setValue: UseFormSetValue<MarketplaceFo
     handleAdditionalImagesChange,
     removeCoverImage,
     removeAdditionalImage,
+    retryUpload,
     finalizeImagesForSubmit,
     handleCancel,
   };
