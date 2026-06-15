@@ -1,9 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Upload, X, Loader2, Image as ImageIcon, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { ImageLightbox, type ImageLightboxImage } from "@/components/shared/ImageLightbox";
 import { cn } from "@/lib/utils";
 
 export type ImageUploadStatus = "idle" | "uploading" | "uploaded" | "error";
@@ -23,23 +24,48 @@ type MarketplaceImageSectionProps = {
   onCoverRemove: () => void;
   onAdditionalChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onAdditionalRemove: (id: string) => void;
+  onRetry: (id: string) => void;
   coverError?: string;
   isUploading?: boolean;
 };
 
-function UploadOverlay({ status, error }: { status: ImageUploadStatus; error?: string }) {
+function getImageSrc(item: ImageUploadItem) {
+  return item.status === "uploaded" && item.url ? item.url : item.previewUrl || item.url;
+}
+
+function UploadOverlay({
+  status,
+  error,
+  onRetry,
+}: {
+  status: ImageUploadStatus;
+  error?: string;
+  onRetry?: () => void;
+}) {
   if (status !== "uploading" && status !== "error") return null;
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/60 text-xs uppercase tracking-[0.2em] text-white">
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/60 p-2 text-center text-xs text-white">
       {status === "uploading" ? (
         <>
-          <Loader2 className="w-5 h-5 animate-spin" />
-          <span>Uploading</span>
+          <Loader2 className="h-5 w-5 animate-spin" />
+          <span className="uppercase tracking-[0.2em]">Uploading</span>
         </>
       ) : (
         <>
-          <AlertTriangle className="w-5 h-5 text-destructive" />
-          <span className="text-destructive">{error || "Upload failed"}</span>
+          <AlertTriangle className="h-5 w-5 text-destructive" />
+          <span className="text-destructive">{error || "Upload failed. Please try again."}</span>
+          {onRetry ? (
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                onRetry();
+              }}
+              className="mt-1 rounded-md border border-white/30 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white transition-colors hover:bg-white/10"
+            >
+              Retry
+            </button>
+          ) : null}
         </>
       )}
     </div>
@@ -49,34 +75,51 @@ function UploadOverlay({ status, error }: { status: ImageUploadStatus; error?: s
 function ImageTile({
   item,
   onRemove,
+  onPreview,
+  onRetry,
   sizeClass,
   alt,
 }: {
   item: ImageUploadItem;
   onRemove: () => void;
+  onPreview?: () => void;
+  onRetry?: () => void;
   sizeClass: string;
   alt: string;
 }) {
-  const src =
-    item.status === "uploaded" && item.url ? item.url : item.previewUrl || item.url;
+  const src = getImageSrc(item);
+  const canPreview = item.status === "uploaded" && Boolean(src);
+
   return (
-    <div className={cn("relative border border-border/60 overflow-hidden bg-bg-0/20", sizeClass)}>
+    <div className={cn("relative overflow-hidden rounded-md border border-border/60 bg-bg-0/20", sizeClass)}>
       {src ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={src}
-          alt={alt}
-          className="absolute inset-0 w-full h-full object-cover"
-          draggable={false}
-        />
+        <button
+          type="button"
+          onClick={canPreview ? onPreview : undefined}
+          className={cn("absolute inset-0 block w-full", canPreview && "cursor-zoom-in")}
+          aria-label={canPreview ? `View ${alt}` : undefined}
+          disabled={!canPreview}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={src}
+            alt={alt}
+            className="h-full w-full object-cover"
+            draggable={false}
+          />
+        </button>
       ) : null}
-      <UploadOverlay status={item.status} error={item.error} />
+      <UploadOverlay status={item.status} error={item.error} onRetry={onRetry} />
       <button
         type="button"
-        onClick={onRemove}
-        className="absolute top-2 right-2 p-2 bg-destructive text-destructive-foreground clip-path-slant hover:bg-destructive/90 transition-base"
+        onClick={(event) => {
+          event.stopPropagation();
+          onRemove();
+        }}
+        className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow-sm transition-colors hover:bg-destructive/90"
+        aria-label={`Remove ${alt}`}
       >
-        <X className="w-4 h-4" />
+        <X className="h-4 w-4" />
       </button>
     </div>
   );
@@ -89,96 +132,157 @@ export function MarketplaceImageSection({
   onCoverRemove,
   onAdditionalChange,
   onAdditionalRemove,
+  onRetry,
   coverError,
   isUploading,
 }: MarketplaceImageSectionProps) {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  const lightboxImages = useMemo<ImageLightboxImage[]>(() => {
+    const images: ImageLightboxImage[] = [];
+    if (coverImage && coverImage.status === "uploaded") {
+      const src = getImageSrc(coverImage);
+      if (src) images.push({ src, alt: "Cover preview" });
+    }
+    additionalImages.forEach((item, index) => {
+      if (item.status !== "uploaded") return;
+      const src = getImageSrc(item);
+      if (src) images.push({ src, alt: `Additional ${index + 1}` });
+    });
+    return images;
+  }, [additionalImages, coverImage]);
+
+  const openLightboxAt = useCallback(
+    (target: "cover" | string) => {
+      if (target === "cover") {
+        setLightboxIndex(0);
+        setLightboxOpen(true);
+        return;
+      }
+
+      let index = coverImage?.status === "uploaded" && getImageSrc(coverImage) ? 1 : 0;
+      for (const item of additionalImages) {
+        if (item.status !== "uploaded" || !getImageSrc(item)) continue;
+        if (item.id === target) {
+          setLightboxIndex(index);
+          setLightboxOpen(true);
+          return;
+        }
+        index += 1;
+      }
+    },
+    [additionalImages, coverImage]
+  );
+
   return (
-    <Card className="bg-surface/40 border-border/60">
-      <CardHeader>
-        <CardTitle>Images</CardTitle>
-        <CardDescription>Upload cover image and additional images</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label>
-            Cover Image <span className="text-destructive">*</span>
-          </Label>
-          {coverImage ? (
-            <ImageTile
-              item={coverImage}
-              onRemove={onCoverRemove}
-              sizeClass="w-full h-48 clip-path-slant-lg"
-              alt="Cover preview"
-            />
-          ) : (
+    <>
+      <Card className="border-border/60 bg-surface/40">
+        <CardHeader>
+          <CardTitle>Images</CardTitle>
+          <CardDescription>Upload cover image and additional images</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label>
+              Cover Image <span className="text-destructive">*</span>
+            </Label>
+            {coverImage ? (
+              <ImageTile
+                item={coverImage}
+                onRemove={onCoverRemove}
+                onPreview={() => openLightboxAt("cover")}
+                onRetry={() => onRetry(coverImage.id)}
+                sizeClass="aspect-video w-full"
+                alt="Cover preview"
+              />
+            ) : (
+              <label
+                htmlFor="cover-image"
+                className={cn(
+                  "flex aspect-video w-full cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed border-border/60 bg-bg-0/20 transition-base hover:bg-white/5",
+                  coverError && "border-destructive",
+                  isUploading && "opacity-70"
+                )}
+              >
+                <div className="flex flex-col items-center justify-center px-4 py-6">
+                  <Upload className="mb-3 h-10 w-10 text-muted-foreground" />
+                  <p className="mb-2 text-sm text-muted-foreground">
+                    <span className="font-semibold">Upload Cover Image</span> or drag and drop
+                  </p>
+                  <p className="text-xs text-muted-foreground">PNG, JPG, WEBP up to 8MB</p>
+                </div>
+                <input
+                  id="cover-image"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={onCoverChange}
+                />
+              </label>
+            )}
+            {coverError ? <p className="text-sm text-destructive">{coverError}</p> : null}
+          </div>
+
+          <div className="space-y-2">
+            <Label>Additional Images</Label>
             <label
-              htmlFor="cover-image"
+              htmlFor="additional-images"
               className={cn(
-                "clip-path-slant-lg flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-border/60 bg-bg-0/20 cursor-pointer hover:bg-white/5 transition-base",
-                coverError && "border-destructive",
+                "flex min-h-32 w-full cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed border-border/60 bg-bg-0/20 px-4 py-6 transition-base hover:bg-white/5",
                 isUploading && "opacity-70"
               )}
             >
-              <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                <Upload className="w-10 h-10 mb-3 text-muted-foreground" />
-                <p className="mb-2 text-sm text-muted-foreground">
-                  <span className="font-semibold">Click to upload</span> or drag and drop
+              <ImageIcon className="mb-2 h-8 w-8 text-muted-foreground" />
+              {additionalImages.length === 0 ? (
+                <>
+                  <p className="mb-1 text-sm font-medium text-muted-foreground">No additional images</p>
+                  <p className="text-center text-xs text-muted-foreground">
+                    Drag and drop additional photos to show product details from different angles
+                  </p>
+                </>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-semibold">Click to upload</span> multiple images
                 </p>
-                <p className="text-xs text-muted-foreground">PNG, JPG, WEBP up to 8MB</p>
-              </div>
+              )}
+              <p className="mt-2 text-xs text-muted-foreground">PNG, JPG, WEBP up to 8MB each</p>
               <input
-                id="cover-image"
+                id="additional-images"
                 type="file"
                 accept="image/*"
+                multiple
                 className="hidden"
-                onChange={onCoverChange}
+                onChange={onAdditionalChange}
               />
             </label>
-          )}
-          {coverError && <p className="text-sm text-destructive">{coverError}</p>}
-        </div>
 
-        <div className="space-y-2">
-          <Label>Additional Images</Label>
-          <label
-            htmlFor="additional-images"
-            className={cn(
-              "clip-path-slant-lg flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border/60 bg-bg-0/20 cursor-pointer hover:bg-white/5 transition-base",
-              isUploading && "opacity-70"
-            )}
-          >
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <ImageIcon className="w-8 h-8 mb-2 text-muted-foreground" />
-              <p className="mb-2 text-sm text-muted-foreground">
-                <span className="font-semibold">Click to upload</span> multiple images
-              </p>
-              <p className="text-xs text-muted-foreground">PNG, JPG, WEBP up to 8MB each</p>
-            </div>
-            <input
-              id="additional-images"
-              type="file"
-              accept="image/*"
-              multiple
-              className="hidden"
-              onChange={onAdditionalChange}
-            />
-          </label>
+            {additionalImages.length > 0 ? (
+              <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                {additionalImages.map((item, index) => (
+                  <ImageTile
+                    key={item.id}
+                    item={item}
+                    onRemove={() => onAdditionalRemove(item.id)}
+                    onPreview={() => openLightboxAt(item.id)}
+                    onRetry={() => onRetry(item.id)}
+                    sizeClass="aspect-square w-full"
+                    alt={`Additional ${index + 1}`}
+                  />
+                ))}
+              </div>
+            ) : null}
+          </div>
+        </CardContent>
+      </Card>
 
-          {additionalImages.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-              {additionalImages.map((item, index) => (
-                <ImageTile
-                  key={item.id}
-                  item={item}
-                  onRemove={() => onAdditionalRemove(item.id)}
-                  sizeClass="w-full h-32 clip-path-slant"
-                  alt={`Additional ${index + 1}`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+      <ImageLightbox
+        images={lightboxImages}
+        activeIndex={lightboxIndex}
+        isOpen={lightboxOpen && lightboxImages.length > 0}
+        onClose={() => setLightboxOpen(false)}
+        onIndexChange={setLightboxIndex}
+      />
+    </>
   );
 }
