@@ -11,7 +11,9 @@ import {
   type MarketplaceItemsUrlState,
 } from "@/features/marketplace/types/itemsList";
 
+/** Stale-while-revalidate TTL for marketplace items list cache. */
 const CACHE_TTL_MS = 30_000;
+/** Max in-memory cache entries before oldest-key eviction. */
 const MAX_CACHE_ENTRIES = 20;
 
 type MarketplaceItemsCacheEntry = {
@@ -21,7 +23,7 @@ type MarketplaceItemsCacheEntry = {
 
 const marketplaceItemsCache = new Map<string, MarketplaceItemsCacheEntry>();
 
-/** Build API list params from URL state; excludes presentation-only fields like density. */
+/** Build API list params from URL state; excludes presentation-only fields. */
 export function getMarketplaceItemsListParams(
   state: MarketplaceItemsUrlState
 ): Omit<MarketplaceListParams, "signal"> {
@@ -43,15 +45,17 @@ export function getMarketplaceItemsListParams(
   };
 }
 
-/** Deterministic cache key from data-affecting list params only (no density/view). */
+/** Deterministic cache key from data-affecting list params only. */
 export function getMarketplaceItemsQueryKey(state: MarketplaceItemsUrlState): string {
   return JSON.stringify(getMarketplaceItemsListParams(state));
 }
 
+/** Read a cache entry by query key; TTL staleness is checked by consumers. */
 function readMarketplaceItemsCache(key: string): MarketplaceItemsCacheEntry | null {
   return marketplaceItemsCache.get(key) ?? null;
 }
 
+/** Write list response to cache; evicts oldest entry when over max size. */
 function writeMarketplaceItemsCache(key: string, data: MarketplaceListResponse): void {
   marketplaceItemsCache.set(key, { data, updatedAt: Date.now() });
   while (marketplaceItemsCache.size > MAX_CACHE_ENTRIES) {
@@ -61,6 +65,7 @@ function writeMarketplaceItemsCache(key: string, data: MarketplaceListResponse):
   }
 }
 
+/** Invalidate one cache entry or clear all when key is omitted. */
 export function invalidateMarketplaceItemsCache(key?: string): void {
   if (key) {
     marketplaceItemsCache.delete(key);
