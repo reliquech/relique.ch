@@ -21,6 +21,7 @@ type MarketplaceItemsCacheEntry = {
 
 const marketplaceItemsCache = new Map<string, MarketplaceItemsCacheEntry>();
 
+/** Build API list params from URL state; excludes presentation-only fields like density. */
 export function getMarketplaceItemsListParams(
   state: MarketplaceItemsUrlState
 ): Omit<MarketplaceListParams, "signal"> {
@@ -42,6 +43,7 @@ export function getMarketplaceItemsListParams(
   };
 }
 
+/** Deterministic cache key from data-affecting list params only (no density/view). */
 export function getMarketplaceItemsQueryKey(state: MarketplaceItemsUrlState): string {
   return JSON.stringify(getMarketplaceItemsListParams(state));
 }
