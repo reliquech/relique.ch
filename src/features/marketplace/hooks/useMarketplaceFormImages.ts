@@ -308,6 +308,33 @@ export function useMarketplaceFormImages(setValue: UseFormSetValue<MarketplaceFo
     [cleanupPaths, syncAdditionalUrls]
   );
 
+  const reorderAdditionalImages = useCallback(
+    (activeIndex: number, overIndex: number) => {
+      if (activeIndex === overIndex) return;
+
+      setAdditionalImages((prev) => {
+        const length = prev.length;
+        if (
+          activeIndex < 0 ||
+          overIndex < 0 ||
+          activeIndex >= length ||
+          overIndex >= length
+        ) {
+          return prev;
+        }
+
+        const next = [...prev];
+        const [moved] = next.splice(activeIndex, 1);
+        if (!moved) return prev;
+        next.splice(overIndex, 0, moved);
+        additionalImagesRef.current = next;
+        syncAdditionalUrls(next);
+        return next;
+      });
+    },
+    [syncAdditionalUrls]
+  );
+
   const retryUpload = useCallback(
     async (id: string) => {
       const currentCover = coverImageRef.current;
@@ -416,6 +443,7 @@ export function useMarketplaceFormImages(setValue: UseFormSetValue<MarketplaceFo
     handleAdditionalImagesChange,
     removeCoverImage,
     removeAdditionalImage,
+    reorderAdditionalImages,
     retryUpload,
     finalizeImagesForSubmit,
     handleCancel,
