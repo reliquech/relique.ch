@@ -3,28 +3,29 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed Phase 8 all plans
-last_updated: "2026-06-14T14:38:14.871Z"
-last_activity: 2026-06-14 -- Phase 8 planning complete
+stopped_at: Phase 13 UI-SPEC approved
+last_updated: "2026-06-15T09:43:56.018Z"
+last_activity: 2026-06-15 -- Phase 12 execution started
 progress:
-  total_phases: 8
-  completed_phases: 3
-  total_plans: 12
-  completed_plans: 12
-  percent: 100
+  total_phases: 13
+  completed_phases: 4
+  total_plans: 35
+  completed_plans: 18
+  percent: 51
 ---
 
 # Project State
 
 ## Project Reference
 
-**Current focus:** Phase 4 Stack Consolidation — hoặc apply migration 035 + Phase 2 UAT
+**Current focus:** Phase 12 — marketplace-items-admin-page-toolbar-filters-table-bulk-acti
 
 ## Current Position
 
-Phase: 3 ✅ + 7 ✅ (code) | Next: Phase 4
-Status: Ready to execute
-Last activity: 2026-06-14 -- Phase 8 planning complete
+Phase: 12 (marketplace-items-admin-page-toolbar-filters-table-bulk-acti) — EXECUTING
+Plan: 1 of 6
+Status: Executing Phase 12
+Last activity: 2026-06-15 -- Phase 12 execution started
 
 Progress: [██████░░░░] 57% (4/7 phases code-complete)
 
@@ -33,7 +34,12 @@ Progress: [██████░░░░] 57% (4/7 phases code-complete)
 - **2026-06-14**: Phase 3 security executed — register 403, anon public reads, role guards, SEC-04 visibility.
 - **2026-06-14**: Phase 7 migrations — MIGRATIONS.md, MIGRATION_MANIFEST.md, `035_optimize_public_browse_indexes.sql`.
 - **2026-06-14**: Phase 8 added — Supabase database audit & prune (inventory, dead schema removal, baseline squash).
-- **2026-06-14**: Phases 2/7/8 replanned — Resend removed; email_logs drop locked for Phase 8; Phase 2 UAT-focused (4 plans), Phase 7 (3 plans), Phase 8 (5 plans).
+- **2026-06-14**: Phase 9 planned — 4 plans (inventory → tasks/automations → pipeline/custom-fields → DB 037 + gate).
+- **2026-06-15**: Phase 10 planned — 7 plans restructure `src/admin/` → `components/admin/` + `features/`.
+- **2026-06-14**: Phase 11 added — JavaScript bundle performance (baseline audit, tree-shakeable imports, dynamic loading, validate bundle sizes; no UI/feature/API changes).
+- **2026-06-14**: Phase 11 planned — 6 plans (baseline → CommandPalette scope → dynamic imports → dep cleanup → gate).
+- **2026-06-15**: Phase 12 added — Marketplace Items admin (`/admin/items`): toolbar, filters, table, bulk actions, URL sync.
+- **2026-06-15**: Phase 13 added — Marketplace Items table/grid toggle, full-page create-edit editor, UX polish (counts, autosave, typed delete, offline states).
 
 ## Performance Metrics
 
@@ -89,6 +95,6 @@ From `.planning/codebase/CONCERNS.md`:
 
 ## Session Continuity
 
-Last session: 2026-06-14T14:38:14.868Z
-Stopped at: Completed Phase 8 all plans
-Resume file: None
+Last session: 2026-06-15T09:43:56.015Z
+Stopped at: Phase 13 UI-SPEC approved
+Resume file: .planning/phases/13-marketplace-items-table-grid-toggle-full-page-create-edit-ed/13-UI-SPEC.md
