@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -11,12 +11,7 @@ import {
   type VisibilityState,
   type Updater,
 } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
-import { Eye, Copy, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { VerifyHistoryEntry } from "@/lib/domain";
-import type { ConsignDraft, ConsignSubmission } from "@/lib/schemas/consign";
-import { storage } from "@/lib/storage";
 import type { SubmissionRow } from "./SubmissionsTable";
 
 type SubmissionsTableWithColumnsProps = {
@@ -32,9 +27,9 @@ type SubmissionsTableWithColumnsProps = {
 export function SubmissionsTableWithColumns({
   data,
   columns,
-  onView,
-  onDuplicate,
-  onDelete,
+  onView: _onView,
+  onDuplicate: _onDuplicate,
+  onDelete: _onDelete,
   columnVisibility,
   onColumnVisibilityChange,
 }: SubmissionsTableWithColumnsProps) {

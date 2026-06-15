@@ -32,7 +32,7 @@ export function validateMaxLength(value: string, max: number, fieldName: string)
 
 export function validatePhone(phone: string): string | undefined {
   if (!phone) return undefined;
-  const phoneRegex = /^[\d\s\-\+\(\)]+$/;
+  const phoneRegex = /^[\d\s\-+()]+$/;
   if (!phoneRegex.test(phone)) return "Please enter a valid phone number";
   return undefined;
 }
