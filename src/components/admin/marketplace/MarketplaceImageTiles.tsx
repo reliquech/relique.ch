@@ -84,7 +84,7 @@ export function ImageTile({
           aria-label={canPreview ? `View ${alt}` : undefined}
           disabled={!canPreview}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+          { }
           <img
             src={src}
             alt={alt}

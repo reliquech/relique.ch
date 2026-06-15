@@ -19,7 +19,6 @@ export function MarketplaceGrid() {
   const sort = searchParams.get("sort") || "price-desc";
   const page = parseInt(searchParams.get("page") || "1", 10);
   const q = searchParams.get("q") || "";
-  const view = (searchParams.get("view") as "grid" | "table") || "grid";
   const priceMin = searchParams.get("priceMin") ? Number(searchParams.get("priceMin")) : undefined;
   const priceMax = searchParams.get("priceMax") ? Number(searchParams.get("priceMax")) : undefined;
 
@@ -44,10 +43,19 @@ export function MarketplaceGrid() {
       }
     });
     // Reset page to 1 if any filter or search changes (unless page is what changed)
-    if (!("page" in updates) && Object.keys(updates).some((k) => k !== "view" && k !== "sort")) {
+    if (!("page" in updates) && Object.keys(updates).some((k) => k !== "sort")) {
       params.delete("page");
     }
     router.replace(`/marketplace?${params.toString()}`, { scroll: false });
+  }, [searchParams, router]);
+
+  // Drop legacy ?view= query param — public marketplace is grid-only.
+  useEffect(() => {
+    if (!searchParams.has("view")) return;
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("view");
+    const qs = params.toString();
+    router.replace(qs ? `/marketplace?${qs}` : "/marketplace", { scroll: false });
   }, [searchParams, router]);
 
   // Monitor online status
@@ -193,10 +201,8 @@ export function MarketplaceGrid() {
         <MarketplaceToolbar
           search={localSearch}
           sortBy={sort}
-          view={view}
           onSearchChange={setLocalSearch}
           onSortChange={(val) => updateUrl({ sort: val })}
-          onViewChange={(val) => updateUrl({ view: val })}
           onToggleMobileFilters={() => setMobileFiltersOpen(true)}
         />
 
@@ -274,7 +280,7 @@ export function MarketplaceGrid() {
               </button>
             </div>
           ) : loading ? (
-            <MarketplaceGridSkeleton view={view} />
+            <MarketplaceGridSkeleton />
           ) : items.length === 0 ? (
             <div className="text-center py-20 text-white/40 max-w-md mx-auto animate-in fade-in duration-300">
               <SlidersHorizontal className="w-12 h-12 mx-auto mb-4 opacity-30" />
@@ -288,78 +294,7 @@ export function MarketplaceGrid() {
                 Clear all filters
               </button>
             </div>
-          ) : view === "table" ? (
-            /* Premium Table View */
-            <div className="overflow-x-auto w-full border border-white/5 bg-cardDark shadow-xl rounded-sm">
-              <table className="w-full border-collapse text-left text-xs uppercase tracking-wider text-white">
-                <thead>
-                  <tr className="border-b border-white/10 bg-white/5 font-black text-white/50 text-[10px] tracking-[0.3em]">
-                    <th className="py-4 px-6">Image</th>
-                    <th className="py-4 px-6">Title</th>
-                    <th className="py-4 px-6">Category</th>
-                    <th className="py-4 px-6">Condition</th>
-                    <th className="py-4 px-6">Price</th>
-                    <th className="py-4 px-6">Updated Date</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5 font-medium">
-                  {items.map((item) => {
-                    const cardItem = listingToCardItem(item);
-                    return (
-                      <tr
-                        key={item.id}
-                        onClick={() => setSelectedListing(item)}
-                        className="hover:bg-white/5 transition-colors cursor-pointer group"
-                      >
-                        <td className="py-4 px-6">
-                          <div className="w-12 h-16 relative bg-white/5 border border-white/10 overflow-hidden flex items-center justify-center">
-                            {cardItem.image ? (
-                              <img
-                                src={cardItem.image}
-                                alt={cardItem.title}
-                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                              />
-                            ) : (
-                              <span className="text-white/20 text-[10px] font-bold">N/A</span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="py-4 px-6 font-bold text-white normal-case group-hover:text-primaryBlue transition-colors">
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-sm line-clamp-1">{cardItem.title}</span>
-                            {cardItem.signedBy && (
-                              <span className="text-[10px] font-bold tracking-widest text-primaryBlue mt-0.5 uppercase">
-                                {cardItem.signedBy}
-                              </span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="py-4 px-6 text-white/60 text-[10px] tracking-widest">{cardItem.category}</td>
-                        <td className="py-4 px-6">
-                          <span className="px-2.5 py-1 bg-white/5 border border-white/10 text-white/80 font-bold text-[10px] rounded-sm">
-                            {item.condition?.grade || "N/A"}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 font-black text-primaryBlue text-sm">
-                          {cardItem.price}
-                        </td>
-                        <td className="py-4 px-6 text-white/40 font-mono text-[10px]">
-                          {item.state?.updated_at
-                            ? new Date(item.state.updated_at).toLocaleDateString(undefined, {
-                                year: "numeric",
-                                month: "short",
-                                day: "numeric",
-                              })
-                            : "N/A"}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
           ) : (
-            /* Premium Grid View (1 Mobile, 2 Tablet, 3-4 Desktop columns) */
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
               {items.map((item, idx) => (
                 <div
@@ -484,25 +419,7 @@ export function MarketplaceGrid() {
 }
 
 /* Local Skeleton Component supporting Grid/Table layout options */
-function MarketplaceGridSkeleton({ view }: { view: "grid" | "table" }) {
-  if (view === "table") {
-    return (
-      <div className="w-full border border-white/5 bg-cardDark rounded-sm p-6 animate-pulse space-y-4">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="flex items-center gap-6 py-4 border-b border-white/5">
-            <div className="w-12 h-16 bg-white/5 shrink-0" />
-            <div className="flex-grow space-y-2">
-              <div className="h-4 w-1/3 bg-white/5" />
-              <div className="h-3 w-1/4 bg-white/5" />
-            </div>
-            <div className="h-4 w-16 bg-white/5" />
-            <div className="h-4 w-20 bg-white/5" />
-          </div>
-        ))}
-      </div>
-    );
-  }
-
+function MarketplaceGridSkeleton() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
       {[...Array(8)].map((_, i) => (

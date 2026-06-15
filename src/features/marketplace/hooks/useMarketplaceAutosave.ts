@@ -1,13 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { MarketplaceFormData } from "@/features/marketplace/schema";
-import {
-  createMarketplaceDraft,
-  updateMarketplaceItem,
-} from "@/features/marketplace/services/marketplaceEditorService";
+import { updateMarketplaceItem } from "@/features/marketplace/services/marketplaceEditorService";
 
 export type AutosaveState = "idle" | "dirty" | "saving" | "saved" | "failed" | "offline";
+
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+export function isMarketplaceItemId(id?: string): id is string {
+  return Boolean(id && UUID_RE.test(id));
+}
 
 interface UseMarketplaceAutosaveProps {
   itemId?: string;
@@ -16,7 +20,6 @@ interface UseMarketplaceAutosaveProps {
   online: boolean;
   enabled: boolean;
   uploading: boolean;
-  onDraftCreated?: (id: string) => void;
 }
 
 export function useMarketplaceAutosave({
@@ -26,21 +29,19 @@ export function useMarketplaceAutosave({
   online,
   enabled,
   uploading,
-  onDraftCreated,
 }: UseMarketplaceAutosaveProps) {
   const [state, setState] = useState<AutosaveState>("idle");
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const requestSeqRef = useRef(0);
-  const createdIdRef = useRef<string | undefined>(itemId);
-  const createPromiseRef = useRef<Promise<string> | null>(null);
-
-  useEffect(() => {
-    createdIdRef.current = itemId ?? createdIdRef.current;
-  }, [itemId]);
+  const valuesSnapshot = useMemo(() => JSON.stringify(values), [values]);
 
   useEffect(() => {
     if (!enabled || !dirty) {
-      if (!dirty && state === "dirty") setState("idle");
+      setState("idle");
+      return;
+    }
+    if (!isMarketplaceItemId(itemId)) {
+      setState("dirty");
       return;
     }
     if (!online) {
@@ -52,31 +53,13 @@ export function useMarketplaceAutosave({
       return;
     }
 
-    setState("dirty");
     const timer = window.setTimeout(() => {
-      const seq = requestSeqRef.current + 1;
-      requestSeqRef.current = seq;
+      const seq = ++requestSeqRef.current;
       setState("saving");
 
-      const save = async () => {
-        const currentId = createdIdRef.current;
-        if (currentId) {
-          await updateMarketplaceItem(currentId, values);
-          return currentId;
-        }
+      const payload = JSON.parse(valuesSnapshot) as MarketplaceFormData;
 
-        if (!createPromiseRef.current) {
-          createPromiseRef.current = createMarketplaceDraft(values).then((result) => {
-            createdIdRef.current = result.id;
-            onDraftCreated?.(result.id);
-            return result.id;
-          });
-        }
-
-        return createPromiseRef.current;
-      };
-
-      save()
+      updateMarketplaceItem(itemId, payload)
         .then(() => {
           if (requestSeqRef.current === seq) {
             setState("saved");
@@ -85,14 +68,11 @@ export function useMarketplaceAutosave({
         })
         .catch(() => {
           if (requestSeqRef.current === seq) setState("failed");
-        })
-        .finally(() => {
-          createPromiseRef.current = null;
         });
     }, 1000);
 
     return () => window.clearTimeout(timer);
-  }, [dirty, enabled, online, onDraftCreated, state, uploading, values]);
+  }, [dirty, enabled, itemId, online, uploading, valuesSnapshot]);
 
   return { state, lastSavedAt };
 }

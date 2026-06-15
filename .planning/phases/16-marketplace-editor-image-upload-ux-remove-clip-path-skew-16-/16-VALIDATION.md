@@ -2,7 +2,7 @@
 phase: 16
 slug: marketplace-editor-image-upload-ux-remove-clip-path-skew-16
 status: draft
-nyquist_compliant: false
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-06-15
 ---
@@ -41,6 +41,8 @@ created: 2026-06-15
 | 16-01-01 | 01 | 1 | ITEMS-13-04 | — | N/A | static | `npm run typecheck` | ✅ | ⬜ pending |
 | 16-01-02 | 01 | 1 | ITEMS-13-04 | — | N/A | static | `npm run typecheck` | ✅ | ⬜ pending |
 | 16-01-03 | 01 | 1 | ITEMS-13-04 | — | N/A | static | `npm run typecheck` | ✅ | ⬜ pending |
+| 16-02-01 | 02 | 2 | ITEMS-13-04 | — | N/A | static | `npm run typecheck` | ✅ | ⬜ pending |
+| 16-02-02 | 02 | 2 | ITEMS-13-04 | — | N/A | static | `npm run typecheck` | ✅ | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -67,11 +69,11 @@ Existing infrastructure covers all phase requirements (lint, typecheck, build).
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 30s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 30s
+- [x] `nyquist_compliant: true` set in frontmatter
 
 **Approval:** pending

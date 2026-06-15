@@ -128,7 +128,7 @@ export function ConsignForm() {
       };
       saveDraft();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [debouncedFormData, files]);
 
   const handleLoadDraft = useCallback((draft: import("@/lib/schemas/consign").ConsignDraft) => {

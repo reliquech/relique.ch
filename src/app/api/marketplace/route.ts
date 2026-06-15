@@ -84,7 +84,7 @@ async function fetchStatusCounts(supabase: ReturnType<typeof createServiceRoleCl
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 function applyAdminListFilters(query: any, parsed: ParsedListQuery) {
   let next = query;
 

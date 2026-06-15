@@ -154,7 +154,7 @@ export function ImageLightbox({
             </button>
           ) : null}
 
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+          { }
           <img
             src={current.src}
             alt={current.alt}

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Grid, List, SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 import { SORT_OPTIONS } from "@/lib/utils/marketplace";
 
 const SORT_OPTIONS_WITH_NEWEST = [
@@ -12,20 +12,16 @@ const SORT_OPTIONS_WITH_NEWEST = [
 interface MarketplaceToolbarProps {
   search: string;
   sortBy: string;
-  view: "grid" | "table";
   onSearchChange: (value: string) => void;
   onSortChange: (value: string) => void;
-  onViewChange: (value: "grid" | "table") => void;
   onToggleMobileFilters: () => void;
 }
 
 export function MarketplaceToolbar({
   search,
   sortBy,
-  view,
   onSearchChange,
   onSortChange,
-  onViewChange,
   onToggleMobileFilters,
 }: MarketplaceToolbarProps) {
   return (
@@ -70,33 +66,6 @@ export function MarketplaceToolbar({
               </option>
             ))}
           </select>
-        </div>
-
-        <div className="flex items-center border border-white/10 bg-white/5 p-1 rounded-sm gap-1">
-          <button
-            type="button"
-            onClick={() => onViewChange("grid")}
-            className={`p-2 transition-colors ${
-              view === "grid"
-                ? "bg-primaryBlue text-white"
-                : "text-white/40 hover:text-white"
-            }`}
-            aria-label="Grid view"
-          >
-            <Grid className="w-4 h-4" />
-          </button>
-          <button
-            type="button"
-            onClick={() => onViewChange("table")}
-            className={`p-2 transition-colors ${
-              view === "table"
-                ? "bg-primaryBlue text-white"
-                : "text-white/40 hover:text-white"
-            }`}
-            aria-label="Table view"
-          >
-            <List className="w-4 h-4" />
-          </button>
         </div>
       </div>
     </div>

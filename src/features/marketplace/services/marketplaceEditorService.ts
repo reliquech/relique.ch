@@ -3,18 +3,21 @@ import type { MarketplaceFormData } from "@/features/marketplace/schema";
 export type MarketplaceEditorSaveMode = "draft" | "publish" | "update";
 export type MarketplaceEditorSaveResult = { id: string; slug?: string; raw: unknown };
 
-function slugify(title: string) {
-  return title
-    .trim()
+function slugify(title: string | undefined) {
+  const normalized = (title ?? "").trim();
+  if (!normalized) return "";
+  return normalized
     .toLowerCase()
     .replace(/\s+/g, "-")
     .replace(/[^a-z0-9-]/g, "");
 }
 
 function toPayload(data: MarketplaceFormData, status?: MarketplaceFormData["status"]) {
+  const title = data.title?.trim() ?? "";
+  const slug = slugify(title) || `draft-${Date.now()}`;
   return {
-    slug: slugify(data.title),
-    title: data.title,
+    slug,
+    title,
     description: data.description,
     full_description: data.full_description ?? null,
     price_usd: data.price_usd,
