@@ -106,6 +106,7 @@ export function MarketplaceForm({
             onCoverRemove={images.removeCoverImage}
             onAdditionalChange={images.handleAdditionalImagesChange}
             onAdditionalRemove={images.removeAdditionalImage}
+            onAdditionalReorder={images.reorderAdditionalImages}
             onRetry={(id) => void images.retryUpload(id)}
             coverError={errors.image?.message}
             isUploading={images.isUploading}

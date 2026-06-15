@@ -24,6 +24,7 @@ type MarketplaceImageSectionProps = {
   onCoverRemove: () => void;
   onAdditionalChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onAdditionalRemove: (id: string) => void;
+  onAdditionalReorder: (activeIndex: number, overIndex: number) => void;
   onRetry: (id: string) => void;
   coverError?: string;
   isUploading?: boolean;
@@ -125,6 +126,81 @@ function ImageTile({
   );
 }
 
+function DraggableAdditionalTile({
+  item,
+  index,
+  dragIndex,
+  dropTargetIndex,
+  onDragIndexChange,
+  onDropTargetChange,
+  onReorder,
+  onRemove,
+  onPreview,
+  onRetry,
+  alt,
+}: {
+  item: ImageUploadItem;
+  index: number;
+  dragIndex: number | null;
+  dropTargetIndex: number | null;
+  onDragIndexChange: (index: number | null) => void;
+  onDropTargetChange: (index: number | null) => void;
+  onReorder: (activeIndex: number, overIndex: number) => void;
+  onRemove: () => void;
+  onPreview: () => void;
+  onRetry: () => void;
+  alt: string;
+}) {
+  const isDragging = dragIndex === index;
+  const isDropTarget =
+    dropTargetIndex === index && dragIndex !== null && dragIndex !== index;
+
+  return (
+    <div
+      draggable
+      onDragStart={(event) => {
+        event.dataTransfer.setData("text/plain", String(index));
+        event.dataTransfer.effectAllowed = "move";
+        onDragIndexChange(index);
+      }}
+      onDragOver={(event) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "move";
+        if (dragIndex !== null && dragIndex !== index) {
+          onDropTargetChange(index);
+        }
+      }}
+      onDrop={(event) => {
+        event.preventDefault();
+        const srcIndex = Number.parseInt(event.dataTransfer.getData("text/plain"), 10);
+        if (!Number.isNaN(srcIndex)) {
+          onReorder(srcIndex, index);
+        }
+        onDragIndexChange(null);
+        onDropTargetChange(null);
+      }}
+      onDragEnd={() => {
+        onDragIndexChange(null);
+        onDropTargetChange(null);
+      }}
+      className={cn(
+        "cursor-grab rounded-md active:cursor-grabbing",
+        isDragging && "opacity-50",
+        isDropTarget && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+      )}
+    >
+      <ImageTile
+        item={item}
+        onRemove={onRemove}
+        onPreview={onPreview}
+        onRetry={onRetry}
+        sizeClass="aspect-square w-full"
+        alt={alt}
+      />
+    </div>
+  );
+}
+
 export function MarketplaceImageSection({
   coverImage,
   additionalImages,
@@ -132,12 +208,15 @@ export function MarketplaceImageSection({
   onCoverRemove,
   onAdditionalChange,
   onAdditionalRemove,
+  onAdditionalReorder,
   onRetry,
   coverError,
   isUploading,
 }: MarketplaceImageSectionProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dropTargetIndex, setDropTargetIndex] = useState<number | null>(null);
 
   const lightboxImages = useMemo<ImageLightboxImage[]>(() => {
     const images: ImageLightboxImage[] = [];
@@ -260,13 +339,18 @@ export function MarketplaceImageSection({
             {additionalImages.length > 0 ? (
               <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
                 {additionalImages.map((item, index) => (
-                  <ImageTile
+                  <DraggableAdditionalTile
                     key={item.id}
                     item={item}
+                    index={index}
+                    dragIndex={dragIndex}
+                    dropTargetIndex={dropTargetIndex}
+                    onDragIndexChange={setDragIndex}
+                    onDropTargetChange={setDropTargetIndex}
+                    onReorder={onAdditionalReorder}
                     onRemove={() => onAdditionalRemove(item.id)}
                     onPreview={() => openLightboxAt(item.id)}
                     onRetry={() => onRetry(item.id)}
-                    sizeClass="aspect-square w-full"
                     alt={`Additional ${index + 1}`}
                   />
                 ))}
