@@ -48,6 +48,7 @@ interface MarketplaceItemsToolbarProps {
   onSortChange: (sort: MarketplaceItemsUrlState["sort"], order: MarketplaceItemsUrlState["order"]) => void;
   onClearAll: () => void;
   refreshing?: boolean;
+  isStale?: boolean;
 }
 
 export function MarketplaceItemsToolbar({
@@ -67,6 +68,7 @@ export function MarketplaceItemsToolbar({
   onSortChange,
   onClearAll,
   refreshing = false,
+  isStale = false,
 }: MarketplaceItemsToolbarProps) {
   const router = useRouter();
   const activeSort =
@@ -80,12 +82,6 @@ export function MarketplaceItemsToolbar({
           <h2 className="text-3xl font-bold tracking-tight text-white text-balance">
             Marketplace Items
           </h2>
-          {refreshing && (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-white/5 border border-white/10 text-primary animate-pulse">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
-              Syncing
-            </span>
-          )}
         </div>
         <button
           type="button"
@@ -98,12 +94,19 @@ export function MarketplaceItemsToolbar({
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <MarketplaceItemsCountSummary
-          visible={visibleCount}
-          filtered={filteredCount}
-          total={totalCount}
-          hasFilters={hasActiveFilters || state.statusTab !== "all"}
-        />
+        <div className="flex items-center gap-2 min-h-[20px]">
+          <MarketplaceItemsCountSummary
+            visible={visibleCount}
+            filtered={filteredCount}
+            total={totalCount}
+            hasFilters={hasActiveFilters || state.statusTab !== "all"}
+          />
+          {refreshing ? (
+            <span className="text-xs text-gray-500">Refreshing</span>
+          ) : isStale ? (
+            <span className="text-xs text-gray-500">Cached</span>
+          ) : null}
+        </div>
         <MarketplaceItemsViewToggle view={view} onViewChange={onViewChange} />
       </div>
 
