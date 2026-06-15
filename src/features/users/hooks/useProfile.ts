@@ -1,10 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import type { Database } from "@/lib/supabase/types";
 
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+
+type MeResponse = {
+  user: { id: string; email: string | null };
+  profile: ProfileRow;
+};
 
 export function useProfile() {
   const [profile, setProfile] = useState<ProfileRow | null>(null);
@@ -17,34 +21,38 @@ export function useProfile() {
     setLoading(true);
     setError(null);
     try {
-      const supabase = createClient();
-      const { data: userData, error: userError } = await supabase.auth.getUser();
-      if (userError || !userData.user) {
-        setError(userError?.message || "Not authenticated");
+      const response = await fetch("/api/auth/me");
+
+      if (response.status === 401) {
+        setError("Not authenticated");
         setProfile(null);
         setUserId(null);
         setUserEmail(null);
         return;
       }
 
-      setUserId(userData.user.id);
-      setUserEmail(userData.user.email ?? null);
-
-      const { data, error: profileError } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userData.user.id)
-        .single();
-
-      if (profileError) {
-        setError(profileError.message);
+      if (!response.ok) {
+        const data = (await response.json().catch(() => ({}))) as { error?: string };
+        setError(data.error ?? "Failed to load profile");
         setProfile(null);
+        setUserId(null);
+        setUserEmail(null);
         return;
       }
 
-      setProfile(data);
+      const data = (await response.json()) as MeResponse;
+      setUserId(data.user.id);
+      setUserEmail(data.user.email);
+      setProfile(data.profile);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load profile");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Cannot reach the server. Check your connection."
+      );
+      setProfile(null);
+      setUserId(null);
+      setUserEmail(null);
     } finally {
       setLoading(false);
     }

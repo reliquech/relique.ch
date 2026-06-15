@@ -3,7 +3,6 @@
 import React, { Suspense, createContext, useContext, useState, useEffect, useMemo, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { PortalSidebar } from "@/components/admin/shell/PortalSidebar";
-import { routeToTabMap, tabNames } from "@/lib/utils/admin";
 import { NotificationCenter } from "@/components/admin/notifications/components/NotificationCenter";
 import { CommandPalette } from "@/components/command/CommandPalette";
 import { useProfile } from "@/features/users/hooks/useProfile";
@@ -59,21 +58,9 @@ export default function AdminPortalLayout({
     .slice(0, 2)
     .toUpperCase();
 
-  const getDisplayName = () => {
-    const tabId =
-      routeToTabMap[pathname] ??
-      (pathname === "/admin"
-        ? "dashboard"
-        : pathname.replace("/admin/", "").split("/")[0]) ??
-      "dashboard";
-    return (tabId && tabNames[tabId]) || "Admin";
-  };
-
   const handleLogout = async () => {
     try {
-      const { createClient } = await import("@/lib/supabase/client");
-      const supabase = createClient();
-      await supabase.auth.signOut();
+      await fetch("/api/auth/logout", { method: "POST" });
       router.push("/admin/login");
       router.refresh();
     } catch (err) {
@@ -135,7 +122,7 @@ export default function AdminPortalLayout({
                 
                 <div className="flex flex-col">
                   {/* Breadcrumbs (Custom or fallback) */}
-                  <nav className="flex items-center gap-1 text-[11px] font-semibold text-stitch-on-surface-variant mb-1">
+                  <nav className="flex items-center gap-1 text-[11px] font-semibold text-stitch-on-surface-variant">
                     {headerBreadcrumbs ? (
                       headerBreadcrumbs.map((crumb, idx) => (
                         <React.Fragment key={crumb}>
@@ -164,11 +151,6 @@ export default function AdminPortalLayout({
                       })
                     )}
                   </nav>
-                  
-                  {/* Title (Custom or fallback) */}
-                  <h1 className="text-lg md:text-xl text-stitch-on-surface font-bold leading-none">
-                    {headerTitle || getDisplayName()}
-                  </h1>
                 </div>
               </div>
 

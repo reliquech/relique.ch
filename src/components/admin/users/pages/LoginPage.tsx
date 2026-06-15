@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Lock, ArrowRight } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 
 type AuthView = "login" | "signup";
 
@@ -31,14 +30,18 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const supabase = createClient();
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: loginEmail,
-        password: loginPass,
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: loginEmail,
+          password: loginPass,
+        }),
       });
 
-      if (signInError) {
-        setError("Invalid credentials");
+      if (!response.ok) {
+        const data = (await response.json().catch(() => ({}))) as { error?: string };
+        setError(data.error ?? "Invalid credentials");
         setLoading(false);
         return;
       }
@@ -49,7 +52,9 @@ export default function LoginPage() {
       router.push("/admin");
       router.refresh();
     } catch {
-      setError("An error occurred. Please try again.");
+      setError(
+        "Cannot reach the server. Check your connection and that the dev server is running."
+      );
       setLoading(false);
     }
   };
