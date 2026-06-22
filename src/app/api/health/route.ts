@@ -1,14 +1,19 @@
 import { NextResponse } from "next/server";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+import {
+  getSupabasePublishableKey,
+  getSupabaseSecretKey,
+  getSupabaseUrl,
+} from "@/lib/supabase/env";
 import { formatSupabaseError } from "@/lib/supabase/formatSupabaseError";
 import { sanitizeErrorMessage } from "@/lib/api/errorMessage";
 
 export async function GET() {
   try {
     if (
-      !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-      !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-      !process.env.SUPABASE_SERVICE_ROLE_KEY
+      !getSupabaseUrl() ||
+      !getSupabasePublishableKey() ||
+      !getSupabaseSecretKey()
     ) {
       return NextResponse.json(
         { ok: false, error: "Missing Supabase environment variables" },

@@ -1,21 +1,11 @@
 "use client";
 
 import { createBrowserClient } from "@supabase/ssr";
+import { assertSupabaseUrlAndPublishableKey } from "./env";
 import type { Database } from "./types";
 
 export function createClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const { url, publishableKey } = assertSupabaseUrlAndPublishableKey("createClient");
 
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error(
-      'Missing Supabase configuration. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your .env.local file.\n' +
-      'See https://supabase.com/dashboard/project/_/settings/api for your project credentials'
-    );
-  }
-
-  return createBrowserClient<Database>(
-    supabaseUrl,
-    supabaseAnonKey
-  );
+  return createBrowserClient<Database>(url, publishableKey);
 }

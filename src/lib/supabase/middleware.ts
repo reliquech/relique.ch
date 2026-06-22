@@ -1,14 +1,18 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { getSupabasePublishableKey, getSupabaseUrl } from "./env";
 import type { Database } from "./types";
 
 export async function updateSession(request: NextRequest) {
+  const supabaseUrl = getSupabaseUrl();
+  const supabasePublishableKey = getSupabasePublishableKey();
+
   // Validate environment variables
   // For API routes, let them handle their own error handling
-  // (API routes use SUPABASE_SERVICE_ROLE_KEY, not NEXT_PUBLIC_SUPABASE_ANON_KEY)
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  // (API routes use SUPABASE_SECRET_KEY, not the publishable key)
+  if (!supabaseUrl || !supabasePublishableKey) {
     // Skip validation for API routes - let them handle their own errors
-    if (request.nextUrl.pathname.startsWith('/api/')) {
+    if (request.nextUrl.pathname.startsWith("/api/")) {
       return NextResponse.next({ request });
     }
 
@@ -23,15 +27,15 @@ export async function updateSession(request: NextRequest) {
   });
 
   const supabase = createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    supabaseUrl,
+    supabasePublishableKey,
     {
       cookies: {
         getAll() {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
+          cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
           supabaseResponse = NextResponse.next({
